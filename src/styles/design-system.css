@@ -1,0 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400;1,9..40,600&family=DM+Serif+Display:ital@0;1&display=swap');
+
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
+:root {
+  /* Brand Colors */
+  --navy:        #0f2355;
+  --navy-mid:    #1a3572;
+  --navy-light:  #243f8a;
+  --gold:        #c8922a;
+  --gold-light:  #e4b04a;
+  --gold-pale:   #f5e4c2;
+  --maroon:      #6b1d1d;
+  --cream:       #fdf6e9;
+  --cream-dark:  #f4ecd6;
+
+  /* Neutrals */
+  --white:       #ffffff;
+  --gray-50:     #fafafa;
+  --gray-100:    #f4f4f5;
+  --gray-200:    #e4e4e7;
+  --gray-300:    #d1d5db;
+  --gray-400:    #9ca3af;
+  --gray-500:    #6b7280;
+  --gray-600:    #4b5563;
+  --gray-700:    #374151;
+  --gray-800:    #1f2937;
+  --gray-900:    #111827;
+
+  /* Semantic */
+  --success:     #16a34a;
+  --success-bg:  #dcfce7;
+  --error:       #dc2626;
+  --error-bg:    #fee2e2;
+  --warning:     #d97706;
+  --warning-bg:  #fef3c7;
+  --info:        #2563eb;
+  --info-bg:     #dbeafe;
+
+  /* Layout */
+  --header-h:    64px;
+  --sidebar-w:   256px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs:   0 1px 2px rgba(0,0,0,.06);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.08);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.12);
+  --shadow-xl:   0 16px 48px rgba(0,0,0,.16);
+
+  /* Typography */
+  --font-body:   'DM Sans', sans-serif;
+  --font-display:'DM Serif Display', serif;
+
+  /* Page bg */
+  --page-bg:     #eef0f7;
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--page-bg);
+  color: var(--gray-800);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+button { font-family: var(--font-body); cursor: pointer; border: none; outline: none; }
+input, textarea, select { font-family: var(--font-body); outline: none; border: none; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }
+
+/* ═══════════════════════════════════════
+   UTILITY CLASSES
+═══════════════════════════════════════ */
+.text-gold  { color: var(--gold); }
+.text-navy  { color: var(--navy); }
+.text-cream { color: var(--cream); }
+
+.bg-navy    { background: var(--navy); }
+.bg-cream   { background: var(--cream); }
+.bg-page    { background: var(--page-bg); }
+
+.font-display { font-family: var(--font-display); }
+
+/* ═══════════════════════════════════════
+   DARK MODE — CSS VARIABLE OVERRIDES
+═══════════════════════════════════════ */
+[data-theme="dark"] {
+  /* Surface / card backgrounds */
+  --white:       #1e2232;
+  --gray-50:     #252a3a;
+  --gray-100:    #2c3148;
+  --gray-200:    #373d58;
+  --gray-300:    #464d6a;
+  --gray-400:    #6b7280;
+  --gray-500:    #9ca3af;
+  --gray-600:    #bfc6d4;
+  --gray-700:    #d1d5e0;
+  --gray-800:    #e4e7ef;
+  --gray-900:    #f0f2f7;
+
+  /* Page background — deepest layer */
+  --page-bg:     #12141e;
+
+  /* Gold — slightly warmer/brighter for dark bg contrast */
+  --gold:        #d9a83c;
+  --gold-light:  #ebbf55;
+  --gold-pale:   #28200d;
+
+  /* Cream on dark — becomes a soft near-white */
+  --cream:       #e6e9f4;
+  --cream-dark:  #cdd1e0;
+
+  /* Maroon on dark — lightened for readability */
+  --maroon:      #f0a0a0;
+
+  /* Semantic backgrounds — deep dark tints */
+  --success-bg:  #0d2b1a;
+  --error-bg:    #2b0d0d;
+  --warning-bg:  #2b1e06;
+  --info-bg:     #0d1e3a;
+
+  /* Shadows — heavier on dark */
+  --shadow-xs:   0 1px 3px rgba(0,0,0,.4);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,.5);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.6);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.65);
+  --shadow-xl:   0 16px 48px rgba(0,0,0,.7);
+}
+
+/* ── Body ─────────────────────────────── */
+[data-theme="dark"] body {
+  background: var(--page-bg);
+  color: var(--gray-800);
+}
+
+/* ── Cards & surfaces ─────────────────── */
+[data-theme="dark"] .card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+}
+[data-theme="dark"] .card-header {
+  background: var(--gray-50);
+  border-bottom-color: var(--gray-200);
+  color: var(--gray-800);
+}
+[data-theme="dark"] .card-footer {
+  background: var(--gray-50);
+  border-top-color: var(--gray-200);
+}
+
+/* ── Typography: navy is used as heading text — remap to light ── */
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .page-section-title,
+[data-theme="dark"] .modal-header h3,
+[data-theme="dark"] .dh-dropdown-name {
+  color: var(--gray-800);
+}
+
+/* All inline styles use color:'var(--navy)' for headings.
+   We override the navy variable only for text contexts via
+   a body-level re-declaration so brand elements (header bg) keep navy */
+[data-theme="dark"] {
+  --navy:        #a8b8e8;   /* soft periwinkle — readable heading colour on dark */
+  --navy-mid:    #8fa4d8;
+  --navy-light:  #7690c8;
+}
+
+/* The header itself must stay dark-navy — re-pin it */
+[data-theme="dark"] .dh-header {
+  background: #0f2355 !important;   /* original --navy */
+  box-shadow: 0 2px 16px rgba(0,0,0,.5);
+}
+[data-theme="dark"] .dh-logo { color: var(--cream); }
+[data-theme="dark"] .dh-logo span { color: #e4b04a; }   /* original gold-light */
+
+/* Dropdown stays white-on-dark */
+[data-theme="dark"] .dh-dropdown {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+}
+[data-theme="dark"] .dh-dropdown-user { border-bottom-color: var(--gray-200); }
+[data-theme="dark"] .dh-dropdown-item { color: var(--gray-700); }
+[data-theme="dark"] .dh-dropdown-item:hover { background: var(--gray-100); color: var(--gray-900); }
+[data-theme="dark"] .dh-dropdown-item.active { color: var(--gold); }
+[data-theme="dark"] .dh-dropdown-divider { background: var(--gray-200); }
+
+/* Mobile menu */
+[data-theme="dark"] .dh-mobile-menu {
+  background: #0f2355;
+}
+
+/* ── Buttons ──────────────────────────── */
+[data-theme="dark"] .btn-outline {
+  border-color: #0961F533;
+  color: var(--gray-700);
+  background: #0961F533;
+}
+[data-theme="dark"] .btn-outline:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}
+[data-theme="dark"] .btn-ghost { color: var(--gray-600); }
+[data-theme="dark"] .btn-ghost:hover { background: var(--gray-100); color: var(--gray-800); }
+
+/* Primary button — navy bg uses original brand navy, not the remapped text navy */
+[data-theme="dark"] .btn-primary {
+  background: #1a3572;
+  border-color: #1a3572;
+  color: #e6e9f4;
+}
+[data-theme="dark"] .btn-primary:hover {
+  background: #243f8a;
+  border-color: #243f8a;
+}
+
+/* ── Inputs ───────────────────────────── */
+[data-theme="dark"] .field input,
+[data-theme="dark"] .field select,
+[data-theme="dark"] .field textarea,
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--gray-100);
+  border-color: var(--gray-200);
+  color: var(--gray-800);
+}
+[data-theme="dark"] .field input::placeholder,
+[data-theme="dark"] input::placeholder { color: var(--gray-400); }
+[data-theme="dark"] .field input:focus,
+[data-theme="dark"] .field select:focus,
+[data-theme="dark"] .field textarea:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212,168,60,.15);
+}
+[data-theme="dark"] .field label { color: var(--gray-600); }
+
+/* ── Back button ──────────────────────── */
+[data-theme="dark"] .back-btn {
+  background: var(--gray-50);
+  border-color: var(--gray-200);
+  color: var(--gray-700);
+}
+[data-theme="dark"] .back-btn:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-300);
+  color: var(--gray-900);
+}
+
+/* ── Tabs ─────────────────────────────── */
+[data-theme="dark"] .tabs {
+  background: var(--gray-50);
+}
+[data-theme="dark"] .tab-btn {
+  color: var(--gray-500);
+}
+[data-theme="dark"] .tab-btn:hover {
+  background: var(--gray-100);
+  color: var(--gray-800);
+}
+[data-theme="dark"] .tab-btn.active {
+  background: #1a3572;
+  color: #e6e9f4;
+}
+[data-theme="dark"] .tab-btn:not(.active) .tab-badge {
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+
+/* ── Table ────────────────────────────── */
+[data-theme="dark"] table { background: var(--white); }
+[data-theme="dark"] th { color: var(--cream); }        /* thead stays navy-bg */
+[data-theme="dark"] td { color: var(--gray-700); border-bottom-color: var(--gray-200); }
+[data-theme="dark"] tr:hover td { background: var(--gray-50); }
+
+/* ── Plan chip ────────────────────────── */
+[data-theme="dark"] .plan-chip {
+  background: var(--gold-pale);
+  border-color: rgba(212,168,60,.25);
+  color: var(--maroon);
+}
+
+/* ── Empty state ──────────────────────── */
+[data-theme="dark"] .empty-state h3 { color: var(--gray-700); }
+[data-theme="dark"] .empty-state p  { color: var(--gray-500); }
+
+/* ── Logout modal ─────────────────────── */
+[data-theme="dark"] .logout-modal {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+}
+[data-theme="dark"] .logout-modal h3 { color: var(--gray-900); }
+[data-theme="dark"] .logout-modal p  { color: var(--gray-600); }
+[data-theme="dark"] .cancel-btn {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  border-color: var(--gray-200);
+}
+
+/* ── Scrollbar ────────────────────────── */
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: var(--gray-300); }
+
+/* ── Smooth transitions on everything ─── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow, opacity;
+  transition-duration: 0.22s;
+  transition-timing-function: ease;
+}

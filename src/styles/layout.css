@@ -1,0 +1,332 @@
+/* ═══════════════════════════════════════
+   DASHBOARD SHELL
+═══════════════════════════════════════ */
+.dash-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.dash-main {
+  padding-top: var(--header-h);
+  min-height: 100vh;
+}
+
+.dash-content {
+  padding: 1.75rem 2rem 3rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════
+   HEADER
+═══════════════════════════════════════ */
+.dh-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  z-index: 500;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,.18);
+}
+
+.dh-logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--cream);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: 75px;
+}
+.dh-logo span { color: var(--gold); }
+
+.dh-nav {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  flex: 1;
+}
+.dh-nav-item {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem .9rem;
+  border-radius: var(--radius-md);
+  font-size: .855rem;
+  font-weight: 600;
+  color: rgba(255,247,224,.6);
+  cursor: pointer;
+  transition: background .18s, color .18s;
+  white-space: nowrap;
+}
+.dh-nav-item:hover { background: rgba(255,255,255,.08); color: var(--cream); }
+.dh-nav-item.active {
+  background: rgba(200,146,42,.2);
+  color: var(--gold-light);
+}
+
+.dh-right {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-left: auto;
+}
+.dh-notif-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,.08);
+  color: var(--cream);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: background .18s;
+}
+.dh-notif-btn:hover { background: rgba(255,255,255,.14); }
+.dh-notif-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid var(--navy);
+}
+
+.dh-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .35rem .7rem .35rem .4rem;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,.08);
+  cursor: pointer;
+  transition: background .18s;
+  position: relative;
+}
+.dh-avatar-wrap:hover { background: rgba(255,255,255,.14); }
+.dh-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: var(--maroon);
+  font-size: .78rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dh-avatar-info { display: flex; flex-direction: column; }
+.dh-avatar-name { font-size: .78rem; font-weight: 700; color: var(--cream); line-height: 1.2; }
+.dh-avatar-role { font-size: .65rem; color: rgba(255,247,224,.5); line-height: 1.2; }
+.dh-chevron { font-size: .6rem; color: rgba(255,247,224,.5); margin-left: .15rem; }
+
+/* Dropdown */
+.dh-dropdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 490;
+}
+.dh-dropdown {
+  position: absolute;
+  top: calc(var(--header-h) + 4px);
+  right: 1.5rem;
+  width: 260px;
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  z-index: 600;
+  overflow: hidden;
+  animation: scaleIn .18s ease;
+}
+.dh-dropdown-user {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  padding: 1.1rem 1.1rem .85rem;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+}
+.dh-dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--gold);
+  color: var(--maroon);
+  font-size: .9rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dh-dropdown-name  { font-size: .88rem; font-weight: 700; color: var(--cream); line-height: 1.3; }
+.dh-dropdown-email { font-size: .72rem; color: rgba(255,247,224,.55); }
+.dh-dropdown-ref   {
+  display: inline-block;
+  font-size: .65rem;
+  font-weight: 700;
+  background: rgba(200,146,42,.3);
+  color: var(--gold-light);
+  padding: .1rem .45rem;
+  border-radius: var(--radius-full);
+  margin-top: .15rem;
+}
+.dh-dropdown-divider { height: 1px; background: var(--gray-100); margin: .25rem 0; }
+.dh-dropdown-scroll { max-height: 340px; overflow-y: auto; }
+.dh-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .62rem 1.1rem;
+  font-size: .845rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: background .15s;
+}
+.dh-dropdown-item:hover { background: var(--gray-50); color: var(--navy); }
+.dh-dropdown-item.active { color: var(--navy); font-weight: 700; }
+.dh-dropdown-item.logout { color: var(--error); }
+.dh-dropdown-item.logout:hover { background: var(--error-bg); }
+.dh-dropdown-item span:first-child { font-size: 1rem; width: 20px; text-align: center; }
+
+/* Hamburger */
+.dh-hamburger {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,.08);
+  color: var(--cream);
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: background .18s;
+}
+.dh-hamburger:hover { background: rgba(255,255,255,.14); }
+
+/* Mobile menu */
+.dh-mobile-menu {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  background: var(--white);
+  z-index: 490;
+  box-shadow: var(--shadow-lg);
+  max-height: calc(100vh - var(--header-h));
+  overflow-y: auto;
+  animation: slideDown .2s ease;
+}
+.dh-mobile-item {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .85rem 1.5rem;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background .15s;
+}
+.dh-mobile-item:hover { background: var(--gray-50); color: var(--navy); }
+.dh-mobile-item.active { color: var(--navy); background: var(--cream); }
+.dh-mobile-item.logout { color: var(--error); }
+.dh-mobile-item span:first-child { font-size: 1.1rem; width: 24px; text-align: center; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   LOGOUT MODAL
+═══════════════════════════════════════ */
+.logout-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.logout-modal {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  width: 320px;
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+  animation: scaleIn .2s ease;
+}
+.logout-modal h3 { font-size: 1.1rem; font-weight: 800; color: var(--navy); margin-bottom: .5rem; }
+.logout-modal p  { font-size: .875rem; color: var(--gray-500); margin-bottom: 1.5rem; }
+.logout-actions  { display: flex; gap: .75rem; justify-content: center; }
+.logout-actions .cancel-btn {
+  flex: 1;
+  padding: .65rem;
+  border-radius: var(--radius-md);
+  font-size: .875rem;
+  font-weight: 600;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  border: none;
+  cursor: pointer;
+  transition: background .15s;
+}
+.logout-actions .cancel-btn:hover { background: var(--gray-200); }
+.logout-actions .confirm-btn {
+  flex: 1;
+  padding: .65rem;
+  border-radius: var(--radius-md);
+  font-size: .875rem;
+  font-weight: 700;
+  background: var(--error);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  transition: background .15s;
+}
+.logout-actions .confirm-btn:hover { background: #b91c1c; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .dh-nav      { display: none; }
+  .dh-avatar-info { display: none; }
+  .dh-chevron  { display: none; }
+  .dh-hamburger { display: flex; }
+  .dash-content { padding: 1.25rem 1rem 3rem; }
+}
+
+
+.al-logo-img {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+.dh-logo-img{
+  height:90px;
+  width: auto;
+  object-fit: contain;
+}

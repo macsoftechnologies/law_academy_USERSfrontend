@@ -1,0 +1,4 @@
+/* Global styles - imports all design system files */
+@import './design-system.css';
+@import './components.css';
+@import './layout.css';
