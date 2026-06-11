@@ -194,7 +194,7 @@ export default function ComboDetail() {
                         </button>
                         <CartWishlistActions 
                           courseId={comboId} 
-                          enrollType="full-course" 
+                          enrollType="combination" 
                           planId={plans[0]?.planId || plans[0]?.plan_id} 
                           isEnrolled={isEnrolled} 
                           hideCart={true}

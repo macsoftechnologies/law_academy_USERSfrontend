@@ -98,7 +98,7 @@ export default function RegisterPage() {
               </div>
               <label className="checkbox-row">
                 <input type="checkbox" checked={f.agreed} onChange={e=>set('agreed',e.target.checked)} />
-                <span>I agree to the <span style={{color:'var(--navy)',fontWeight:700,cursor:'pointer'}}>Terms & Conditions</span> and <span style={{color:'var(--navy)',fontWeight:700,cursor:'pointer'}}>Privacy Policy</span></span>
+                <span>Entered carefully and fill according to aadhar card These details once registered cannot be edited in profile</span>
               </label>
               {errors.agreed && <span className="field-error">{errors.agreed}</span>}
               <button type="submit" className="btn btn-primary btn-full" disabled={loading}>

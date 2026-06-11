@@ -135,7 +135,7 @@ export default function ComboSection() {
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }} onClick={e => e.stopPropagation()}>
                       <CartWishlistActions 
                         courseId={comboId} 
-                        enrollType="full-course" 
+                        enrollType="combination" 
                         planId={lowestPlan?.planId || lowestPlan?.plan_id} 
                         isEnrolled={isEnrolled} 
                       />

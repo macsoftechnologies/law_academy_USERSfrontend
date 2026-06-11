@@ -101,7 +101,7 @@ export default function AllCombos() {
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
                               <CartWishlistActions 
                                 courseId={comboId} 
-                                enrollType="full-course" 
+                                enrollType="combination" 
                                 planId={lowestPlan?.planId || lowestPlan?.plan_id} 
                                 isEnrolled={isEnrolled} 
                                 courseTitle={title}

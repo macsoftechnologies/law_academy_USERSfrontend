@@ -45,6 +45,7 @@ export default function CartWishlistActions({ courseId, enrollType, planId, isEn
     }
     try {
       setCartLoading(true);
+      
       await addToCart(userId, courseId, enrollType, planId);
       // Save the course title locally so Cart page can display it correctly
       if (courseTitle) {

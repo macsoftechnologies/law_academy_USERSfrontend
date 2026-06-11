@@ -107,8 +107,8 @@ export default function OtpVerify() {
           <div className="auth-illus">🔐</div>
           <div className="auth-body">
             <button className="auth-back" onClick={()=>navigate('/login')}>← Back</button>
-            <h2>Verify Your Number</h2>
-            <p className="auth-sub">We sent a 5-digit OTP to <strong>{phone}</strong></p>
+            <h2>Verify Your Mobile Number</h2>
+            <p className="auth-sub">We sent a OTP to <strong>{phone}</strong> enter 5 digit code that mentioned in the sms</p>
             {resent && <div className="toast success">OTP resent successfully!</div>}
             {error  && <div className="toast error">{error}</div>}
             <form onSubmit={handleVerify} noValidate>

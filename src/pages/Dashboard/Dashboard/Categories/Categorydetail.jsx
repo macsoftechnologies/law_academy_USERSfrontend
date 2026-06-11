@@ -139,7 +139,7 @@ export default function CategoryDetail() {
                                   <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
                                     <CartWishlistActions 
                                       courseId={sub.subcategory_id} 
-                                      enrollType="subcategory-wise" 
+                                      enrollType="full-course" 
                                       planId={primaryPlan.planId || primaryPlan.plan_id} 
                                       isEnrolled={sub.isEnrolled} 
                                     />
