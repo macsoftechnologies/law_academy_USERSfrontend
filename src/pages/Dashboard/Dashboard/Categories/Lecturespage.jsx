@@ -3,10 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
 import Loader from '../../../../components/common/Loader';
 import EnrollModal from '../../../../components/common/EnrollModal';
+import CartWishlistActions from '../../../../components/common/CartWishlistActions';
 import {
   getLecturesBySubject,
   getSubjectDetails,
-  getSubjectsByLawForUser
+  getSubjectsByLawForUser,
+  getUserCourses,
 } from '../../../../api/dashboard/dashboardApi';
 
 import '../../../../styles/design-system.css';
@@ -35,65 +37,103 @@ export default function LecturesPage() {
         console.log("👉 SUBJECT ID:", subjectId);
         console.log("👉 USER ID:", userId);
 
-        // ✅ Fetch lectures
         const lecturesRes = await getLecturesBySubject(subjectId, userId);
+        const lectureList = Array.isArray(lecturesRes?.data) ? lecturesRes.data : [];
 
         console.log("📦 LECTURES RESPONSE:", lecturesRes);
+        setLectures(lectureList);
 
-        setLectures(
-          Array.isArray(lecturesRes?.data)
-            ? lecturesRes.data
-            : []
-        );
-
-        // ✅ Fetch subject details
         try {
           const subjectRes = await getSubjectDetails(subjectId);
-
           console.log("📦 SUBJECT RESPONSE:", subjectRes);
 
-          const base = Array.isArray(subjectRes)
-            ? subjectRes[0]
-            : subjectRes;
-
+          const base = subjectRes?.data || null;
           if (!base) return;
+
+          const normalizeId = id => String(id ?? '').trim();
+          const currentId = normalizeId(subjectId);
+          const findMatchingSubject = s => {
+            const candidate = normalizeId(s?.subjectId ?? s?.subject_id);
+            return candidate === currentId;
+          };
 
           const lawId = Array.isArray(base?.law_id)
             ? base.law_id[0]?.lawId
             : base?.law_id;
 
+          const subcategoryId = Array.isArray(base?.subcategory_id)
+            ? base.subcategory_id[0]?.subcategory_id ?? base.subcategory_id[0]
+            : base?.subcategory_id;
+
+          const lecturesFullyUnlocked = lectureList.length > 0
+            && lectureList.every(l => l.isLocked !== true);
+
+          let mergedSubject = { ...base };
+          let matchedUserSubject = null;
+          let userCourses = [];
+          const validTypes = ['subcategory-wise', 'full-course', 'subject-wise'];
+
           if (userId && lawId) {
             try {
-              const userSubjects = await getSubjectsByLawForUser(lawId, userId);
+              const userSubjectsRes = await getSubjectsByLawForUser(lawId, userId);
+              const userSubjects = Array.isArray(userSubjectsRes?.data)
+                ? userSubjectsRes.data
+                : [];
 
-              const match = (userSubjects || []).find(
-                s => s.subjectId === subjectId
-              );
-
-              if (match) {
-  const mergedSubject = {
-    ...base,
-    ...match,
-    availablePlans:
-      base?.availablePlans?.length
-        ? base.availablePlans
-        : match?.availablePlans || []
-  };
-
-  console.log("✅ MERGED SUBJECT:", mergedSubject);
-  setSubject(mergedSubject);
-  return;
-}
+              matchedUserSubject = userSubjects.find(findMatchingSubject);
+              if (matchedUserSubject) {
+                mergedSubject = {
+                  ...mergedSubject,
+                  ...matchedUserSubject,
+                  availablePlans:
+                    base?.availablePlans?.length
+                      ? base.availablePlans
+                      : matchedUserSubject?.availablePlans || []
+                };
+              }
             } catch (err) {
               console.error("❌ USER SUBJECT ERROR:", err);
             }
           }
 
-          setSubject(base);
+          if (userId) {
+            try {
+              const coursesRes = await getUserCourses(userId);
+              if (coursesRes?.statusCode === 200 && Array.isArray(coursesRes.data)) {
+                userCourses = coursesRes.data;
+              }
+            } catch (err) {
+              console.error("❌ USER COURSES ERROR:", err);
+            }
+          }
+
+          const hasCourseAccess = userCourses.some(course => {
+            const courseId = normalizeId(course?.course_id);
+            return validTypes.includes(course?.enroll_type)
+              && (courseId === normalizeId(subcategoryId) || courseId === currentId);
+          });
+
+          mergedSubject = {
+            ...mergedSubject,
+            isEnrolled: Boolean(
+              matchedUserSubject?.isEnrolled
+              || base?.isEnrolled
+              || lecturesFullyUnlocked
+              || hasCourseAccess
+            ),
+            expiry_date: mergedSubject?.expiry_date
+              || userCourses.find(course => {
+                const courseId = normalizeId(course?.course_id);
+                return validTypes.includes(course?.enroll_type)
+                  && (courseId === normalizeId(subcategoryId) || courseId === currentId);
+              })?.expiry_date
+          };
+
+          console.log("✅ MERGED SUBJECT:", mergedSubject);
+          setSubject(mergedSubject);
         } catch (err) {
           console.error("❌ SUBJECT API FAILED:", err);
         }
-
       } catch (err) {
         console.error("❌ LECTURES API FAILED:", err);
       } finally {
@@ -183,25 +223,39 @@ export default function LecturesPage() {
                 <div
                   style={{
                     display: 'flex',
+                    flexDirection: 'column',
                     gap: '.5rem',
                     flexShrink: 0
                   }}
                 >
                   {!subject.isEnrolled && primaryPlan && (
-                    <button
-                      className="btn btn-gold btn-sm"
-                      onClick={() => setSelectedPlan(primaryPlan)}
-                    >
-                      Buy Now
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
+                      <CartWishlistActions 
+                        courseId={subject.subjectId || subjectId} 
+                        enrollType="subject-wise" 
+                        planId={primaryPlan.planId || primaryPlan.plan_id} 
+                        isEnrolled={subject.isEnrolled} 
+                        hideCart={true}
+                      />
+                    </div>
                   )}
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {!subject.isEnrolled && primaryPlan && (
+                      <button
+                        className="btn btn-gold btn-sm"
+                        onClick={() => navigate(`/subject/${subject.subjectId}`)}
+                      >
+                        Buy Now
+                      </button>
+                    )}
 
-                  <button
-                    className="btn btn-outline btn-sm"
-                    onClick={() => navigate(`/subject/${subject.subjectId}`)}
-                  >
-                    Details →
-                  </button>
+                    <button
+                      className="btn btn-outline btn-sm"
+                      onClick={() => navigate(`/subject/${subject.subjectId}`)}
+                    >
+                      Details →
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -230,7 +284,8 @@ export default function LecturesPage() {
               }}
             >
               {lectures.map((l, i) => {
-                const locked = l.isLocked === true;
+                // const locked = l.isLocked === true;
+                const locked = !subject?.isEnrolled && l.isLocked === true;
 
                 return (
                   <div
@@ -319,7 +374,7 @@ export default function LecturesPage() {
                           className="btn btn-gold btn-sm"
                           onClick={e => {
                             e.stopPropagation();
-                            setSelectedPlan(primaryPlan);
+                            navigate(`/subject/${subject?.subjectId}`);
                           }}
                         >
                           Buy Now
@@ -336,15 +391,8 @@ export default function LecturesPage() {
         </div>
       </div>
 
-      {/* ✅ Modal inside JSX */}
-      {selectedPlan && (
-        <EnrollModal
-          plan={selectedPlan}
-          courseTitle={subject?.title}
-          enroll_type="subject-wise"
-          onClose={() => setSelectedPlan(null)}
-        />
-      )}
+      {/* Buy now redirects to subject details so users can select the correct plan and year. */}
+
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
 import Loader from '../../../../components/common/Loader';
+import CartWishlistActions from '../../../../components/common/CartWishlistActions';
 import { getCategoryDetails, getSubcategoriesByUser } from '../../../../api/dashboard/dashboardApi';
 import '../../../../styles/design-system.css';
 import '../../../../styles/components.css';
@@ -127,7 +128,7 @@ export default function CategoryDetail() {
                               )}
                           </div>
 
-                          <div className="course-card-actions">
+                          <div className="course-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             {sub.isEnrolled ? (
                               <button className="btn btn-gold btn-sm" onClick={() => navigate(`/subcategory/${sub.subcategory_id}`)}>
                                 Open →
@@ -135,15 +136,27 @@ export default function CategoryDetail() {
                             ) : (
                               <>
                                 {primaryPlan && (
-                                  <button className="btn btn-outline btn-sm"
-  onClick={() => navigate(`/subcategory/${sub.subcategory_id}/checkout`, { state: { sub } })}>
-  Buy Now
-</button>
+                                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
+                                    <CartWishlistActions 
+                                      courseId={sub.subcategory_id} 
+                                      enrollType="subcategory-wise" 
+                                      planId={primaryPlan.planId || primaryPlan.plan_id} 
+                                      isEnrolled={sub.isEnrolled} 
+                                    />
+                                  </div>
                                 )}
-                                <button className="btn btn-primary btn-sm"
-  onClick={() => navigate(`/subcategory/${sub.subcategory_id}`)}>
-  View Details
-</button>
+                                <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                                  {primaryPlan && (
+                                    <button className="btn btn-gold btn-sm" style={{ flex: 1 }}
+                                      onClick={() => navigate(`/subcategory/${sub.subcategory_id}/checkout`, { state: { sub } })}>
+                                      Buy Now
+                                    </button>
+                                  )}
+                                  <button className="btn btn-outline btn-sm" style={{ flex: 1 }}
+                                    onClick={() => navigate(`/subcategory/${sub.subcategory_id}`)}>
+                                    Explore →
+                                  </button>
+                                </div>
                               </>
                             )}
                           </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
 import Loader from "../../../components/common/Loader";
-import { getGuestLectureDetails } from "../../../api/dashboard/dashboardApi";
+import { getGuestLectureDetails, getUserCourses } from "../../../api/dashboard/dashboardApi";
 import "../../../styles/design-system.css";
 import "../../../styles/components.css";
 import "../../../styles/layout.css";
@@ -36,12 +36,39 @@ function getEmbedUrl(url) {
   return url;
 }
 
+const normalizeGuestLectureLock = (lecture) => {
+  if (lecture?.isLocked !== undefined) {
+    if (typeof lecture.isLocked === "boolean") return lecture.isLocked;
+    return String(lecture.isLocked).toLowerCase() === "true";
+  }
+
+  if (lecture?.locked !== undefined) {
+    if (typeof lecture.locked === "boolean") return lecture.locked;
+    return String(lecture.locked).toLowerCase() === "true";
+  }
+
+  return true;
+};
+
 export default function GuestLectureDetail() {
   const { lectureId } = useParams();
   const navigate = useNavigate();
 
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasFullCourse, setHasFullCourse] = useState(false);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      getUserCourses(userId).then(res => {
+        if (res.statusCode === 200 && Array.isArray(res.data)) {
+          const hasFull = res.data.some(course => course.enroll_type === 'full-course');
+          setHasFullCourse(hasFull);
+        }
+      }).catch(console.error);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -54,11 +81,13 @@ export default function GuestLectureDetail() {
     getGuestLectureDetails(lectureId)
       .then((res) => {
         if (res.statusCode === 200) {
-          setDetail(
-            Array.isArray(res.data)
-              ? res.data[0]
-              : res.data
-          );
+          const lecture = Array.isArray(res.data)
+            ? res.data[0]
+            : res.data;
+          setDetail({
+            ...lecture,
+            isLocked: normalizeGuestLectureLock(lecture),
+          });
         }
       })
       .catch((err) => {
@@ -180,23 +209,43 @@ export default function GuestLectureDetail() {
                       fontSize: "22px",
                       fontWeight: 700,
                       textAlign: "center",
+                      padding: "0 20px"
                     }}
                   >
                     🔒 Enroll to Watch Full Lecture
 
-                    <button
-                      className="buy-btn"
-                      style={{
-                        marginTop: "16px",
-                      }}
-                      onClick={() =>
-                        navigate(
-                          `/guest-lecture-buy/${lectureId}`
-                        )
-                      }
-                    >
-                      Buy Full Access
-                    </button>
+                    {hasFullCourse ? (
+                      <button
+                        className="buy-btn"
+                        style={{
+                          marginTop: "16px",
+                        }}
+                        onClick={() =>
+                          navigate(
+                            `/guest-lecture-buy/${lectureId}`
+                          )
+                        }
+                      >
+                        Buy Full Access
+                      </button>
+                    ) : (
+                      <div style={{ 
+                        marginTop: "20px", 
+                        padding: "12px 20px", 
+                        background: "rgba(0, 0, 0, 0.75)", 
+                        border: "1px solid rgba(255, 255, 255, 0.2)", 
+                        borderRadius: "12px", 
+                        color: "#fff", 
+                        fontSize: "0.95rem", 
+                        fontWeight: 500, 
+                        display: "flex", 
+                        alignItems: "center", 
+                        gap: "10px" 
+                      }}>
+                        <span style={{ fontSize: "1.2rem", color: "#fca5a5" }}>🔒</span>
+                        <span>Purchase a <strong>Full Course</strong> to unlock.</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -310,17 +359,37 @@ export default function GuestLectureDetail() {
 
               <div style={{ marginTop: "20px" }}>
                 {detail.isLocked ? (
-                  <button
-                    className="buy-btn"
-                    style={{ width: "100%" }}
-                    onClick={() =>
-                      navigate(
-                        `/guest-lecture-buy/${lectureId}`
-                      )
-                    }
-                  >
-                    🔒 Buy Full Lecture
-                  </button>
+                  hasFullCourse ? (
+                    <button
+                      className="buy-btn"
+                      style={{ width: "100%" }}
+                      onClick={() =>
+                        navigate(
+                          `/guest-lecture-buy/${lectureId}`
+                        )
+                      }
+                    >
+                      🔒 Buy Full Lecture
+                    </button>
+                  ) : (
+                    <div style={{
+                      marginTop: "10px",
+                      padding: "12px",
+                      background: "rgba(239, 68, 68, 0.08)",
+                      border: "1px solid rgba(239, 68, 68, 0.2)",
+                      borderRadius: "10px",
+                      color: "#b91c1c",
+                      fontSize: "0.88rem",
+                      fontWeight: 500,
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "10px",
+                      lineHeight: 1.5
+                    }}>
+                      <span style={{ fontSize: "1.2rem", marginTop: "-2px" }}>🔒</span>
+                      <span>Purchase a <strong>Full Course</strong> to unlock this lecture content.</span>
+                    </div>
+                  )
                 ) : (
                   <button
                     className="view-btn"

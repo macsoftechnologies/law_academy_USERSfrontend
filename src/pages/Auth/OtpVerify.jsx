@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyUser } from '../../api/auth/verify';
+import { loginAnotherWay } from '../../api/auth/loginAnotherWay';
 import { AuthLeft } from './LoginPage';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -11,16 +12,19 @@ export default function OtpVerify() {
   const { state } = useLocation();
   const phone  = state?.phone  || sessionStorage.getItem('otpPhone');
   const userId = state?.userId || sessionStorage.getItem('otpUserId');
+  const mode = state?.mode || sessionStorage.getItem('otpMode') || 'otp-login';
   const [otp, setOtp] = useState(['','','','','']);
   const [error, setError] = useState('');
   const [loading, setLoad] = useState(false);
   const [resent, setResent] = useState(false);
+  const [resending, setResending] = useState(false);
   const refs = [useRef(),useRef(),useRef(),useRef(),useRef()];
 
   useEffect(() => {
     if (state?.userId) {
       sessionStorage.setItem('otpUserId', state.userId);
       sessionStorage.setItem('otpPhone', state.phone);
+      sessionStorage.setItem('otpMode', state.mode || 'otp-login');
     }
   }, [state]);
 
@@ -38,12 +42,23 @@ export default function OtpVerify() {
     try {
       const res = await verifyUser({ userId, otp: otp.join('') });
       if (res.statusCode === 200) {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('userId', res.data.userId);
-        localStorage.setItem('user', JSON.stringify(res.data));
-        localStorage.setItem('isLoggedIn','true');
-        sessionStorage.clear();
-        navigate('/dashboard');
+        if (mode === 'reset') {
+          const resolvedUserId = res?.data?.userId || userId;
+          if (resolvedUserId) sessionStorage.setItem('resetUserId', resolvedUserId);
+          navigate('/resetpassword', { state: { userId: resolvedUserId } });
+        } else {
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('userId', res.data.userId);
+          localStorage.setItem('user', JSON.stringify(res.data));
+          localStorage.setItem('isLoggedIn','true');
+          sessionStorage.clear();
+          
+          if (mode === 'register') {
+            navigate('/referral');
+          } else {
+            navigate('/dashboard');
+          }
+        }
       } else {
         setError(res.message || 'OTP verification failed');
       }
@@ -52,10 +67,31 @@ export default function OtpVerify() {
     } finally { setLoad(false); }
   };
 
-  const handleResend = () => {
-    setOtp(['','','','','']); setError(''); setResent(true);
-    setTimeout(()=>setResent(false),3000);
-    refs[0].current.focus();
+  const handleResend = async () => {
+    if (!phone?.trim()) {
+      setError('Phone not available. Please login again.');
+      return;
+    }
+    setResending(true);
+    setError('');
+    try {
+      const res = await loginAnotherWay(phone.trim());
+      if (res.statusCode === 200) {
+        const resendUserId = res?.data?.userId || userId;
+        if (resendUserId) sessionStorage.setItem('otpUserId', resendUserId);
+        sessionStorage.setItem('otpPhone', phone.trim());
+        setOtp(['','','','','']);
+        setResent(true);
+        setTimeout(()=>setResent(false),3000);
+        refs[0].current?.focus();
+      } else {
+        setError(res.message || 'Unable to resend OTP');
+      }
+    } catch (err) {
+      setError(err?.message || 'Unable to resend OTP');
+    } finally {
+      setResending(false);
+    }
   };
 
   return (
@@ -84,7 +120,12 @@ export default function OtpVerify() {
                     onKeyDown={e=>handleKey(i,e)} />
                 ))}
               </div>
-              <p className="otp-resend">Haven't got the SMS? <span onClick={handleResend}>Resend OTP</span></p>
+              <p className="otp-resend">
+                Haven't got the SMS?{' '}
+                <span onClick={!resending ? handleResend : undefined} style={{ opacity: resending ? 0.6 : 1, cursor: resending ? 'not-allowed' : 'pointer' }}>
+                  {resending ? 'Resending…' : 'Resend OTP'}
+                </span>
+              </p>
               <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
                 {loading ? 'Verifying…' : 'Verify & Login'}
               </button>

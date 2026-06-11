@@ -4,13 +4,27 @@ import DashboardHeader from "../../../components/layout/DashboardHeader";
 import Loader from "../../../components/common/Loader";
 import Pagination from "../../../components/common/Pagination";
 import Button from "../../../components/common/Button";
-import { getGuestLectures } from "../../../api/dashboard/dashboardApi";
+import { getGuestLectures, getUserCourses } from "../../../api/dashboard/dashboardApi";
 import "../../../styles/design-system.css";
 import "../../../styles/components.css";
 import "../../../styles/layout.css";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PAGE_SIZE = 12;
+
+const normalizeGuestLectureLock = (lecture) => {
+  if (lecture?.isLocked !== undefined) {
+    if (typeof lecture.isLocked === "boolean") return lecture.isLocked;
+    return String(lecture.isLocked).toLowerCase() === "true";
+  }
+
+  if (lecture?.locked !== undefined) {
+    if (typeof lecture.locked === "boolean") return lecture.locked;
+    return String(lecture.locked).toLowerCase() === "true";
+  }
+
+  return true;
+};
 
 export default function AllGuestLectures() {
   const navigate = useNavigate();
@@ -19,6 +33,19 @@ export default function AllGuestLectures() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [hasFullCourse, setHasFullCourse] = useState(false);
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      getUserCourses(userId).then(res => {
+        if (res.statusCode === 200 && Array.isArray(res.data)) {
+          const hasFull = res.data.some(course => course.enroll_type === 'full-course');
+          setHasFullCourse(hasFull);
+        }
+      }).catch(console.error);
+    }
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -26,10 +53,15 @@ export default function AllGuestLectures() {
     getGuestLectures(page, PAGE_SIZE)
       .then((res) => {
         if (res.statusCode === 200) {
-          setLectures(res.data ?? []);
+          const normalized = (res.data ?? []).map((lecture) => ({
+            ...lecture,
+            isLocked: normalizeGuestLectureLock(lecture),
+          }));
+
+          setLectures(normalized);
           setTotal(
             res.totalCount ??
-              res.data?.length ??
+              normalized.length ??
               0
           );
         }
@@ -150,8 +182,8 @@ export default function AllGuestLectures() {
                             : "Continue"}
                         </Button>
 
-                        {/* buy only if locked */}
-                        {lecture.isLocked && (
+                        {/* buy only if locked and has full course */}
+                        {lecture.isLocked && hasFullCourse && (
                           <Button
                             variant="primary"
                             onClick={() =>
@@ -164,6 +196,27 @@ export default function AllGuestLectures() {
                           </Button>
                         )}
                       </div>
+
+                      {/* Warning if locked and NO full course */}
+                      {lecture.isLocked && !hasFullCourse && (
+                        <div style={{
+                          marginTop: "14px",
+                          padding: "10px 14px",
+                          background: "rgba(239, 68, 68, 0.08)",
+                          border: "1px solid rgba(239, 68, 68, 0.2)",
+                          borderRadius: "8px",
+                          color: "#b91c1c",
+                          fontSize: "0.82rem",
+                          fontWeight: 500,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          lineHeight: 1.4
+                        }}>
+                          <span style={{ fontSize: "1.1rem" }}>🔒</span>
+                          <span>Purchase a <strong>Full Course</strong> to unlock this lecture.</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

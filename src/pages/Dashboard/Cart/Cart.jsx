@@ -1,30 +1,77 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
+import { getCartList, removeFromCart } from '../../../api/cart';
+import { useCartWishlist } from '../../../context/CartWishlistContext';
+import EnrollModal from '../../../components/common/EnrollModal';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
 
-const INITIAL_CART = [
-  { id: 1, title: 'Constitutional Law – Complete Series', category: 'Law',      price: 4999, originalPrice: 6999, icon: '⚖️' },
-  { id: 2, title: 'IPC & Criminal Law Mastery',          category: 'Criminal', price: 3499, originalPrice: 4999, icon: '🔒' },
-];
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Cart() {
   const navigate = useNavigate();
-  const [cart, setCart] = useState(INITIAL_CART);
-  const [coupon, setCoupon] = useState('');
-  const [couponApplied, setCouponApplied] = useState(false);
+  const { refresh } = useCartWishlist();
+  const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showEnroll, setShowEnroll] = useState(false);
 
-  const remove = id => setCart(c => c.filter(i => i.id !== id));
-  const subtotal = cart.reduce((s, i) => s + i.price, 0);
-  const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
-  const total    = subtotal - discount;
+  const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return {}; } })();
+  const userId = localStorage.getItem('userId') || user?._id || user?.id;
 
-  const applyCoupon = () => {
-    if (coupon.trim().toUpperCase() === 'MAKA10') setCouponApplied(true);
-    else alert('Invalid coupon code');
+  useEffect(() => {
+    if (userId) {
+      fetchCart();
+    } else {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  const fetchCart = async () => {
+    try {
+      setLoading(true);
+      const res = await getCartList(userId);
+      if (res?.data) {
+        setCart(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const remove = async (cartItemId) => {
+    try {
+      await removeFromCart(userId, cartItemId);
+      setCart(c => c.filter(i => i.cartItemId !== cartItemId));
+      refresh();
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+      alert("Failed to remove item.");
+    }
+  };
+
+  const subtotal = cart.reduce((s, i) => {
+    const price = parseInt(i.plan?.original_price || 0, 10);
+    return s + price;
+  }, 0);
+
+  const handlingFee = cart.reduce((s, i) => {
+    const fee = parseInt(i.plan?.handling_fee || 0, 10);
+    return s + fee;
+  }, 0);
+
+  const total = subtotal + handlingFee;
+
+  const cartPlan = useMemo(() => ({
+    original_price: subtotal,
+    handling_fee: handlingFee,
+    duration: `${cart.length} Course(s)`,
+    planId: cart.length > 0 ? (cart[0].plan?.planId || cart[0].plan?._id) : null,
+    enroll_type: cart.length > 0 ? (cart[0].enroll_type || cart[0].course_type || cart[0].plan?.enroll_type) : null
+  }), [subtotal, handlingFee, cart.length, cart]);
 
   return (
     <div className="dash-shell">
@@ -40,7 +87,9 @@ export default function Cart() {
             </h1>
           </div>
 
-          {cart.length === 0 ? (
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--gray-500)' }}>Loading cart...</div>
+          ) : cart.length === 0 ? (
             <div className="card">
               <div className="empty-state">
                 <div className="empty-state-icon">🛒</div>
@@ -55,27 +104,32 @@ export default function Cart() {
               {/* Items */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                 {cart.map(item => {
-                  const disc = Math.round((1 - item.price / item.originalPrice) * 100);
-                  return (
-                    <div key={item.id} className="card">
-                      <div className="card-body" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                        <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg,var(--navy),var(--navy-mid))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>
-                          {item.icon}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '.15rem' }}>{item.title}</div>
-                          <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{item.category}</div>
-                        </div>
-                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                          <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--navy)' }}>₹{item.price.toLocaleString('en-IN')}</div>
-                          <div style={{ fontSize: '.75rem', color: 'var(--gray-400)', textDecoration: 'line-through' }}>₹{item.originalPrice.toLocaleString('en-IN')}</div>
-                          <div style={{ fontSize: '.68rem', color: 'var(--success)', fontWeight: 700 }}>{disc}% OFF</div>
-                        </div>
-                        <button onClick={() => remove(item.id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '1.2rem', flexShrink: 0 }}>🗑</button>
-                      </div>
-                    </div>
-                  );
-                })}
+  const originalPrice = parseInt(item.plan?.strike_price || item.plan?.original_price || 0, 10);
+  const price = parseInt(item.plan?.original_price || 0, 10);
+
+  return (
+    <div key={item.cartItemId} className="card">
+      <div className="card-body" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg,var(--navy),var(--navy-mid))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0, overflow: 'hidden' }}>
+          {item.courseDetails?.presentation_image ? (
+            <img src={`${BASE_URL}/${item.courseDetails.presentation_image}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : '📚'}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '.15rem' }}>{item.courseDetails?.title || 'Course'}</div>
+          <div style={{ fontSize: '.75rem', color: 'var(--gray-400)', textTransform: 'capitalize' }}>{item.enroll_type.replace('-', ' ')} - {item.plan?.duration}</div>
+        </div>
+        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+          <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--navy)' }}>₹{price.toLocaleString('en-IN')}</div>
+          {originalPrice > price && (
+            <div style={{ fontSize: '.75rem', color: 'var(--gray-400)', textDecoration: 'line-through' }}>₹{originalPrice.toLocaleString('en-IN')}</div>
+          )}
+        </div>
+        <button onClick={() => remove(item.cartItemId)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '1.2rem', flexShrink: 0 }} title="Remove">🗑</button>
+      </div>
+    </div>
+  );
+})}
               </div>
 
               {/* Summary */}
@@ -87,10 +141,10 @@ export default function Cart() {
                       <span>Subtotal ({cart.length} items)</span>
                       <span>₹{subtotal.toLocaleString('en-IN')}</span>
                     </div>
-                    {couponApplied && (
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.875rem', color: 'var(--success)' }}>
-                        <span>Coupon Discount (10%)</span>
-                        <span>- ₹{discount.toLocaleString('en-IN')}</span>
+                    {handlingFee > 0 && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.875rem', color: 'var(--gray-600)' }}>
+                        <span>Handling Fee</span>
+                        <span>₹{handlingFee.toLocaleString('en-IN')}</span>
                       </div>
                     )}
                     <div style={{ height: 1, background: 'var(--gray-100)' }} />
@@ -100,28 +154,49 @@ export default function Cart() {
                     </div>
                   </div>
 
-                  {/* Coupon */}
-                  {!couponApplied ? (
-                    <div style={{ display: 'flex', gap: '.5rem', marginBottom: '1rem' }}>
-                      <input
-                        style={{ flex: 1, padding: '.55rem .85rem', border: '1.5px solid var(--gray-200)', borderRadius: 'var(--radius-md)', fontSize: '.82rem', fontFamily: 'var(--font-body)', background: 'var(--white)' }}
-                        placeholder="Coupon code"
-                        value={coupon}
-                        onChange={e => setCoupon(e.target.value)}
-                      />
-                      <button className="btn btn-outline btn-sm" onClick={applyCoupon}>Apply</button>
-                    </div>
-                  ) : (
-                    <div style={{ background: 'var(--success-bg)', color: 'var(--success)', fontSize: '.8rem', fontWeight: 600, padding: '.5rem .85rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', textAlign: 'center' }}>
-                      ✅ MAKA10 applied — 10% off!
-                    </div>
-                  )}
-
-                  <button className="btn btn-gold btn-lg btn-full">Proceed to Checkout →</button>
+                  <button 
+                    className="btn btn-gold btn-lg btn-full" 
+                    style={{ marginTop: '1rem' }}
+                    onClick={() => setShowEnroll(true)}
+                  >
+                    Proceed to Checkout →
+                  </button>
                   <p style={{ fontSize: '.72rem', color: 'var(--gray-400)', textAlign: 'center', marginTop: '.6rem' }}>Secure checkout • GST included</p>
                 </div>
               </div>
             </div>
+          )}
+
+          {showEnroll && (
+            <EnrollModal
+              plan={cartPlan}
+              courseTitle={
+                cart.length > 0
+                  ? (
+                      cart[0].courseDetails?.title ||
+                      cart[0].plan?.courseDetails?.title ||
+                      localStorage.getItem(`cart_title_${cart[0].course_id}`) ||
+                      'Course'
+                    )
+                  : 'Course'
+              }
+              enroll_type={cartPlan.enroll_type}
+              onClose={() => setShowEnroll(false)}
+              onSuccess={async () => {
+                // Remove the enrolled item from backend cart
+                if (cart.length > 0 && cart[0].cartItemId) {
+                  try {
+                    await removeFromCart(userId, cart[0].cartItemId);
+                  } catch (e) {
+                    console.error('Failed to remove cart item after enrollment:', e);
+                  }
+                }
+                setCart([]);
+                refresh();
+                setShowEnroll(false);
+                navigate('/dashboard');
+              }}
+            />
           )}
         </div>
       </div>

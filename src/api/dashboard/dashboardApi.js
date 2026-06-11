@@ -48,9 +48,33 @@ export const getSubjectsByLawForUser = async (law_id, userId) => {
   const res = await api.post("/subjects/listbylawforuser", { law_id, userId });
   return res.data;
 };
+
+const normalizeId = (id) => String(id ?? "").trim();
+
 export const getSubjectDetails = async (subjectId) => {
-  const res = await api.post("/subjects/details", { subjectId });
-  return res.data;
+  const targetId = normalizeId(subjectId);
+  const pageSize = 100;
+  let page = 1;
+
+  while (page <= 10) {
+    const res = await getSubjects(page, pageSize);
+    if (res.statusCode !== 200) return res;
+
+    const subjects = Array.isArray(res.data) ? res.data : [];
+    const subject = subjects.find((s) => {
+      const candidate = normalizeId(s?.subjectId ?? s?.subject_id);
+      return candidate === targetId;
+    });
+
+    if (subject) {
+      return { statusCode: 200, data: subject };
+    }
+
+    if (!subjects.length || subjects.length < pageSize) break;
+    page += 1;
+  }
+
+  return { statusCode: 404, message: "Subject not found", data: null };
 };
 // ── Guest Lecture APIs ──────────────────────────────────────────────────────
 export const getGuestLectures = async (page = 1, limit = 10) => {

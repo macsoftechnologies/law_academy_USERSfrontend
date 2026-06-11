@@ -1,29 +1,103 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
+import Loader from '../../../components/common/Loader';
+import { getReferralStats, convertToCoupon } from '../../../api/referrals';
+import { getAllCoupons } from '../../../api/enroll/enrollApi_addition';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
 
-const MOCK_REFERRALS = [
-  { name: 'Arun Kumar',   date: '12 Mar 2025', status: 'Purchased', earned: 250 },
-  { name: 'Priya Sharma', date: '5 Mar 2025',  status: 'Signed Up', earned: 0   },
-  { name: 'Raj Patel',    date: '20 Feb 2025', status: 'Purchased', earned: 250 },
-];
-
 export default function Referrals() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [myCoupons, setMyCoupons] = useState([]);
+  
+  // Convert to coupon state
+  const [showConvertModal, setShowConvertModal] = useState(false);
+  const [convertAmount, setConvertAmount] = useState('');
+  const [convertLoading, setConvertLoading] = useState(false);
+  const [generatedCoupon, setGeneratedCoupon] = useState('');
+  const [toast, setToast] = useState(null);
 
   const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return {}; } })();
-  const refCode = user?.referral_code || 'MAKA-REF123';
-  const refLink = `${window.location.origin}/register?ref=${refCode}`;
+  const refCode = user?.referral_code || '';
+  const refLink = refCode ? `${window.location.origin}/register?ref=${refCode}` : '';
 
-  const copy = (text) => {
-    navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+  const userId = localStorage.getItem('userId') || user?._id || user?.id;
+
+  const fetchStats = async () => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await getReferralStats(userId);
+      if (res?.data) {
+        setStats(res.data);
+      }
+      
+      // Fetch user's generated coupons
+      const cRes = await getAllCoupons(1, 100);
+      if (cRes?.statusCode === 200 && cRes?.data?.length) {
+        // Filter coupons that belong to this user and start with 'REF-'
+        const userCoupons = cRes.data.filter(c => c.userId === userId && c.coupon_code.startsWith('REF-'));
+        setMyCoupons(userCoupons);
+      }
+    } catch (err) {
+      console.error("Failed to fetch referral stats:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const totalEarned = MOCK_REFERRALS.reduce((s, r) => s + r.earned, 0);
+  useEffect(() => {
+    fetchStats();
+  }, [userId]);
+
+  const handleConvert = async () => {
+    const amt = Number(convertAmount);
+    if (!amt || amt <= 0) {
+      setToast({ type: 'error', msg: "Please enter a valid amount" });
+      setTimeout(() => setToast(null), 3000);
+      return;
+    }
+    if (amt > (stats?.earningsRemaining || 0)) {
+      setToast({ type: 'error', msg: "Insufficient referral balance." });
+      setTimeout(() => setToast(null), 3000);
+      return;
+    }
+    try {
+      setConvertLoading(true);
+      const res = await convertToCoupon(userId, amt);
+      setShowConvertModal(false);
+      setConvertAmount('');
+      
+      if (res?.statusCode === 200 || res?.success) {
+        // Parse the newly generated coupon from the updated API response structure
+        const code = res?.data?.coupon?.coupon_code || res?.data?.claim?.coupon_code || res?.data?.coupon_code || res?.coupon_code || 'COUPON_GENERATED';
+        setGeneratedCoupon(code);
+        fetchStats();
+      } else {
+        setToast({ type: 'error', msg: res?.message || "Failed to convert to coupon" });
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch (err) {
+      setShowConvertModal(false);
+      setToast({ type: 'error', msg: err?.response?.data?.message || err?.message || "Failed to convert to coupon" });
+      setTimeout(() => setToast(null), 3000);
+    } finally {
+      setConvertLoading(false);
+    }
+  };
+
+  const copy = (text) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+  };
 
   return (
     <div className="dash-shell">
@@ -31,6 +105,9 @@ export default function Referrals() {
       <div className="dash-main">
         <div className="dash-content">
           <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+          
+          {loading ? <Loader /> : (
+            <>
 
           {/* Hero Banner */}
           <div style={{ background: 'linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%)', borderRadius: 'var(--radius-xl)', padding: '2.5rem 2rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
@@ -39,18 +116,33 @@ export default function Referrals() {
             <div style={{ fontSize: '3rem', marginBottom: '.5rem', position: 'relative' }}>🎁</div>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.3rem,3vw,2rem)', color: 'var(--cream)', marginBottom: '.4rem', position: 'relative' }}>Refer & Earn</h1>
             <p style={{ fontSize: '.9rem', color: 'rgba(255,247,224,.7)', maxWidth: 420, marginBottom: '1.5rem', position: 'relative' }}>
-              Invite your friends to Rao's Law Academy and earn <strong style={{ color: 'var(--gold-light)' }}>₹250</strong> for every friend who purchases a course.
+              Invite your friends to Rao's Law Academy
+ and earn <strong style={{ color: 'var(--gold-light)' }}></strong> for every friend who purchases a course.
             </p>
 
             {/* Referral code */}
-            <div style={{ background: 'rgba(255,255,255,.1)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', backdropFilter: 'blur(8px)', width: '100%', maxWidth: 420, position: 'relative' }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '.7rem', color: 'rgba(255,247,224,.5)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Your Referral Code</div>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--gold-light)', letterSpacing: '.1em' }}>{refCode}</div>
+            {refCode ? (
+              <div style={{ background: 'rgba(255,255,255,.1)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', backdropFilter: 'blur(8px)', width: '100%', maxWidth: 420, position: 'relative' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '.7rem', color: 'rgba(255,247,224,.5)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Your Referral Code</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--gold-light)', letterSpacing: '.1em' }}>{refCode}</div>
+                </div>
+                <button className="btn btn-gold btn-sm" onClick={() => copy(refCode)}>{copied ? '✅ Copied!' : '📋 Copy'}</button>
               </div>
-              <button className="btn btn-gold btn-sm" onClick={() => copy(refCode)}>{copied ? '✅ Copied!' : '📋 Copy'}</button>
-            </div>
+            ) : (
+              <div style={{ background: 'rgba(255,255,255,.1)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', backdropFilter: 'blur(8px)', width: '100%', maxWidth: 420, position: 'relative' }}>
+                <div style={{ flex: 1, color: 'rgba(255,247,224,.8)', fontSize: '.9rem' }}>
+                  You don't have a referral code yet.
+                </div>
+              </div>
+            )}
           </div>
+          
+          {toast && (
+            <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', background: toast.type === 'error' ? 'var(--error)' : 'var(--success)', color: 'white', padding: '10px 20px', borderRadius: 'var(--radius-md)', zIndex: 1000, fontWeight: 600 }}>
+              {toast.msg}
+            </div>
+          )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.25rem', alignItems: 'start' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -58,9 +150,9 @@ export default function Referrals() {
               {/* Stats */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem' }}>
                 {[
-                  { icon: '👥', label: 'Total Referred', value: MOCK_REFERRALS.length },
-                  { icon: '✅', label: 'Converted',      value: MOCK_REFERRALS.filter(r => r.status === 'Purchased').length },
-                  { icon: '💰', label: 'Total Earned',   value: `₹${totalEarned}` },
+                  { icon: '👥', label: 'Total Referred', value: stats?.myReferralsCount || 0 },
+                  { icon: '✅', label: 'Converted',      value: stats?.successfulReferralsCount || 0 },
+                  { icon: '💰', label: 'Total Earned',   value: `₹${stats?.totalEarned || 0}` },
                 ].map(s => (
                   <div key={s.label} className="card">
                     <div className="card-body" style={{ textAlign: 'center', padding: '1.25rem' }}>
@@ -72,53 +164,113 @@ export default function Referrals() {
                 ))}
               </div>
 
+              {/* Earnings Breakdown */}
+              <div className="card">
+                <div className="card-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem' }}>
+                  <div style={{ display: 'flex', gap: '2rem' }}>
+                    <div>
+                      <div style={{ fontSize: '.75rem', color: 'var(--gray-500)', marginBottom: '.2rem' }}>Balance Remaining</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--navy)', fontWeight: 800 }}>₹{stats?.earningsRemaining || 0}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '.75rem', color: 'var(--gray-500)', marginBottom: '.2rem' }}>Already Claimed</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--gray-400)', fontWeight: 800 }}>₹{stats?.earningsClaimed || 0}</div>
+                    </div>
+                  </div>
+                  <button 
+                    className="btn btn-primary" 
+                    disabled={(stats?.earningsRemaining || 0) <= 0}
+                    onClick={() => setShowConvertModal(true)}
+                  >
+                    Convert to Coupon
+                  </button>
+                </div>
+              </div>
+
               {/* Referral history */}
               <div className="card">
                 <div className="card-header">Referral History</div>
-                {MOCK_REFERRALS.length === 0 ? (
+                {(!stats?.referrals || stats.referrals.length === 0) ? (
                   <div className="empty-state">
                     <div className="empty-state-icon">👥</div>
                     <h3>No referrals yet</h3>
                     <p>Share your code and start earning!</p>
                   </div>
-                ) : MOCK_REFERRALS.map((r, i) => (
-                  <div key={r.name}>
+                ) : stats.referrals.map((r, i) => (
+                  <div key={i}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem' }}>
                       <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'var(--navy)', color: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '.85rem', flexShrink: 0 }}>
-                        {r.name.split(' ').map(w => w[0]).join('')}
+                        {r.referredUserName?.[0] || 'U'}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: '.875rem', color: 'var(--navy)' }}>{r.name}</div>
-                        <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{r.date}</div>
+                        <div style={{ fontWeight: 700, fontSize: '.875rem', color: 'var(--navy)' }}>{r.referredUserName || 'User'}</div>
+                        <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{r.date ? new Date(r.date).toLocaleDateString() : '—'}</div>
                       </div>
                       <span style={{ fontSize: '.72rem', fontWeight: 700, padding: '.18rem .55rem', borderRadius: 'var(--radius-full)', background: r.status === 'Purchased' ? 'var(--success-bg)' : 'var(--gold-pale)', color: r.status === 'Purchased' ? 'var(--success)' : 'var(--maroon)' }}>
-                        {r.status}
+                        {r.status || 'Signed Up'}
                       </span>
-                      <div style={{ fontWeight: 800, fontSize: '.9rem', color: r.earned ? 'var(--success)' : 'var(--gray-400)', minWidth: 55, textAlign: 'right' }}>
-                        {r.earned ? `+₹${r.earned}` : '—'}
+                      <div style={{ fontWeight: 800, fontSize: '.9rem', color: r.amountEarned ? 'var(--success)' : 'var(--gray-400)', minWidth: 55, textAlign: 'right' }}>
+                        {r.amountEarned ? `+₹${r.amountEarned}` : '—'}
                       </div>
                     </div>
-                    {i < MOCK_REFERRALS.length - 1 && <div style={{ height: 1, background: 'var(--gray-100)', margin: '0 1.25rem' }} />}
+                    {i < stats.referrals.length - 1 && <div style={{ height: 1, background: 'var(--gray-100)', margin: '0 1.25rem' }} />}
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Share panel */}
-            <div className="card" style={{ position: 'sticky', top: 'calc(var(--header-h) + 1.5rem)' }}>
-              <div className="card-header">Share Your Link</div>
-              <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
-                <div style={{ background: 'var(--gray-50)', borderRadius: 'var(--radius-md)', padding: '.65rem .85rem', fontSize: '.75rem', color: 'var(--gray-600)', wordBreak: 'break-all', fontFamily: 'monospace' }}>{refLink}</div>
-                <button className="btn btn-primary btn-full" onClick={() => copy(refLink)}>📋 Copy Referral Link</button>
-                <div style={{ textAlign: 'center', fontSize: '.75rem', color: 'var(--gray-400)' }}>or share via</div>
+            {/* Right sidebar */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              
+              {/* My Coupons */}
+              <div className="card" style={{ position: 'sticky', top: 'calc(var(--header-h) + 1.5rem)' }}>
+                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>My Active Coupons</span>
+                  <span style={{ fontSize: '.75rem', fontWeight: 700, background: 'var(--gold-pale)', color: 'var(--maroon)', padding: '.1rem .5rem', borderRadius: 'var(--radius-full)' }}>{myCoupons.length}</span>
+                </div>
+                <div className="card-body">
+                  {myCoupons.length === 0 ? (
+                    <div style={{ fontSize: '.85rem', color: 'var(--gray-500)', textAlign: 'center', padding: '1rem 0' }}>
+                      Convert your earnings to get coupons.
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+                      {myCoupons.map((c, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--gray-50)', padding: '.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
+                          <div>
+                            <div style={{ fontFamily: 'monospace', fontSize: '.9rem', fontWeight: 800, color: 'var(--navy)' }}>{c.coupon_code}</div>
+                            <div style={{ fontSize: '.7rem', color: 'var(--success)', fontWeight: 600 }}>₹{c.offer_amount || 0} OFF</div>
+                          </div>
+                          <button className="btn btn-outline btn-sm" style={{ padding: '.25rem .5rem', fontSize: '.7rem' }} onClick={() => copy(c.coupon_code)}>Copy</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Share panel */}
+              <div className="card" style={{ position: 'sticky', top: 'calc(var(--header-h) + 1.5rem)' }}>
+                <div className="card-header">Share Your Link</div>
+                <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                  {refLink ? (
+                  <>
+                    <div style={{ background: 'var(--gray-50)', borderRadius: 'var(--radius-md)', padding: '.65rem .85rem', fontSize: '.75rem', color: 'var(--gray-600)', wordBreak: 'break-all', fontFamily: 'monospace' }}>{refLink}</div>
+                    <button className="btn btn-primary btn-full" onClick={() => copy(refLink)}>📋 Copy Referral Link</button>
+                  </>
+                ) : (
+                  <div style={{ fontSize: '.85rem', color: 'var(--gray-500)', textAlign: 'center' }}>No referral link available.</div>
+                )}
+                {/* <div style={{ textAlign: 'center', fontSize: '.75rem', color: 'var(--gray-400)' }}>or share via</div> */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.5rem' }}>
-                  <button className="btn btn-outline btn-sm" onClick={() => window.open(`https://wa.me/?text=Join Rao's Law Academy! Use my referral link: ${refLink}`)}>WhatsApp</button>
-                  <button className="btn btn-outline btn-sm" onClick={() => window.open(`https://t.me/share/url?url=${refLink}`)}>Telegram</button>
+                  {/* <button className="btn btn-outline btn-sm" onClick={() => window.open(`https://wa.me/?text=Join Rao's Law Academy
+! Use my referral link: ${refLink}`)}>WhatsApp</button>
+                  <button className="btn btn-outline btn-sm" onClick={() => window.open(`https://t.me/share/url?url=${refLink}`)}>Telegram</button> */}
                 </div>
 
                 <div style={{ marginTop: '.25rem', background: 'var(--gold-pale)', borderRadius: 'var(--radius-md)', padding: '.85rem 1rem' }}>
                   <div style={{ fontWeight: 700, fontSize: '.82rem', color: 'var(--maroon)', marginBottom: '.4rem' }}>How it works</div>
-                  {['Share your unique code or link', 'Friend signs up using your link', 'Friend makes their first purchase', 'You earn ₹250 credited to your wallet'].map((s, i) => (
+                  {['Share your unique code or link', 'Friend signs up using your link', 'Friend makes their first purchase', 'You earn credits to your wallet'].map((s, i) => (
                     <div key={i} style={{ display: 'flex', gap: '.5rem', fontSize: '.78rem', color: 'var(--maroon)', marginBottom: '.25rem', alignItems: 'flex-start' }}>
                       <span style={{ fontWeight: 800, flexShrink: 0 }}>{i + 1}.</span>
                       <span>{s}</span>
@@ -126,10 +278,64 @@ export default function Referrals() {
                   ))}
                 </div>
               </div>
+              </div>
+            </div>
+            </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {showConvertModal && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal" style={{ width: '400px', maxWidth: '90%' }}>
+            <h3>Convert to Coupon</h3>
+            <p style={{ fontSize: '.85rem', color: 'var(--gray-500)', marginBottom: '1.25rem' }}>
+              Enter the amount you wish to convert. Max available: <strong>₹{stats?.earningsRemaining || 0}</strong>
+            </p>
+            <input 
+              type="number" 
+              className="field input" 
+              placeholder="Amount (e.g. 500)"
+              value={convertAmount}
+              onChange={e => setConvertAmount(e.target.value)}
+              style={{ marginBottom: '1.5rem' }}
+              min={1}
+              max={stats?.earningsRemaining || 0}
+            />
+            <div className="logout-actions">
+              <button className="cancel-btn" onClick={() => setShowConvertModal(false)} disabled={convertLoading}>Cancel</button>
+              <button className="confirm-btn" onClick={handleConvert} disabled={convertLoading || !convertAmount || Number(convertAmount) > (stats?.earningsRemaining || 0)}>
+                {convertLoading ? 'Converting...' : 'Convert'}
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Generated Coupon Modal */}
+      {generatedCoupon && (
+        <div className="logout-modal-overlay">
+          <div className="logout-modal" style={{ width: '400px', maxWidth: '90%', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+            <h3>Coupon Generated!</h3>
+            <p style={{ fontSize: '.85rem', color: 'var(--gray-500)', marginBottom: '1.25rem' }}>
+              Your earnings have been successfully converted into a discount coupon.
+            </p>
+            <div style={{ background: 'var(--gray-50)', border: '2px dashed var(--gold)', borderRadius: 'var(--radius-md)', padding: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ fontFamily: 'monospace', fontSize: '1.5rem', fontWeight: 800, color: 'var(--gold)', letterSpacing: '2px' }}>
+                {generatedCoupon}
+              </div>
+            </div>
+            <button className="btn btn-gold btn-full" onClick={() => {
+              copy(generatedCoupon);
+              setGeneratedCoupon('');
+            }}>
+              📋 Copy & Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,6 +14,13 @@ const STATUS_STYLES = {
   pending:   { bg:'var(--warning-bg)', color:'var(--warning)',  label:'Pending'          },
 };
 
+const parseAttemptCount = (attempts, mainsSubjectTestId) => {
+  if (!attempts?.attempts?.length || !mainsSubjectTestId) return 0;
+  return attempts.attempts.reduce((count, group) => (
+    count + (group?.subjects?.some((subject) => subject.mains_subject_test_id === mainsSubjectTestId) ? 1 : 0)
+  ), 0);
+};
+
 export default function MainsTestSeriesList() {
   const { mainsId }  = useParams();
   const navigate     = useNavigate();
@@ -53,17 +60,34 @@ export default function MainsTestSeriesList() {
     getMainsSubjectTests(testId, 1, 50)
       .then(r => { if (r.statusCode===200) setSubjects(r.data??[]); })
       .catch(console.error).finally(() => setSubLoad(false));
+    loadAttempts(testId, { silent: true, force: true });
   };
 
-  const loadAttempts = (testId) => {
-    if (attFetched) return;
-    setAttLoad(true);
+  const loadAttempts = (testId, { silent = false, force = false } = {}) => {
+    if (attFetched && !force) return;
+    if (!silent) setAttLoad(true);
     getMainsTestAttempts(testId)
       .then(r => { if (r.statusCode===200) setAttempts(r.data); })
-      .catch(console.error).finally(() => { setAttLoad(false); setAttFetched(true); });
+      .catch(console.error)
+      .finally(() => {
+        if (!silent) setAttLoad(false);
+        setAttFetched(true);
+      });
   };
 
   const allAttempts = attempts?.attempts?.flatMap(a => a.subjects.map(s => ({ ...s, attempt_no:a.attempt_no }))) || [];
+
+  const exportAttempts = () => {
+    const userId = localStorage.getItem('userId');
+    const url = `https://api.raoslawacademy.com/mains/mainstestattempts/export?userId=${userId}&mains_test_id=${activeTest}&format=excel`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mains_attempts_${activeTest}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
 
   return (
     <div className="dash-shell">
@@ -106,8 +130,18 @@ export default function MainsTestSeriesList() {
                       </button>
                       <button className={`tab-btn ${activeTab==='attempts'?'active':''}`}
                         onClick={() => { setActiveTab('attempts'); loadAttempts(activeTest); }}>
-                        📊 My Attempts
+                        📊 My Attempts {!!attempts?.attempts?.length && <span className="tab-badge">{attempts.attempts.length}</span>}
                       </button>
+                      {activeTab === 'attempts' && allAttempts.length > 0 && (
+                        <button
+                          className="btn btn-outline btn-sm"
+                          style={{ marginLeft: 'auto' }}
+                          onClick={exportAttempts}
+                          title="Export to Excel"
+                        >
+                          📥 Export Excel
+                        </button>
+                      )}
                     </div>
 
                     {activeTab === 'subjects' && (
@@ -115,7 +149,9 @@ export default function MainsTestSeriesList() {
                         <div className="empty-state"><div className="empty-state-icon">📋</div><h3>No subjects available</h3></div>
                       ) : (
                         <div style={{ display:'flex', flexDirection:'column', gap:'.6rem' }}>
-                          {subjects.map(sub => (
+                          {subjects.map(sub => {
+                            const subjectAttempts = parseAttemptCount(attempts, sub.mains_subject_test_id);
+                            return (
                             <div key={sub.mains_subject_test_id} className="card">
                               <div className="card-body" style={{ display:'flex', alignItems:'center', gap:'1.25rem', flexWrap:'wrap' }}>
                                 <div style={{ flex:1 }}>
@@ -124,14 +160,17 @@ export default function MainsTestSeriesList() {
                                     {sub.no_of_qos && <span className="badge badge-gray">📝 {sub.no_of_qos} Qs</span>}
                                     {sub.duration   && <span className="badge badge-gray">⏱ {sub.duration}</span>}
                                     {sub.marks      && <span className="badge badge-gray">🏆 {sub.marks} Marks</span>}
+                                    {subjectAttempts > 0 && (
+                                      <span className="badge badge-gray">📊 {subjectAttempts} Attempt{subjectAttempts > 1 ? 's' : ''}</span>
+                                    )}
                                   </div>
                                 </div>
                                 <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap' }}>
                                   {isEnrolled ? (
                                     <>
-                                      {sub.question_paper_file && (
+                                      {/* {sub.question_paper_file && (
                                         <a href={sub.question_paper_file} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">📄 Paper</a>
-                                      )}
+                                      )} */}
                                       <button className="btn btn-primary btn-sm" onClick={() => { setTermsModal(sub); setAccepted(false); }}>
                                         Start Test
                                       </button>
@@ -142,7 +181,8 @@ export default function MainsTestSeriesList() {
                                 </div>
                               </div>
                             </div>
-                          ))}
+                          );
+                          })}
                         </div>
                       )
                     )}
@@ -179,7 +219,7 @@ export default function MainsTestSeriesList() {
                                           )}
                                           {sub.result && (
                                             <button className="btn btn-outline btn-sm"
-                                              onClick={() => navigate(`/mains/${mainsId}/test/${activeTest}/result/${sub.result.mains_result_id}`, { state:{ result:sub.result, subject:sub, attempt_no:group.attempt_no } })}>
+                                              onClick={() => navigate(`/mains/${mainsId}/test/${activeTest}/result/${sub.result.mains_attempt_id}`, { state:{ result:sub.result, subject:sub, attempt_no:group.attempt_no } })}>
                                               View Result
                                             </button>
                                           )}

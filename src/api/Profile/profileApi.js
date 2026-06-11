@@ -40,3 +40,20 @@ export const updateDetailsRequest = (payload) =>
 
 // ─── Helper for File URLs ─────────────────────────────────────
 export const getFileUrl = (path) => path ? `${BASE_URL}/${path}` : null;
+// ─── Shipping Addresses ───────────────────────────────────────
+export const getUserAddresses = () => {
+  const userId = localStorage.getItem('userId');
+  return api.post('/users/useraddress', { userId }).then(r => r.data);
+};
+
+export const addAddress = (payload) =>
+  api.post('/users/address', {
+    ...payload,
+    userId: localStorage.getItem('userId'),
+  }).then(r => r.data);
+
+export const updateAddress = ({ address_id, full_name, address, city, region, zip_code, country }) =>
+  api.post('/users/updateaddress', { address_id, full_name, address, city, region, zip_code, country }).then(r => r.data);
+
+export const deleteAddress = (address_id) =>
+  api.post('/users/deleteaddress', { address_id }).then(r => r.data);

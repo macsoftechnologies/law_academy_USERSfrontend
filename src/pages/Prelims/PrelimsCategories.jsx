@@ -9,40 +9,48 @@ import '../../styles/layout.css';
 
 const COURSE_POINTS = ['Previous Year Questions','Subject wise Mock Tests','Grand Tests','Quizzes'];
 const ICONS = ['📋','📝','🏆','❓'];
-const MODULE_MAP = { 'previous year questions':'PQA', 'subject wise mock tests':'SMT', 'grand tests':'GT', 'quizzes':'Quiz' };
+const MODULE_MAP = { 'previous year questions':'PQA', 'subject wise mock tests':'SMT', 'grand tests':'GT', 'quizzes':'QZ' };
 
 export default function PrelimsCategories() {
   const { prelimsId } = useParams();
   const navigate      = useNavigate();
   const { state }     = useLocation();
   const passedItem    = state?.item || null;
-  const isEnrolled    = state?.isEnrolled || false;
+  const [isEnrolled, setIsEnrolled] = useState(state?.isEnrolled ?? (passedItem?.isEnrolled ?? false));
   const [detail,  setDetail]  = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getPrelimsDetail(prelimsId)
-      .then(r => { 
-        if(r.statusCode===200) setDetail(Array.isArray(r.data)?r.data[0]:r.data); 
+      .then(r => {
+        if (r.statusCode === 200) {
+          const itemDetail = Array.isArray(r.data) ? r.data[0] : r.data;
+          setDetail(itemDetail);
+          if (itemDetail?.isEnrolled || itemDetail?.is_enrolled) {
+            setIsEnrolled(true);
+          }
+        }
       })
       .catch(console.error)
-      .finally(()=>setLoading(false));
+      .finally(() => setLoading(false));
   }, [prelimsId]);
 
   const item = detail || passedItem;
 
   const handleExplore = (label) => {
-    if (!isEnrolled) {
-      navigate(`/prelims/${prelimsId}`, { state: { item: passedItem, scrollToBuy: true } });
-      return;
-    }
-
     const lowerLabel = label.trim().toLowerCase();
 
     if (lowerLabel === 'quizzes') {
-      // Redirect quizzes to tests page
       navigate(`/prelims/${prelimsId}/tests`, {
         state: { item, isEnrolled, test_type: 'QZ', page: 1, limit: 10, categoryLabel: label }
+      });
+      return;
+    }
+
+    // Subject Wise Mock Tests → global subject selection page
+    if (lowerLabel === 'subject wise mock tests') {
+      navigate('/prelims/smt-select', {
+        state: { item, isEnrolled, categoryLabel: label }
       });
       return;
     }

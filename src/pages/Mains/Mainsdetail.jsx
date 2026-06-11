@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import EnrollModal from '../../components/common/EnrollModal';
+import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getMainsDetail, getMainsTests } from '../../api/mains/mainsApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -60,11 +61,20 @@ export default function MainsDetail() {
                       {plans.map(p=><span key={p.planId} className="plan-chip">{p.strike_price&&<del>₹{p.strike_price}</del>} ₹{p.original_price} <em>{p.duration}</em></span>)}
                     </div>
                   )}
-                  <div className="detail-hero-actions">
+                  <div className="detail-hero-actions" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {isEnrolled ? (
                       <button className="btn btn-primary" onClick={()=>navigate(`/mains/${mainsId}/categories`,{state:{item,isEnrolled:true}})}>Explore Course →</button>
                     ) : plans.length>0 ? (
-                      <button className="btn btn-gold" onClick={()=>buyRef.current?.scrollIntoView({behavior:'smooth'})}>Buy Now</button>
+                      <>
+                        <button className="btn btn-gold" onClick={()=>buyRef.current?.scrollIntoView({behavior:'smooth'})}>Buy Now</button>
+                        <CartWishlistActions 
+                          courseId={mainsId} 
+                          enrollType="mains" 
+                          planId={plans[0]?.planId} 
+                          isEnrolled={isEnrolled} 
+                          hideCart={true}
+                        />
+                      </>
                     ) : null}
                   </div>
                 </div>
@@ -114,7 +124,16 @@ export default function MainsDetail() {
                           {plan.strike_price&&<div style={{ fontSize:'.82rem', color:'var(--gray-400)' }}><del>₹{plan.strike_price}</del></div>}
                           <div style={{ fontSize:'1.5rem', fontWeight:900, color:'var(--navy)', margin:'.25rem 0 .6rem' }}>₹{plan.original_price}</div>
                           {plan.discount_percent&&<span className="badge badge-success" style={{ marginBottom:'.75rem', display:'inline-flex' }}>{plan.discount_percent}% OFF</span>}
-                          <button className="btn btn-gold btn-sm btn-full" onClick={()=>setSelectedPlan(plan)}>Buy Now</button>
+                          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <button className="btn btn-gold btn-sm btn-full" onClick={()=>setSelectedPlan(plan)}>Buy Now</button>
+                            <CartWishlistActions 
+                              courseId={mainsId} 
+                              enrollType="mains" 
+                              planId={plan.planId} 
+                              isEnrolled={isEnrolled} 
+                              hideWishlist={true}
+                            />
+                          </div>
                         </div>
                       ))}
                     </div>

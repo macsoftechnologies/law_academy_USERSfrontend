@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import Pagination from '../../components/common/Pagination';
+import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getNotes } from '../../api/notes/notesApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -14,96 +15,166 @@ const PAGE_SIZE = 10;
 export default function AllNotes() {
   const navigate = useNavigate();
   const [allNotes, setAllNotes] = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [page,     setPage]     = useState(1);
-  const [total,    setTotal]    = useState(0);
-  const [activeTab,setActiveTab]= useState('notes');
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('Civil Laws');
 
   useEffect(() => {
     setLoading(true);
-    getNotes(page, PAGE_SIZE)
-      .then(r=>{ if(r.statusCode===200){ setAllNotes(r.data??[]); setTotal(r.totalCount??r.total??r.data?.length??0); } })
-      .catch(console.error).finally(()=>setLoading(false));
-  }, [page]);
+    getNotes(1, 100)
+      .then(r => {
+        if (r.statusCode === 200) {
+          setAllNotes(r.data ?? []);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
-  const regular = allNotes.filter(n=>!n.isPrintAvail);
-  const printed = allNotes.filter(n=> n.isPrintAvail);
-  const visible = activeTab==='notes' ? regular : printed;
+  const categories = ['Civil Laws', 'Criminal Laws'];
+
+  const filteredNotes = allNotes.filter(note => {
+    let rawTitle = note?.about_book?.sections?.[0]?.title?.trim()?.toLowerCase() || "";
+    let mappedCategory = 'Civil Laws'; // Default fallback just in case
+    
+    if (rawTitle.includes('criminal')) mappedCategory = 'Criminal Laws';
+    else if (rawTitle.includes('civil')) mappedCategory = 'Civil Laws';
+
+    return mappedCategory === activeCategory;
+  });
 
   return (
     <div className="dash-shell">
       <DashboardHeader />
       <div className="dash-main">
         <div className="dash-content">
-          <button className="back-btn" onClick={()=>navigate(-1)}>← Back</button>
-          <div className="page-section-head">
-            <h1 className="page-section-title">Notes</h1>
+          <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+          
+          <div className="page-section-head" style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '2rem' 
+          }}>
+            <h1 className="page-section-title" style={{ margin: 0 }}>
+              📚 Digital Notes
+              {!loading && <span className="page-section-count">{allNotes.length}</span>}
+            </h1>
+
+            <button 
+              className="btn btn-gold" 
+              onClick={() => navigate('/notes/printed')}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <span>🖨️</span>
+              <span>Printed Notes</span>
+            </button>
           </div>
 
-          <div className="tabs">
-            <button className={`tab-btn ${activeTab==='notes'?'active':''}`} onClick={()=>setActiveTab('notes')}>
-              📚 Notes {!loading && <span className="tab-badge">{regular.length}</span>}
-            </button>
-            <button className={`tab-btn ${activeTab==='printed'?'active':''}`} onClick={()=>setActiveTab('printed')}>
-              🖨 Printed {!loading && <span className="tab-badge">{printed.length}</span>}
-            </button>
-          </div>
-
-          {loading ? <Loader /> : visible.length===0 ? (
+          {loading ? (
+            <Loader />
+          ) : allNotes.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-icon">📄</div>
-              <h3>{activeTab==='notes'?'No notes available':'No printed notes available'}</h3>
+              <h3>No digital notes available</h3>
+              <p style={{ color: 'var(--gray-500)', fontSize: '.875rem' }}>
+                Your enrolled notes will appear here.
+              </p>
             </div>
           ) : (
             <>
-              <div className="course-grid">
-                {visible.map(note => {
-                  const lowestPlan = note.availablePlans?.length
-                    ? note.availablePlans.reduce((m,p)=>p.original_price<m.original_price?p:m, note.availablePlans[0])
+              {/* Category Tabs */}
+              <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    className={`btn btn-sm ${activeCategory === cat ? 'btn-primary' : 'btn-outline'}`}
+                    onClick={() => setActiveCategory(cat)}
+                  >
+                    {cat === 'Civil Laws' ? '📜 ' : cat === 'Criminal Laws' ? '🚨 ' : ''}{cat}
+                  </button>
+                ))}
+              </div>
+
+              {filteredNotes.length === 0 ? (
+                <div className="empty-state" style={{ marginTop: '2rem' }}>
+                  <div className="empty-state-icon">🔍</div>
+                  <h3>No notes found for this category</h3>
+                </div>
+              ) : (
+                <div className="course-grid">
+                  {filteredNotes.map(note => {
+                    const lowestPlan = note.availablePlans?.length
+                    ? note.availablePlans.reduce((m, p) => p.original_price < m.original_price ? p : m, note.availablePlans[0])
                     : null;
+
                   return (
                     <div key={note.notes_id} className="course-card">
                       <div className="course-card-img">
                         {note.presentation_image
                           ? <img src={`${BASE_URL}/${note.presentation_image}`} alt={note.title} />
                           : <div className="course-card-img-placeholder">📄</div>}
-                        <span className="course-card-enrolled-badge">
+                        
+                        <div className="course-card-enrolled-badge">
                           {note.isEnrolled && <span className="badge badge-success">✓ Enrolled</span>}
-                          {note.isPrintAvail && <span className="badge badge-navy" style={{ marginLeft:4 }}>🖨 Print</span>}
-                        </span>
+                          {note.isPrintAvail && (
+                            <span className="badge badge-navy" style={{ marginLeft: 4 }}>
+                              🖨 Print Avail.
+                            </span>
+                          )}
+                        </div>
                       </div>
+
                       <div className="course-card-body">
                         <h3 className="course-card-title">{note.title}</h3>
                         {note.sub_title && <p className="course-card-sub">{note.sub_title}</p>}
+                        
                         <div className="course-card-plan-area">
                           {note.isEnrolled
-                            ? <div className="course-card-enrolled-info">✓ Expires: {note.expiry_date ? new Date(note.expiry_date).toLocaleDateString('en-IN') : '—'}</div>
+                            ? <div className="course-card-enrolled-info" style={{ fontSize: '.75rem' }}>
+                                ✓ Expires: {note.expiry_date ? new Date(note.expiry_date).toLocaleDateString('en-IN') : '—'}
+                              </div>
                             : lowestPlan && (
                                 <span className="plan-chip">
                                   {lowestPlan.strike_price && <del>₹{lowestPlan.strike_price}</del>}
                                   ₹{lowestPlan.original_price} <em>{lowestPlan.duration}</em>
-                                  {lowestPlan.discount_percent && <span className="plan-discount">{lowestPlan.discount_percent}% off</span>}
                                 </span>
                               )}
                         </div>
-                        <div className="course-card-actions">
-                          {!note.isEnrolled && note.availablePlans?.length>0 && (
-                            <button className="btn btn-gold btn-sm"
-                              onClick={()=>navigate(`/notes/${note.notes_id}`,{state:{note,scrollToBuy:true}})}>
-                              Buy Now
-                            </button>
+
+                        <div className="course-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          {!note.isEnrolled && note.availablePlans?.length > 0 && (
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
+                              <CartWishlistActions 
+                                courseId={note.notes_id} 
+                                enrollType="notes" 
+                                planId={lowestPlan?.planId} 
+                                isEnrolled={note.isEnrolled} 
+                              />
+                            </div>
                           )}
-                          <button className="btn btn-outline btn-sm"
-                            onClick={()=>navigate(`/notes/${note.notes_id}`,{state:{note}})}>
-                            {note.isEnrolled ? 'Continue →' : 'Explore →'}
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                            {!note.isEnrolled && note.availablePlans?.length > 0 && (
+                              <button 
+                                className="btn btn-gold btn-sm" style={{ flex: 1 }}
+                                onClick={() => navigate(`/notes/${note.notes_id}`, { state: { note, scrollToBuy: true } })}
+                              >
+                                Buy Now
+                              </button>
+                            )}
+                            <button 
+                              className="btn btn-outline btn-sm" style={{ flex: 1 }}
+                              onClick={() => navigate(`/notes/${note.notes_id}`, { state: { note } })}
+                            >
+                              {note.isEnrolled ? 'Continue →' : 'Explore →'}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   );
                 })}
-              </div>
-              <Pagination page={page} totalPages={Math.ceil(total/PAGE_SIZE)} onChange={setPage} />
+                </div>
+              )}
             </>
           )}
         </div>

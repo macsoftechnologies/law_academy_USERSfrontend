@@ -124,7 +124,7 @@ export default function SubcategoryCheckout() {
         <EnrollModal
           plan={enrollModal.plan}
           courseTitle={enrollModal.title}
-          enroll_type="subcategory-wise"
+          enroll_type="full-course"
           onClose={() => setEnrollModal(null)}
           onSuccess={() => {
             setEnrollModal(null);

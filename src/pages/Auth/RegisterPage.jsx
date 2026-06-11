@@ -51,7 +51,8 @@ export default function RegisterPage() {
   return (
     <div className="auth-page">
       <AuthLeft
-        tag="Join Rao's Law Academy"
+        tag="Join Rao's Law Academy
+"
         title={<>Start Your <em>Learning Journey</em></>}
         sub="Create your account and get instant access to hundreds of expert-led courses designed for real-world success."
         stats={[['Free','Sign Up'],['500+','Courses'],['50K+','Learners']]}

@@ -1,15 +1,62 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
+import Loader from '../../components/common/Loader';
+import { getMainsAttemptDetail } from '../../api/mains/mainsApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function MainsResult() {
+  const { attemptId } = useParams();
   const navigate  = useNavigate();
   const { state } = useLocation();
-  const result    = state?.result;
-  const subject   = state?.subject;
+  const initialResult    = state?.result;
+  const initialSubject   = state?.subject;
   const attemptNo = state?.attempt_no;
+
+  const [fullDetails, setFullDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const idToFetch = initialResult?.mains_attempt_id || attemptId;
+      if (!idToFetch) {
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        const res = await getMainsAttemptDetail(idToFetch);
+        if (res?.data?.length > 0) {
+          setFullDetails(res.data[0]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch full attempt details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetails();
+  }, [initialResult?.mains_attempt_id]);
+
+  const result = fullDetails?.result || initialResult;
+  const subject = fullDetails?.subject || initialSubject;
+  const answerScript = fullDetails?.answer_script_file;
+  const answerScriptUrl = answerScript ? (answerScript.startsWith('http') ? answerScript : `${BASE_URL}/${answerScript}`) : null;
+
+  if (loading) return (
+    <div className="dash-shell">
+      <DashboardHeader />
+      <div className="dash-main">
+        <div className="dash-content">
+          <Loader />
+        </div>
+      </div>
+    </div>
+  );
 
   if (!result) return (
     <div className="dash-shell">
@@ -39,12 +86,19 @@ export default function MainsResult() {
           <div className="card" style={{ marginBottom:'1.25rem' }}>
             <div className="card-body" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'1.5rem', padding:'1.75rem 2rem' }}>
               <div>
-                <span className="badge badge-navy" style={{ marginBottom:'.5rem' }}>Attempt {attemptNo}</span>
+                <span className="badge badge-navy" style={{ marginBottom:'.5rem' }}>Attempt {attemptNo || fullDetails?.attempt_no}</span>
                 <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.2rem,2vw,1.6rem)', color:'var(--navy)', marginBottom:'.5rem' }}>{subject?.title}</h1>
                 <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
-                  {result.date_of_submission && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>📅 Submitted: {result.date_of_submission}</span>}
-                  {result.date_of_evaluation && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>✅ Evaluated: {result.date_of_evaluation}</span>}
+                  {result?.date_of_submission && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>📅 Submitted: {result.date_of_submission}</span>}
+                  {result?.date_of_evaluation && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>✅ Evaluated: {result.date_of_evaluation}</span>}
                 </div>
+                {answerScriptUrl && (
+                  <div style={{ marginTop: '1rem' }}>
+                    <a href={answerScriptUrl} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                      📄 View Submitted Answer Script
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* Score ring */}

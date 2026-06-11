@@ -99,7 +99,7 @@ export default function SubjectLawTabs() {
                   className="course-card-img"
                   style={{ cursor: "pointer" }}
                   onClick={() =>
-                    navigate(`/lectures/${subject.subjectId}`)
+                    navigate(`/subject/${subject.subjectId}`)
                   }
                 >
                   {subject.subject_image ? (
@@ -119,10 +119,10 @@ export default function SubjectLawTabs() {
                     <button
                       className="btn btn-primary btn-sm"
                       onClick={() =>
-                        navigate(`/lectures/${subject.subjectId}`)
+                        navigate(`/subject/${subject.subjectId}`)
                       }
                     >
-                      Open Lectures
+                      View Subject
                     </button>
                   </div>
                 </div>

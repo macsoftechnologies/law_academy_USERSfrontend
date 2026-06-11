@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthLeft } from './LoginPage';
+import { resetUserPassword } from '../../api/auth/forgotPassword';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/auth.css';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const userId = state?.userId || sessionStorage.getItem('resetUserId');
   const [f, setF] = useState({ password:'', confirm:'' });
   const [errors, setErr] = useState({});
   const [showPw, setShow] = useState(false);
@@ -23,12 +26,28 @@ export default function ResetPassword() {
     return e;
   };
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e?.preventDefault();
     const errs = validate();
+    if (!userId) errs.password = 'Reset session expired. Please retry forgot password flow.';
     if (Object.keys(errs).length) { setErr(errs); return; }
     setLd(true);
-    setTimeout(() => { setLd(false); setResult('success'); }, 1300);
+    try {
+      const res = await resetUserPassword({ userId, password: f.password });
+      if (res.statusCode === 200) {
+        sessionStorage.removeItem('resetUserId');
+        sessionStorage.removeItem('otpUserId');
+        sessionStorage.removeItem('otpPhone');
+        sessionStorage.removeItem('otpMode');
+        setResult('success');
+      } else {
+        setErr({ password: res.message || 'Failed to update password' });
+      }
+    } catch (err) {
+      setErr({ password: err?.response?.data?.message || err?.message || 'Failed to update password' });
+    } finally {
+      setLd(false);
+    }
   };
 
   if (result === 'success') return (

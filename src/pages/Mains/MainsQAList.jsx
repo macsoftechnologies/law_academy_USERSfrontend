@@ -11,6 +11,16 @@ import '../../styles/layout.css';
 const BASE_URL  = import.meta.env.VITE_API_BASE_URL;
 const PAGE_SIZE = 10;
 
+const parseAttemptCount = (qa) => {
+  if (qa == null) return 0;
+  const value = qa.attempts ?? qa.attempts_count ?? qa.attempt_count ?? qa.attempt ?? qa.attemptNumber ?? qa.attempted ?? qa.attempted_count ?? qa.no_of_attempts ?? qa.user_attempts_count ?? qa.user_attempts ?? qa.attempts_list ?? qa.attempt_list ?? qa.attempt_history;
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') return parseInt(value, 10) || 0;
+  if (Array.isArray(value)) return value.length;
+  if (value && typeof value === 'object') return parseInt(value.count ?? value.total ?? value.length ?? 0, 10) || 0;
+  return 0;
+};
+
 export default function MainsQAList() {
   const { mainsId, module_type } = useParams();
   const navigate = useNavigate();
@@ -48,24 +58,31 @@ export default function MainsQAList() {
           ) : (
             <>
               <div style={{ display:'flex', flexDirection:'column', gap:'.6rem' }}>
-                {qaList.map((qa,i) => (
-                  <div key={qa.qa_id||i} className="card" style={{ cursor:'pointer', opacity:qa.isLocked?.7:1 }}
-                    onClick={()=>{
-                      if (qa.isLocked) { navigate(`/mains/${mainsId}`,{state:{item,scrollToBuy:true}}); return; }
-                      navigate(`/mains/${mainsId}/qa/${module_type}/${qa.qa_id}`,{state:{qa,item,module_type,categoryLabel,isEnrolled}});
-                    }}>
+                {qaList.map((qa,i) => {
+                  const qaId = qa.qa_id || qa.mains_qa_id || qa.id || qa._id || i;
+                  const isLocked = qa.isLocked ?? qa.is_locked ?? false;
+                  const attempts = parseAttemptCount(qa);
+
+                  return (
+                    <div key={qaId} className="card" style={{ cursor:'pointer', opacity: isLocked ? 0.7 : 1 }}
+                      onClick={() => {
+                        if (isLocked) { navigate(`/mains/${mainsId}`, { state:{ item, scrollToBuy:true } }); return; }
+                        navigate(`/mains/${mainsId}/qa/${module_type}/${qaId}`, { state:{ qa, item, module_type, categoryLabel, isEnrolled } });
+                      }}>
                     <div className="card-body" style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
-                      <div style={{ width:42, height:42, borderRadius:'var(--radius-md)', background:qa.isLocked?'var(--gray-100)':'var(--gold-pale)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.1rem', flexShrink:0 }}>
-                        {qa.isLocked ? '🔒' : iconFor(module_type)}
+                      <div style={{ width:42, height:42, borderRadius:'var(--radius-md)', background:isLocked?'var(--gray-100)':'var(--gold-pale)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.1rem', flexShrink:0 }}>
+                        {isLocked ? '🔒' : iconFor(module_type)}
                       </div>
                       <div style={{ flex:1 }}>
                         <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.9rem' }}>{qa.title || `${categoryLabel} ${i+1}`}</div>
                         {qa.question_count && <div style={{ fontSize:'.78rem', color:'var(--gray-400)', marginTop:'.1rem' }}>{qa.question_count} Questions</div>}
+                        {attempts > 0 && <div style={{ fontSize:'.78rem', color:'var(--gray-500)', marginTop:'.25rem' }}>{attempts} Attempt{attempts > 1 ? 's' : ''}</div>}
                       </div>
-                      <span style={{ color:qa.isLocked?'var(--gray-300)':'var(--gold)' }}>{qa.isLocked?'🔒':'→'}</span>
+                      <span style={{ color:isLocked?'var(--gray-300)':'var(--gold)' }}>{isLocked?'🔒':'→'}</span>
                     </div>
-                  </div>
-                ))}
+                   </div>
+                  );
+                })}
               </div>
               <Pagination page={page} totalPages={Math.ceil(total/PAGE_SIZE)} onChange={setPage} />
             </>

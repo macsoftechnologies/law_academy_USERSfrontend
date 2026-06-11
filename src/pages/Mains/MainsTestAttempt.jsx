@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
+import { submitMainsSubjectAttempt } from '../../api/mains/mainsApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
@@ -23,6 +24,7 @@ export default function MainsTestAttempt() {
   const [file,      setFile]      = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting,setSubmitting]= useState(false);
+  const [submitError, setSubmitError] = useState('');
   const timerRef = useRef(null);
   const now      = new Date();
 
@@ -44,10 +46,36 @@ export default function MainsTestAttempt() {
 
   const handleSubmit = async () => {
     if (!file) return;
+    setSubmitError('');
     setSubmitting(true);
-    clearInterval(timerRef.current);
-    await new Promise(r=>setTimeout(r,800));
-    setSubmitted(true);
+    console.log('[Mains Attempt UI] Submit clicked', {
+      mainsId,
+      testId,
+      subjectTestId,
+      file: file ? { name: file.name, type: file.type, size: file.size } : null,
+    });
+    try {
+      const response = await submitMainsSubjectAttempt({
+        mains_test_id: testId,
+        mains_subject_test_id: subjectTestId,
+        answer_file: file,
+      });
+      console.log('[Mains Attempt UI] Submit success payload', response);
+      if (response?.statusCode !== 200 && response?.statusCode !== 201) {
+        throw new Error(response?.message || 'Submission failed');
+      }
+      clearInterval(timerRef.current);
+      setSubmitted(true);
+    } catch (error) {
+      console.error('[Mains Attempt UI] Submit failed', {
+        message: error?.message,
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+      setSubmitError(error?.response?.data?.message || error?.message || 'Unable to submit. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) return (
@@ -101,6 +129,9 @@ export default function MainsTestAttempt() {
           {secs===0 && (
             <div className="toast error" style={{ marginBottom:'1rem' }}>⏰ Time's up! Please submit your answers immediately.</div>
           )}
+          {submitError && (
+            <div className="toast error" style={{ marginBottom:'1rem' }}>{submitError}</div>
+          )}
 
           {/* Question paper */}
           <div className="card" style={{ marginBottom:'1.25rem' }}>
@@ -139,7 +170,7 @@ export default function MainsTestAttempt() {
 
           <div style={{ display:'flex', alignItems:'center', gap:'1rem', flexWrap:'wrap' }}>
             <button className="btn btn-primary" style={{ minWidth:160, padding:'.8rem 2rem', fontSize:'1rem' }}
-              disabled={!file||submitting||secs===0} onClick={handleSubmit}>
+              disabled={!file||submitting} onClick={handleSubmit}>
               {submitting ? 'Submitting…' : '✓ Submit Answers'}
             </button>
             <p style={{ fontSize:'.8rem', color:'var(--gray-400)' }}>Ensure all answers are uploaded before submitting</p>

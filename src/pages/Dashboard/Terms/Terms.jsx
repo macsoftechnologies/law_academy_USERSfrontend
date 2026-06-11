@@ -7,7 +7,8 @@ import '../../../styles/layout.css';
 const SECTIONS = [
   {
     title: '1. Acceptance of Terms',
-    content: `By accessing or using Rao's Law Academy ("the Platform"), you agree to be bound by these Terms & Conditions. If you do not agree with any part of these terms, you must discontinue use of the Platform immediately. These Terms apply to all users including visitors, registered students, and subscribers.`,
+    content: `By accessing or using Rao's Law Academy
+ ("the Platform"), you agree to be bound by these Terms & Conditions. If you do not agree with any part of these terms, you must discontinue use of the Platform immediately. These Terms apply to all users including visitors, registered students, and subscribers.`,
   },
   {
     title: '2. User Accounts',
@@ -15,11 +16,13 @@ const SECTIONS = [
   },
   {
     title: '3. Course Access & Intellectual Property',
-    content: `Upon purchase, you are granted a limited, non-transferable, non-exclusive license to access and view the course content for personal, non-commercial purposes. All course materials, videos, notes, and resources are the intellectual property of Rao's Law Academy. You may not reproduce, redistribute, sell, or create derivative works from our content without explicit written permission.`,
+    content: `Upon purchase, you are granted a limited, non-transferable, non-exclusive license to access and view the course content for personal, non-commercial purposes. All course materials, videos, notes, and resources are the intellectual property of Rao's Law Academy
+. You may not reproduce, redistribute, sell, or create derivative works from our content without explicit written permission.`,
   },
   {
     title: '4. Payments & Pricing',
-    content: `All prices listed on the Platform are in Indian Rupees (INR) and are inclusive of applicable GST. Rao's Law Academy reserves the right to change course prices at any time without prior notice. Payment must be completed in full before access to purchased content is granted. We partner with trusted payment gateways to ensure the security of your transactions.`,
+    content: `All prices listed on the Platform are in Indian Rupees (INR) and are inclusive of applicable GST. Rao's Law Academy
+ reserves the right to change course prices at any time without prior notice. Payment must be completed in full before access to purchased content is granted. We partner with trusted payment gateways to ensure the security of your transactions.`,
   },
   {
     title: '5. Refund Policy',
@@ -35,7 +38,8 @@ const SECTIONS = [
   },
   {
     title: '8. Limitation of Liability',
-    content: `To the maximum extent permitted by law, Rao's Law Academy shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of the Platform. Our total liability shall not exceed the amount paid by you in the 12 months preceding the claim.`,
+    content: `To the maximum extent permitted by law, Rao's Law Academy
+ shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of the Platform. Our total liability shall not exceed the amount paid by you in the 12 months preceding the claim.`,
   },
   {
     title: '9. Changes to Terms',
@@ -84,7 +88,8 @@ export default function Terms() {
                       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--navy)', marginBottom: '.35rem' }}>Terms & Conditions</h1>
                       <p style={{ fontSize: '.82rem', color: 'var(--gray-500)' }}>Last revised: 1 January 2025 &nbsp;•&nbsp; Effective immediately upon registration</p>
                       <p style={{ fontSize: '.875rem', color: 'var(--gray-600)', marginTop: '.6rem', lineHeight: 1.7 }}>
-                        Please read these Terms carefully before using Rao's Law Academy. These terms govern your use of the Platform and establish rights and responsibilities for both users and the Academy.
+                        Please read these Terms carefully before using Rao's Law Academy
+. These terms govern your use of the Platform and establish rights and responsibilities for both users and the Academy.
                       </p>
                     </div>
                   </div>

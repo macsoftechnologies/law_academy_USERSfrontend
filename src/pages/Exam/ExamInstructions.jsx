@@ -12,6 +12,7 @@ export default function ExamInstructions() {
   const test      = state?.test || null;
   const item      = state?.item || null;
   const isEnrolled = state?.isEnrolled || false;
+  const isLocked = state?.isLocked || false;
   const categoryLabel = state?.categoryLabel || 'Test';
   const prelimsId = state?.prelimsId || null;
   const module_type = state?.module_type || null;
@@ -26,6 +27,10 @@ export default function ExamInstructions() {
   const INSTRUCTION_ICONS = ['⏱', '📝', '✅', '⚠️', '🔄', '📱', '🔒', '💡'];
 
   const handleStartExam = () => {
+    if (isLocked && !isEnrolled) {
+      // Prevent starting locked exam for non-enrolled users
+      return;
+    }
     navigate(`/prelims/${prelimsId}/exam/${test.prelimes_test_id}`, {
       state: { test, item, isEnrolled, categoryLabel, prelimsId, module_type, mocktest_subject_id }
     });
@@ -109,9 +114,13 @@ export default function ExamInstructions() {
           </div>
 
           {/* Actions */}
+          {isLocked && !isEnrolled && (
+            <div className="toast warning" style={{ marginBottom: '1rem' }}>🔒 This test is locked. Enroll to attempt.</div>
+          )}
+
           <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'flex-end' }}>
             <button className="btn btn-secondary" onClick={() => navigate(-1)}>← Back</button>
-            <button className="btn btn-primary" onClick={handleStartExam}>
+            <button className="btn btn-primary" onClick={handleStartExam} disabled={isLocked && !isEnrolled}>
               🚀 Start Exam
             </button>
           </div>

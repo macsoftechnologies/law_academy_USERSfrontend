@@ -88,7 +88,8 @@ export default function Privacy() {
                       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--navy)', marginBottom: '.35rem' }}>Privacy Policy</h1>
                       <p style={{ fontSize: '.82rem', color: 'var(--gray-500)' }}>Last revised: 1 January 2025 &nbsp;•&nbsp; Effective upon account registration</p>
                       <p style={{ fontSize: '.875rem', color: 'var(--gray-600)', marginTop: '.6rem', lineHeight: 1.7 }}>
-                        At Rao's Law Academy, your privacy matters to us. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our Platform.
+                        At Rao's Law Academy
+, your privacy matters to us. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our Platform.
                       </p>
                     </div>
                   </div>

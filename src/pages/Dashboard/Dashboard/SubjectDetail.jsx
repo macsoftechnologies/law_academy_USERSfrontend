@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import Loader from '../../../components/common/Loader';
 import EnrollModal from '../../../components/common/EnrollModal';
+import CartWishlistActions from '../../../components/common/CartWishlistActions';
 import { getSubjectDetails, getSubjectsByLawForUser } from '../../../api/dashboard/dashboardApi';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
@@ -23,17 +24,25 @@ export default function SubjectDetail() {
     getSubjectDetails(subjectId)
       .then(async r => {
         if (r.statusCode !== 200) return;
-        const base = Array.isArray(r.data) ? r.data[0] : r.data;
+        const base = r.data || null;
+        if (!base) return;
+
+        const normalizeId = id => String(id ?? '').trim();
+        const currentId = normalizeId(subjectId);
         const lawId = Array.isArray(base?.law_id) ? base.law_id[0]?.lawId : base?.law_id;
+
         if (userId && lawId) {
           try {
             const uRes = await getSubjectsByLawForUser(lawId, userId);
             if (uRes.statusCode === 200) {
-              const match = (uRes.data ?? []).find(s => s.subjectId === subjectId);
+              const match = (uRes.data ?? []).find(s => normalizeId(s?.subjectId ?? s?.subject_id) === currentId);
               if (match) { setDetail({ ...base, ...match }); return; }
             }
-          } catch {}
+          } catch (err) {
+            console.error(err);
+          }
         }
+
         setDetail(base);
       })
       .catch(console.error)
@@ -95,14 +104,6 @@ export default function SubjectDetail() {
                       </>
                     ) : detail.availablePlans?.length > 0 ? (
                       <>
-                        {/* Each plan gets its own Buy Now button → EnrollModal appears HERE */}
-                        {detail.availablePlans.map(p => (
-                          <button key={p.planId} className="btn btn-gold"
-                            onClick={() => setSelectedPlan(p)}>
-                            Buy Now · ₹{p.original_price}
-                          </button>
-                        ))}
-                        {/* Explore More → next cards page = lectures list */}
                         <button className="btn btn-outline"
                           onClick={() => navigate(`/lectures/${detail.subjectId}`)}>
                           Explore More →
@@ -118,6 +119,47 @@ export default function SubjectDetail() {
                   </div>
                 </div>
               </div>
+
+              {/* Choose a Plan Section */}
+              {!detail.isEnrolled && detail.availablePlans?.length > 0 && (
+                <div className="card" style={{ marginBottom: '1rem' }}>
+                  <div className="card-header">Choose a Plan</div>
+                  <div className="card-body">
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                      {detail.availablePlans.map(plan => (
+                        <div key={plan.planId}
+                          style={{ border: '2px solid var(--gray-200)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem', minWidth: 200, cursor: 'pointer', transition: 'border-color .18s' }}
+                          onMouseOver={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                          onMouseOut={e  => e.currentTarget.style.borderColor = 'var(--gray-200)'}
+                        >
+                          <div style={{ fontSize: '.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--gray-400)', marginBottom: '.4rem' }}>
+                            {plan.duration}
+                          </div>
+                          <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--navy)', marginBottom: '.5rem' }}>₹{plan.original_price}</div>
+                          {plan.strike_price && (
+                            <div style={{ fontSize: '.82rem', color: 'var(--gray-400)', marginBottom: '.75rem' }}>
+                              <del>₹{plan.strike_price}</del>
+                              {plan.discount_percent && <span className="badge badge-success" style={{ marginLeft: '.35rem' }}>{plan.discount_percent}% off</span>}
+                            </div>
+                          )}
+                          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <button className="btn btn-gold btn-sm btn-full"
+                              onClick={() => setSelectedPlan(plan)}>
+                              Enroll Now
+                            </button>
+                            <CartWishlistActions 
+                              courseId={subjectId} 
+                              enrollType="subject-wise" 
+                              planId={plan.planId} 
+                              isEnrolled={detail.isEnrolled} 
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* ── Remaining duration ── */}
               {detail.isEnrolled && detail.remaining_duration != null && (

@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import Pagination from '../../components/common/Pagination';
+import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getMains } from '../../api/mains/mainsApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
+import { formatDate } from '../../utils/formatDate';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PAGE_SIZE = 10;
@@ -57,19 +59,31 @@ export default function AllMains() {
                         {item.sub_title && <p className="course-card-sub">{item.sub_title}</p>}
                         <div className="course-card-plan-area">
                           {item.isEnrolled
-                            ? <div className="course-card-enrolled-info">✓ Expires: {item.expiry_date ? new Date(item.expiry_date).toLocaleDateString('en-IN') : '—'}</div>
+                            ? <div className="course-card-enrolled-info">✓ Expires: {formatDate(item.expiry_date || item.expire_date || item.end_date || item.valid_till || item.validTill)}</div>
                             : primaryPlan && <span className="plan-chip">{primaryPlan.strike_price&&<del>₹{primaryPlan.strike_price}</del>} ₹{primaryPlan.original_price} <em>{primaryPlan.duration}</em></span>}
                         </div>
-                        <div className="course-card-actions">
+                        <div className="course-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                           {!item.isEnrolled && primaryPlan && (
-                            <button className="btn btn-gold btn-sm" onClick={()=>navigate(`/mains/${item.mains_id}`,{state:{item,scrollToBuy:true}})}>Buy Now</button>
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
+                              <CartWishlistActions 
+                                courseId={item.mains_id} 
+                                enrollType="mains" 
+                                planId={primaryPlan.planId} 
+                                isEnrolled={item.isEnrolled} 
+                              />
+                            </div>
                           )}
-                          <button className="btn btn-outline btn-sm"
-                            onClick={()=>item.isEnrolled
-                              ? navigate(`/mains/${item.mains_id}/categories`,{state:{item,isEnrolled:true}})
-                              : navigate(`/mains/${item.mains_id}`,{state:{item}})}>
-                            {item.isEnrolled ? 'Continue →' : 'Explore →'}
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                            {!item.isEnrolled && primaryPlan && (
+                              <button className="btn btn-gold btn-sm" style={{ flex: 1 }} onClick={()=>navigate(`/mains/${item.mains_id}`,{state:{item,scrollToBuy:true}})}>Buy Now</button>
+                            )}
+                            <button className="btn btn-outline btn-sm" style={{ flex: 1 }}
+                              onClick={()=>item.isEnrolled
+                                ? navigate(`/mains/${item.mains_id}/categories`,{state:{item,isEnrolled:true}})
+                                : navigate(`/mains/${item.mains_id}`,{state:{item}})}>
+                              {item.isEnrolled ? 'Continue →' : 'Explore →'}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>

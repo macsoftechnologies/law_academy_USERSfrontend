@@ -189,13 +189,15 @@ export function AuthLeft() {
       <div className="al-logo">
         <img
           src={logo}
-          alt="Rao's Law Academy logo"
+          alt="Rao's Law Academy
+ logo"
           className="login-logo-img"
         />
       </div>
 
       <div className="al-bottom">
-        2026 Rao's law academy. All rights reserved.
+        2026 Rao's Law Academy
+. All rights reserved.
       </div>
     </div>
   );

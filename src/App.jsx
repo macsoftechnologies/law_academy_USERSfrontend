@@ -1,10 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import ScrollToTop  from './components/ScrollToTop';
 import LandingPage        from './pages/Landing/LandingPage';
 import LoginPage          from './pages/Auth/LoginPage';
 import RegisterPage       from './pages/Auth/RegisterPage';
 import SignInOtherWay     from './pages/Auth/SignInOtherWay';
 import OtpVerify          from './pages/Auth/OtpVerify';
 import ForgotPassword     from './pages/Auth/ForgotPassword';
+import ResetPassword      from './pages/Auth/ResetPassword';
 import Dashboard          from './pages/Dashboard/Dashboard/Dashboard';
 import Profile            from './pages/Dashboard/Profile/Profile';
 import PrivateRoute       from './components/PrivateRoute';
@@ -15,6 +17,7 @@ import CategoryDetail     from './pages/Dashboard/Dashboard/Categories/Categoryd
 import SubcategoryDetail  from './pages/Dashboard/Dashboard/Categories/Subcategorydetail';
 import AllGuestLectures   from './pages/Dashboard/Dashboard/Allguestlectures';
 import GuestLectureDetail from './pages/Dashboard/Dashboard/Guestlecturedetail';
+import GuestLectureBuy from './pages/Dashboard/Dashboard/GuestLectureBuy';
 import SubjectDetail      from './pages/Dashboard/Dashboard/SubjectDetail';
 import LawsPage           from './pages/Dashboard/Dashboard/Categories/Lawpage';
 import SubjectsPage       from './pages/Dashboard/Dashboard/Categories/Subjectpage';
@@ -26,6 +29,9 @@ import NoteDetailPage     from './pages/Notes/Notedetailpage';
 import AllPrelims         from './pages/Prelims/Allprelims';
 import PrelimsDetail      from './pages/Prelims/Prelimsdetail';
 import PrelimsCategories  from './pages/Prelims/PrelimsCategories';
+import PrelimsSubjectSelect from './pages/Prelims/PrelimsSubjectSelect';
+import PrelimsSmtDetail from './pages/Prelims/PrelimsSmtDetail';
+import TestAttemptHistory from './pages/Prelims/TestAttemptHistory';
 import AllMains           from './pages/Mains/AllMains';
 import MainsDetail        from './pages/Mains/Mainsdetail';
 import MainsTestDetail    from './pages/Mains/Mainstestdetail';
@@ -34,6 +40,7 @@ import MainsCategories from './pages/Mains/MainsCategories';
 import MainsQAList from './pages/Mains/MainsQAList';
 import MainsTestAttempt from './pages/Mains/MainsTestAttempt';
 import MainsTestSeriesList from './pages/Mains/MainsTestSeriesList';
+import QAItemDetail from './pages/QA/QAItemDetail';
 import ExamList   from './pages/Exam/ExamList';
 import MockTest   from './pages/Exam/MockTest';
 import ExamResult from './pages/Exam/ExamResult';
@@ -52,9 +59,19 @@ import SubjectLawTabs from './pages/Dashboard/Dashboard/Subjects/SubjectLawTabs'
 import EnrollmentDetails from './pages/Dashboard/MyCourses/EnrollmentDetails';
 import ExamTerms from './pages/Exam/ExamTerms';
 import ExamInstructions from './pages/Exam/ExamInstructions';
+import AllCombos from './pages/Combos/AllCombos';
+import ComboDetail from './pages/Combos/ComboDetail';
+import PrintedNotes from './pages/Notes/PrintedNotes';
+import OrderHistory from './pages/Notes/OrderHistory';
+import Notifications from './pages/Dashboard/Notifications/Notifications';
+import { CartWishlistProvider } from './context/CartWishlistContext';
+import MarksDashboard from './pages/Dashboard/MarksDashboard/MarksDashboard';
+
 
 export default function App() {
   return (
+    <><ScrollToTop /> 
+    <CartWishlistProvider>
     <Routes>
       {/* Public */}
       <Route path="/"               element={<LandingPage />} />
@@ -63,6 +80,7 @@ export default function App() {
       <Route path="/signinotherway" element={<SignInOtherWay />} />
       <Route path="/otpverify"      element={<OtpVerify />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route path="/resetpassword"  element={<ResetPassword />} />
       <Route path="/referral"       element={<ReferralScreen />} />
 
       {/* Protected */}
@@ -91,6 +109,7 @@ export default function App() {
       {/* Guest Lectures */}
       <Route path="/guest-lectures"               element={<PrivateRoute><AllGuestLectures /></PrivateRoute>} />
       <Route path="/guest-lecture/:lectureId"     element={<PrivateRoute><GuestLectureDetail /></PrivateRoute>} />
+      <Route path="/guest-lecture-buy/:lectureId" element={<PrivateRoute><GuestLectureBuy /></PrivateRoute>} />
 
       {/* Lecture */}
       <Route path="/lecture/:lectureId"           element={<PrivateRoute><LectureDetails /></PrivateRoute>} />
@@ -99,19 +118,21 @@ export default function App() {
       <Route path="/prelims"                           element={<PrivateRoute><AllPrelims /></PrivateRoute>} />
       <Route path="/prelims/:prelimsId"                element={<PrivateRoute><PrelimsDetail /></PrivateRoute>} />
       <Route path="/prelims/:prelimsId/categories"     element={<PrivateRoute><PrelimsCategories /></PrivateRoute>} />
-      <Route path="/prelims/:prelimsId/qa/:module_type" element={<PrivateRoute><PrelimsQAList /></PrivateRoute>} />  {/* ← NEW */}
-<Route path="/prelims/:prelimsId/tests"            element={<PrivateRoute><PrelimsQAList /></PrivateRoute>} />
+      <Route path="/prelims/:prelimsId/smt-subjects"   element={<PrivateRoute><PrelimsSubjectSelect /></PrivateRoute>} />
+      <Route path="/prelims/smt-select"              element={<PrivateRoute><PrelimsSubjectSelect /></PrivateRoute>} />
+      <Route path="/prelims/smt/:subjectId"          element={<PrivateRoute><PrelimsSmtDetail /></PrivateRoute>} />
+      <Route path="/prelims/:prelimsId/qa/:module_type" element={<PrivateRoute><PrelimsQAList /></PrivateRoute>} />
+      <Route path="/prelims/:prelimsId/qa/:module_type/:qa_id" element={<PrivateRoute><QAItemDetail /></PrivateRoute>} />
+      <Route path="/prelims/:prelimsId/tests"            element={<PrivateRoute><PrelimsQAList /></PrivateRoute>} />
 
       {/* Mains */}
       <Route path="/mains"                                        element={<PrivateRoute><AllMains /></PrivateRoute>} />
       <Route path="/mains/:mainsId"                               element={<PrivateRoute><MainsDetail /></PrivateRoute>} />
       <Route path="/mains/:mainsId/categories"                    element={<PrivateRoute><MainsCategories /></PrivateRoute>} />
       <Route path="/mains/:mainsId/test/:testId"                  element={<PrivateRoute><MainsTestDetail /></PrivateRoute>} />
-      <Route path="/mains/:mainsId/test/:testId/result/:resultId" element={<PrivateRoute><MainsResult /></PrivateRoute>} />
-<Route
-  path="/mains/:mainsId/qa/:module_type"
-  element={<PrivateRoute><MainsQAList /></PrivateRoute>}
-/>
+      <Route path="/mains/:mainsId/test/:testId/result/:attemptId" element={<PrivateRoute><MainsResult /></PrivateRoute>} />
+      <Route path="/mains/:mainsId/qa/:module_type"                element={<PrivateRoute><MainsQAList /></PrivateRoute>} />
+      <Route path="/mains/:mainsId/qa/:module_type/:qa_id"         element={<PrivateRoute><QAItemDetail /></PrivateRoute>} />
 
 <Route
   path="/mains/:mainsId/test-series"
@@ -125,7 +146,15 @@ export default function App() {
 
       {/* Notes */}
       <Route path="/notes"                        element={<PrivateRoute><AllNotes /></PrivateRoute>} />
+      <Route path="/notes/printed"                element={<PrivateRoute><PrintedNotes /></PrivateRoute>} />
       <Route path="/notes/:notesId"               element={<PrivateRoute><NoteDetailPage /></PrivateRoute>} />
+<Route 
+  path="/notes/orders" 
+  element={<PrivateRoute><OrderHistory /></PrivateRoute>} 
+/>
+      {/* Combos */}
+      <Route path="/combos"                       element={<PrivateRoute><AllCombos /></PrivateRoute>} />
+      <Route path="/combos/:comboId"              element={<PrivateRoute><ComboDetail /></PrivateRoute>} />
 
       {/* Exam */}
       <Route path="/exam"                         element={<PrivateRoute><ExamList /></PrivateRoute>} />
@@ -135,8 +164,10 @@ export default function App() {
 <Route path="/prelims/:prelimsId/exam-terms"        element={<PrivateRoute><ExamTerms /></PrivateRoute>} />
 <Route path="/prelims/:prelimsId/exam-instructions" element={<PrivateRoute><ExamInstructions /></PrivateRoute>} />
 <Route path="/prelims/:prelimsId/exam/:testId"      element={<PrivateRoute><MockTest /></PrivateRoute>} />
-<Route path="/prelims/:prelimsId/exam-result"       element={<PrivateRoute><ExamResult /></PrivateRoute>} />
+<Route path="/prelims/:prelimsId/exam/:testId/result/:attemptId"       element={<PrivateRoute><ExamResult /></PrivateRoute>} />
+<Route path="/prelims/:prelimsId/test/:testId/attempts" element={<PrivateRoute><TestAttemptHistory /></PrivateRoute>} />
       {/* Dashboard Menu Pages */}
+      <Route path="/dashboard/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
       <Route path="/dashboard/my-courses" element={<PrivateRoute><MyCourses /></PrivateRoute>} />
 <Route path="/enrollment/:enrollId" element={<PrivateRoute><EnrollmentDetails /></PrivateRoute>} />
 
@@ -150,13 +181,11 @@ export default function App() {
       <Route path="/dashboard/referrals"  element={<PrivateRoute><Referrals /></PrivateRoute>} />
       <Route path="/dashboard/terms"      element={<PrivateRoute><Terms /></PrivateRoute>} />
       <Route path="/dashboard/privacy"    element={<PrivateRoute><Privacy /></PrivateRoute>} />
-
-<Route path="/prelims/:prelimsId/exam-terms"        element={<PrivateRoute><ExamTerms /></PrivateRoute>} />
-<Route path="/prelims/:prelimsId/exam-instructions" element={<PrivateRoute><ExamInstructions /></PrivateRoute>} />
-<Route path="/prelims/:prelimsId/exam/:testId"      element={<PrivateRoute><MockTest /></PrivateRoute>} />
-<Route path="/prelims/:prelimsId/exam-result"       element={<PrivateRoute><ExamResult /></PrivateRoute>} />
+      <Route path="/dashboard/marks"      element={<PrivateRoute><MarksDashboard /></PrivateRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </CartWishlistProvider>
+    </>
   );
 }

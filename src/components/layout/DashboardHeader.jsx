@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/layout.css';
 import logo from "../../assets/images/rla.png"
+import { getNotificationsList } from '../../api/notifications';
+import { useCartWishlist } from '../../context/CartWishlistContext';
 
 const NAV = [
   { id:'overview', label:'Dashboard', path:'/dashboard' },
@@ -34,6 +36,8 @@ export default function DashboardHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const [darkMode,   setDarkMode]   = useState(() => localStorage.getItem('darkMode') === 'true');
+  const [unreadCount, setUnreadCount] = useState(0);
+  const { cart, wishlist } = useCartWishlist();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
@@ -46,6 +50,23 @@ export default function DashboardHeader() {
   const name = user?.name || 'User';
   const ini  = initials(name);
 
+  useEffect(() => {
+    const fetchNotifs = async () => {
+      const userIdStr = localStorage.getItem('userId') || user?._id || user?.id;
+      if (!userIdStr) return;
+      try {
+        const res = await getNotificationsList(userIdStr);
+        if (res?.data?.items) {
+          const unread = res.data.items.filter(n => !n.isRead).length;
+          setUnreadCount(unread);
+        }
+      } catch (err) {
+        console.error("Failed to fetch notifications header:", err);
+      }
+    };
+    fetchNotifs();
+  }, []);
+
   const active = p => {
     if (p==='/notes')   return location.pathname.startsWith('/notes');
     if (p==='/prelims') return location.pathname.startsWith('/prelims');
@@ -53,12 +74,27 @@ export default function DashboardHeader() {
     return location.pathname === p;
   };
 
-  const doLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('isLoggedIn');
-    navigate('/');
+  const doLogout = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch('https://api.raoslawacademy.com/users/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      }
+    } catch (e) {
+      console.error('Logout API error:', e);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('isLoggedIn');
+      navigate('/');
+    }
   };
 
   return (
@@ -66,9 +102,12 @@ export default function DashboardHeader() {
       <header className="dh-header">
         {/* <div className="dh-logo" onClick={() => navigate('/dashboard')}>
           Rao's <span>Law Academy</span>
+
+
         </div> */}
         <div className="dh-logo" onClick={() => navigate('/dashboard')}>
-  <img src={logo} alt="Rao's Law Academy" className="dh-logo-img" />
+  <img src={logo} alt="law acad
+" className="dh-logo-img" />
 </div>
 
         <nav className="dh-nav">
@@ -81,8 +120,18 @@ export default function DashboardHeader() {
         </nav>
 
         <div className="dh-right">
-          <button className="dh-notif-btn">
-            🔔<span className="dh-notif-dot" />
+          <button className="dh-notif-btn" onClick={() => navigate('/dashboard/notifications')}>
+            🔔
+            {unreadCount > 0 ? (
+              <span className="dh-notif-badge" style={{
+                position: 'absolute', top: '0', right: '-5px', background: 'red', color: 'white',
+                borderRadius: '50%', padding: '2px 6px', fontSize: '0.7rem', fontWeight: 'bold'
+              }}>
+                {unreadCount}
+              </span>
+            ) : (
+              <span className="dh-notif-dot" />
+            )}
           </button>
 
           <div className="dh-avatar-wrap" onClick={() => { setDropOpen(p=>!p); setMobileOpen(false); }}>
@@ -121,6 +170,12 @@ export default function DashboardHeader() {
                     }}>
                     <span>{m.action === 'darkmode' ? (darkMode ? '☀️' : '🌙') : m.icon}</span>
                     {m.action === 'darkmode' ? (darkMode ? 'Light Mode' : 'Dark Mode') : m.label}
+                    {m.label === 'Wishlist' && wishlist.length > 0 && (
+                      <span style={{ marginLeft: 'auto', background: 'var(--maroon)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}>{wishlist.length}</span>
+                    )}
+                    {m.label === 'My Cart' && cart.length > 0 && (
+                      <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}>{cart.length}</span>
+                    )}
                     {m.action === 'darkmode' && (
                       <span style={{ marginLeft:'auto', fontSize:'.7rem', background: darkMode ? 'var(--gold-pale)' : 'var(--gray-100)', color: darkMode ? 'var(--maroon)' : 'var(--gray-500)', padding:'.1rem .5rem', borderRadius:'var(--radius-full)', fontWeight:700 }}>
                         {darkMode ? 'ON' : 'OFF'}
@@ -157,6 +212,12 @@ export default function DashboardHeader() {
                 }}>
                 <span>{m.action === 'darkmode' ? (darkMode ? '☀️' : '🌙') : m.icon}</span>
                 {m.action === 'darkmode' ? (darkMode ? 'Light Mode' : 'Dark Mode') : m.label}
+                {m.label === 'Wishlist' && wishlist.length > 0 && (
+                  <span style={{ marginLeft: 'auto', background: 'var(--maroon)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}>{wishlist.length}</span>
+                )}
+                {m.label === 'My Cart' && cart.length > 0 && (
+                  <span style={{ marginLeft: 'auto', background: 'var(--gold)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}>{cart.length}</span>
+                )}
               </div>
             ))}
             <div className="dh-dropdown-divider" />

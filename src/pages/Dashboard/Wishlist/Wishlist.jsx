@@ -1,22 +1,103 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
+import { getWishlistList, removeFromWishlist } from '../../../api/wishlist';
+import { moveFromWishlistToCart } from '../../../api/cart';
+import { getPlansByCourseId } from '../../../api/plans';
+import { useCartWishlist } from '../../../context/CartWishlistContext';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
 
-const MOCK_WISHLIST = [
-  { id: 1, title: 'Specific Relief Act – Deep Dive',    category: 'Civil Law',   price: 2999, originalPrice: 4499, icon: '⚖️', rating: 4.8, students: 1240 },
-  { id: 2, title: 'Transfer of Property Act',           category: 'Property Law', price: 3499, originalPrice: 5000, icon: '🏠', rating: 4.7, students: 890  },
-  { id: 3, title: 'Hindu Personal Law – Full Course',   category: 'Personal Law', price: 2499, originalPrice: 3999, icon: '📿', rating: 4.9, students: 2100 },
-  { id: 4, title: 'Constitutional Remedies & Writs',    category: 'Law',          price: 1999, originalPrice: 2999, icon: '🛡️', rating: 4.6, students: 670  },
-];
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Wishlist() {
   const navigate = useNavigate();
-  const [list, setList] = useState(MOCK_WISHLIST);
+  const { refresh } = useCartWishlist();
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [movingId, setMovingId] = useState(null);
+  const [selectedWishlistItem, setSelectedWishlistItem] = useState(null);
+  const [fetchedPlans, setFetchedPlans] = useState([]);
+  const [fetchingPlans, setFetchingPlans] = useState(false);
 
-  const remove = id => setList(l => l.filter(i => i.id !== id));
+  const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return {}; } })();
+  const userId = localStorage.getItem('userId') || user?._id || user?.id;
+
+  useEffect(() => {
+    if (userId) {
+      fetchWishlist();
+    } else {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  const fetchWishlist = async () => {
+    try {
+      setLoading(true);
+      const res = await getWishlistList(userId);
+      if (res?.data) {
+        setList(res.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch wishlist:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const remove = async (wishlistItemId) => {
+    try {
+      await removeFromWishlist(userId, wishlistItemId);
+      setList(l => l.filter(i => i.wishlistItemId !== wishlistItemId));
+      refresh();
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+      alert("Failed to remove from wishlist.");
+    }
+  };
+
+  const handleMoveToCart = async (wishlistItemId, planId) => {
+    if (!planId) {
+      alert('Plan ID is missing for this item.');
+      return;
+    }
+    try {
+      setMovingId(wishlistItemId);
+      await moveFromWishlistToCart(userId, wishlistItemId, planId);
+      // Remove from wishlist locally after successful move
+      setList(l => l.filter(i => i.wishlistItemId !== wishlistItemId));
+      refresh();
+      alert('Item moved to cart successfully!');
+    } catch (err) {
+      console.error("Failed to move to cart:", err);
+      alert("Failed to move to cart. " + (err.message || ''));
+    } finally {
+      setMovingId(null);
+    }
+  };
+
+  const handleOpenPlanModal = async (item) => {
+    setSelectedWishlistItem(item);
+    setFetchingPlans(true);
+    setFetchedPlans([]);
+    try {
+      const courseId = item.course_id || item.courseDetails?._id || item.courseDetails?.course_id || item.courseDetails?.subject_id || item.courseDetails?.combo_id;
+      const res = await getPlansByCourseId(courseId);
+      if (res?.data) {
+        setFetchedPlans(res.data);
+      } else if (Array.isArray(res)) {
+        setFetchedPlans(res);
+      } else {
+        setFetchedPlans([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch plans:", err);
+      setFetchedPlans([]);
+    } finally {
+      setFetchingPlans(false);
+    }
+  };
 
   return (
     <div className="dash-shell">
@@ -31,11 +112,13 @@ export default function Wishlist() {
               <span className="page-section-count">{list.length}</span>
             </h1>
             {list.length > 0 && (
-              <button className="btn btn-gold btn-sm">🛒 Add All to Cart</button>
+              <button className="btn btn-gold btn-sm" onClick={() => navigate('/dashboard/cart')}>🛒 Go to Cart</button>
             )}
           </div>
 
-          {list.length === 0 ? (
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--gray-500)' }}>Loading wishlist...</div>
+          ) : list.length === 0 ? (
             <div className="card">
               <div className="empty-state">
                 <div className="empty-state-icon">💔</div>
@@ -47,36 +130,56 @@ export default function Wishlist() {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: '1rem' }}>
               {list.map(c => {
-                const disc = Math.round((1 - c.price / c.originalPrice) * 100);
+                const originalPrice = parseInt(c.plan?.strike_price || c.plan?.original_price || 0, 10);
+                const price = parseInt(c.plan?.original_price || 0, 10);
+                const disc = originalPrice > 0 ? Math.round((1 - price / originalPrice) * 100) : 0;
+                const isMoving = movingId === c.wishlistItemId;
+
                 return (
-                  <div key={c.id} className="card">
-                    <div className="card-body">
-                      <div style={{ display: 'flex', gap: '.85rem', alignItems: 'flex-start' }}>
-                        <div style={{ width: 52, height: 52, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg,var(--navy),var(--navy-mid))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>
-                          {c.icon}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: '.875rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{c.title}</div>
-                          <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{c.category}</div>
-                        </div>
-                        <button onClick={() => remove(c.id)} style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '1.1rem', flexShrink: 0 }} title="Remove">🗑</button>
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem', margin: '.85rem 0 .35rem', fontSize: '.75rem', color: 'var(--gray-500)' }}>
-                        <span style={{ color: 'var(--gold)', fontWeight: 700 }}>★ {c.rating}</span>
-                        <span>•</span>
-                        <span>{c.students.toLocaleString()} students</span>
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '.5rem', marginBottom: '.85rem' }}>
-                        <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 800, color: 'var(--navy)' }}>₹{c.price.toLocaleString('en-IN')}</span>
-                        <span style={{ fontSize: '.8rem', color: 'var(--gray-400)', textDecoration: 'line-through' }}>₹{c.originalPrice.toLocaleString('en-IN')}</span>
-                        <span style={{ fontSize: '.72rem', fontWeight: 700, background: 'var(--gold-pale)', color: 'var(--maroon)', padding: '.1rem .4rem', borderRadius: 'var(--radius-sm)' }}>{disc}% OFF</span>
-                      </div>
-
-                      <div style={{ display: 'flex', gap: '.5rem' }}>
-                        <button className="btn btn-primary btn-sm" style={{ flex: 1 }}>🛒 Add to Cart</button>
-                        <button className="btn btn-gold btn-sm" style={{ flex: 1 }}>Buy Now</button>
+                  <div key={c.wishlistItemId} className="course-card" style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                    <div className="course-card-img" style={{ height: '160px', position: 'relative' }}>
+                      {c.courseDetails?.presentation_image ? (
+                        <img src={`${BASE_URL}/${c.courseDetails.presentation_image}`} alt={c.courseDetails?.title || 'Course'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <div className="course-card-img-placeholder" style={{ fontSize: '3rem' }}>📚</div>
+                      )}
+                      
+                      {/* Remove Button Overlay */}
+                      <button 
+                        onClick={() => remove(c.wishlistItemId)} 
+                        style={{ 
+                          position: 'absolute', top: '10px', right: '10px', 
+                          background: 'rgba(255,255,255,0.95)', border: 'none', borderRadius: '50%', 
+                          width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                          color: '#e63946', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                          transition: 'transform 0.2s', zIndex: 2
+                        }} 
+                        title="Remove from Wishlist"
+                        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        <span style={{ marginTop: '2px' }}>🗑</span>
+                      </button>
+                    </div>
+                    
+                    <div className="course-card-body" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', flex: 1, padding: '1.25rem' }}>
+                      <span className="badge badge-navy" style={{ alignSelf: 'flex-start', fontSize: '0.65rem', padding: '0.2rem 0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        {c.enroll_type.replace('-', ' ')}
+                      </span>
+                      
+                      <h3 className="course-card-title" style={{ fontSize: '1.05rem', lineHeight: '1.4', marginBottom: 'auto', fontWeight: '700', color: 'var(--navy)' }}>
+                        {c.courseDetails?.title || 'Course'}
+                      </h3>
+                      
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <button 
+                          className="btn btn-gold btn-full" 
+                          disabled={isMoving}
+                          onClick={() => handleOpenPlanModal(c)}
+                          style={{ padding: '0.6rem', fontWeight: 'bold' }}
+                        >
+                          {isMoving ? 'Moving...' : '🛒 Move to Cart'}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -86,6 +189,47 @@ export default function Wishlist() {
           )}
         </div>
       </div>
+      {/* Plan Selection Modal */}
+      {selectedWishlistItem && (
+        console.log("DEBUG WISHLIST ITEM:", selectedWishlistItem),
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="card" style={{ width: '100%', maxWidth: 400, background: '#fff', padding: '1.5rem', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Select a Plan</h3>
+              <button onClick={() => setSelectedWishlistItem(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: 'var(--gray-500)' }}>✕</button>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '60vh', overflowY: 'auto' }}>
+              {fetchingPlans ? (
+                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--gray-500)' }}>Loading plans...</div>
+              ) : fetchedPlans.length > 0 ? (
+                fetchedPlans.map(plan => (
+                  <div 
+                    key={plan.planId || plan._id} 
+                    style={{ border: '1px solid var(--gray-200)', padding: '1rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    onClick={() => {
+                      handleMoveToCart(selectedWishlistItem.wishlistItemId, plan.planId || plan._id);
+                      setSelectedWishlistItem(null);
+                    }}
+                    onMouseOver={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                    onMouseOut={e => e.currentTarget.style.borderColor = 'var(--gray-200)'}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '.9rem' }}>{plan.duration}</div>
+                      {plan.strike_price && <del style={{ fontSize: '.8rem', color: 'var(--gray-400)' }}>₹{plan.strike_price}</del>}
+                    </div>
+                    <div style={{ color: 'var(--navy)', fontWeight: 800, fontSize: '1.1rem' }}>₹{plan.original_price}</div>
+                  </div>
+                ))
+              ) : (
+                <div style={{ color: 'var(--gray-500)', fontSize: '.9rem', textAlign: 'center', padding: '1rem' }}>
+                  No plans available for this course.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

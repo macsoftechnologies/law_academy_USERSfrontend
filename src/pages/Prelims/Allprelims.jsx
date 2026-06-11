@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import Pagination from '../../components/common/Pagination';
+import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getPrelims } from '../../api/prelims/prelimsApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -60,16 +61,28 @@ export default function AllPrelims() {
                             ? <div className="course-card-enrolled-info">✓ Expires: {item.expiry_date ? new Date(item.expiry_date).toLocaleDateString('en-IN') : '—'}</div>
                             : primaryPlan && <span className="plan-chip">{primaryPlan.strike_price&&<del>₹{primaryPlan.strike_price}</del>} ₹{primaryPlan.original_price} <em>{primaryPlan.duration}</em></span>}
                         </div>
-                        <div className="course-card-actions">
+                        <div className="course-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                           {!item.isEnrolled && primaryPlan && (
-                            <button className="btn btn-gold btn-sm" onClick={()=>navigate(`/prelims/${item.prelimes_id}`,{state:{item,scrollToBuy:true}})}>Buy Now</button>
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
+                              <CartWishlistActions 
+                                courseId={item.prelimes_id} 
+                                enrollType="prelimes" 
+                                planId={primaryPlan.planId} 
+                                isEnrolled={item.isEnrolled} 
+                              />
+                            </div>
                           )}
-                          <button className="btn btn-outline btn-sm"
-                            onClick={()=>item.isEnrolled
-                              ? navigate(`/prelims/${item.prelimes_id}/categories`,{state:{item,isEnrolled:true}})
-                              : navigate(`/prelims/${item.prelimes_id}`,{state:{item}})}>
-                            {item.isEnrolled ? 'Continue →' : 'Explore →'}
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                            {!item.isEnrolled && primaryPlan && (
+                              <button className="btn btn-gold btn-sm" style={{ flex: 1 }} onClick={()=>navigate(`/prelims/${item.prelimes_id}`,{state:{item,scrollToBuy:true}})}>Buy Now</button>
+                            )}
+                            <button className="btn btn-outline btn-sm" style={{ flex: 1 }}
+                              onClick={() => item.isEnrolled
+                                ? navigate(`/prelims/${item.prelimes_id}/categories`, { state: { item, isEnrolled: true } })
+                                : navigate(`/prelims/${item.prelimes_id}/categories`, { state: { item, isEnrolled: false } })}>
+                              {item.isEnrolled ? 'Open →' : 'Explore →'}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>

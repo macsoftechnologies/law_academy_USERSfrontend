@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import EnrollModal from '../../components/common/EnrollModal';
+import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getNotesDetail, getSubjectNotes } from '../../api/notes/notesApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -34,15 +35,32 @@ export default function NoteDetailPage() {
   const [openPdfUrl,   setOpenPdfUrl]   = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+    setSnLoading(true);
+
     getNotesDetail(notesId)
-      .then(r => { if (r.statusCode === 200) setDetail(r.data); })
+      .then(r => {
+        if (r.statusCode === 200) {
+          setDetail(prev => {
+            // Preserve manually-set enrollment status after successful enrollment
+            const merged = { ...(prev || {}), ...(r.data || {}) };
+            if (prev?.isEnrolled) merged.isEnrolled = true;
+            return merged;
+          });
+        }
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
 
     getSubjectNotes(1, 50)
       .then(r => {
-        if (r.statusCode === 200)
-          setSubjectNotes((r.data ?? []).filter(sn => sn.notes_id?.[0]?.notes_id === notesId));
+        if (r.statusCode === 200) {
+          setSubjectNotes(prev => {
+            // Only update if no manual unlocking has occurred
+            if (prev.some(sn => !sn.isLocked)) return prev;
+            return (r.data ?? []).filter(sn => sn.notes_id?.[0]?.notes_id === notesId);
+          });
+        }
       })
       .catch(console.error)
       .finally(() => setSnLoading(false));
@@ -95,6 +113,17 @@ export default function NoteDetailPage() {
                       ))}
                     </div>
                   )}
+                  {!isEnrolled && (
+                    <div style={{ marginTop: '1rem' }}>
+                      <CartWishlistActions 
+                        courseId={notesId} 
+                        enrollType="notes" 
+                        planId={availablePlans[0]?.planId} 
+                        isEnrolled={isEnrolled} 
+                        hideCart={true}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -114,11 +143,11 @@ export default function NoteDetailPage() {
                   <div className="card-header">Choose a Plan</div>
                   <div className="card-body">
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                      {availablePlans.map(plan => (
-                        <div key={plan.planId}
-                          style={{ border: '2px solid var(--gray-200)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem', minWidth: 200, cursor: 'pointer', transition: 'border-color .18s' }}
-                          onMouseOver={e => e.currentTarget.style.borderColor = 'var(--gold)'}
-                          onMouseOut={e  => e.currentTarget.style.borderColor = 'var(--gray-200)'}
+                    {availablePlans.map(plan => (
+                      <div key={plan.planId}
+                        style={{ border: '2px solid var(--gray-200)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.25rem', minWidth: 200, cursor: 'pointer', transition: 'border-color .18s' }}
+                        onMouseOver={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                        onMouseOut={e  => e.currentTarget.style.borderColor = 'var(--gray-200)'}
                         >
                           <div style={{ fontSize: '.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--gray-400)', marginBottom: '.4rem' }}>
                             {plan.duration}
@@ -130,10 +159,19 @@ export default function NoteDetailPage() {
                               {plan.discount_percent && <span className="badge badge-success" style={{ marginLeft: '.35rem' }}>{plan.discount_percent}% off</span>}
                             </div>
                           )}
-                          <button className="btn btn-gold btn-sm btn-full"
-                            onClick={() => setEnrollModal({ plan, title: note.title })}>
-                            Enroll Now
-                          </button>
+                          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <button className="btn btn-gold btn-sm btn-full"
+                              onClick={() => setEnrollModal({ plan, title: note.title })}>
+                              Enroll Now
+                            </button>
+                            <CartWishlistActions 
+                              courseId={notesId} 
+                              enrollType="notes" 
+                              planId={plan.planId} 
+                              isEnrolled={isEnrolled} 
+                              hideWishlist={true}
+                            />
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -152,8 +190,8 @@ export default function NoteDetailPage() {
                       <div key={i} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '.85rem 1.25rem' }}>
                           {/* Icon */}
-                          <div style={{ width: 36, height: 36, borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0, background: sn.isLocked ? 'var(--gray-200)' : 'var(--gold-pale)' }}>
-                            {sn.isLocked ? '🔒' : '📑'}
+                          <div style={{ width: 36, height: 36, borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0, background: (!isEnrolled && sn.isLocked) ? 'var(--gray-200)' : 'var(--gold-pale)' }}>
+                            {(!isEnrolled && sn.isLocked) ? '🔒' : '📑'}
                           </div>
                           {/* Title */}
                           <div style={{ flex: 1 }}>
@@ -161,7 +199,7 @@ export default function NoteDetailPage() {
                             {sn.law && <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{sn.law}</div>}
                           </div>
                           {/* View in-page — no external link */}
-                          {!sn.isLocked && sn.pdf_url && (
+                          {(isEnrolled || !sn.isLocked) && sn.pdf_url && (
                             <button
                               className="btn btn-outline btn-sm"
                               onClick={() => setOpenPdfUrl(openPdfUrl === sn.pdf_url ? null : sn.pdf_url)}
@@ -171,7 +209,7 @@ export default function NoteDetailPage() {
                           )}
                         </div>
                         {/* In-page PDF iframe */}
-                        {openPdfUrl === sn.pdf_url && !sn.isLocked && (
+                        {openPdfUrl === sn.pdf_url && (isEnrolled || !sn.isLocked) && (
                           <div style={{ height: 600, background: '#f5f5f5', borderTop: '1px solid var(--gray-100)' }}>
                             <iframe
                               src={toPdfViewer(sn.pdf_url)}
@@ -192,10 +230,10 @@ export default function NoteDetailPage() {
             <EnrollModal
               plan={enrollModal.plan}
               courseTitle={enrollModal.title}
-              enroll_type="notes-wise"
+              enroll_type="notes"
               onClose={() => setEnrollModal(null)}
               onSuccess={data => {
-                setDetail(prev => prev ? { ...prev, isEnrolled: true, expiry_date: data?.expiry_date } : prev);
+                setDetail(prev => ({ ...(prev || {}), isEnrolled: true, expiry_date: data?.expiry_date }));
                 setSubjectNotes(prev => prev.map(sn => ({ ...sn, isLocked: false })));
                 setEnrollModal(null);
               }}

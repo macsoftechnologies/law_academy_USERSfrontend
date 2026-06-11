@@ -1,0 +1,114 @@
+.notifications-page {
+  padding: 2rem;
+  background-color: var(--bg-body, #f8f9fa);
+  min-height: calc(100vh - 70px);
+}
+
+.notifications-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: var(--bg-card, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+}
+
+.notifications-title {
+  font-size: 1.8rem;
+  color: var(--text-dark, #2c3e50);
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color, #eaeaea);
+  padding-bottom: 1rem;
+}
+
+.notifications-loading,
+.notifications-error,
+.notifications-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted, #7f8c8d);
+  font-size: 1.1rem;
+}
+
+.notifications-error {
+  color: #e74c3c;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notification-card {
+  display: flex;
+  align-items: flex-start;
+  padding: 1.25rem;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+  border: 1px solid var(--border-color, #eaeaea);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.notification-card:hover {
+  background-color: #f5f7fa;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.notification-card.unread {
+  background-color: #f0f7ff;
+  border-color: #cce3ff;
+}
+
+.notification-card.unread:hover {
+  background-color: #e6f2ff;
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  background: var(--gold-pale, #fff9e6);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark, #2c3e50);
+  margin: 0 0 0.5rem 0;
+}
+
+.notification-message {
+  font-size: 0.95rem;
+  color: var(--text-muted, #596b7d);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: #95a5a6;
+}
+
+.notification-unread-dot {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 10px;
+  height: 10px;
+  background-color: #3498db;
+  border-radius: 50%;
+}

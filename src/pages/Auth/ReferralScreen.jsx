@@ -14,12 +14,14 @@ export default function ReferralScreen() {
 
   const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return {}; } })();
   const myCode = user?.referral_code || '';
+  const userId = localStorage.getItem('userId') || user?.userId;
 
   const handleClaim = async () => {
     if (!code.trim()) { setToast({ type:'error', msg:'Enter a referral code' }); return; }
+    if (!userId) { setToast({ type:'error', msg:'User session missing. Please login again.' }); return; }
     setLd(true);
     try {
-      const res = await claimReferral({ referral_code: code.trim() });
+      const res = await claimReferral({ userId, referred_by: code.trim() });
       if (res.statusCode === 200) {
         setToast({ type:'success', msg:'Referral claimed successfully!' });
         setTimeout(()=>navigate('/dashboard'),1500);
@@ -49,10 +51,10 @@ export default function ReferralScreen() {
 
             {myCode && (
               <div style={{ marginBottom:'1.5rem' }}>
-                <p style={{ fontSize:'.78rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'.08em', color:'var(--gray-500)', marginBottom:'.5rem' }}>Your Referral Code</p>
+                {/* <p style={{ fontSize:'.78rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'.08em', color:'var(--gray-500)', marginBottom:'.5rem' }}>Your Referral Code</p>
                 <div className="referral-code-wrap">
                   <div className="referral-code">{myCode}</div>
-                </div>
+                </div> */}
               </div>
             )}
 
