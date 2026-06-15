@@ -29,12 +29,13 @@ export default function SubjectLawTabs() {
             (s) => String(s.subjectId) === String(subjectId)
           );
 
-          const firstLaw =
+          const rawLaw =
             current?.law_id?.[0]?.title ||
             data?.[0]?.law_id?.[0]?.title ||
             "";
 
-          setActiveLaw(firstLaw);
+          const isCriminal = rawLaw.toLowerCase().includes("criminal");
+          setActiveLaw(isCriminal ? "Criminal Laws" : "Civil Laws");
         }
       })
       .catch(console.error)
@@ -42,14 +43,24 @@ export default function SubjectLawTabs() {
   }, [subjectId]);
 
   const groupedByLaw = useMemo(() => {
-    const grouped = {};
+    const grouped = {
+      "Civil Laws": [],
+      "Criminal Laws": []
+    };
 
     subjects.forEach((subject) => {
-      const lawTitle = subject?.law_id?.[0]?.title || "Others";
-
-      if (!grouped[lawTitle]) grouped[lawTitle] = [];
-      grouped[lawTitle].push(subject);
+      const lawTitle = (subject?.law_id?.[0]?.title || "").toLowerCase();
+      
+      if (lawTitle.includes("criminal")) {
+        grouped["Criminal Laws"].push(subject);
+      } else {
+        grouped["Civil Laws"].push(subject);
+      }
     });
+
+    // Clean up empty tabs
+    if (grouped["Civil Laws"].length === 0) delete grouped["Civil Laws"];
+    if (grouped["Criminal Laws"].length === 0) delete grouped["Criminal Laws"];
 
     return grouped;
   }, [subjects]);

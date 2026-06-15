@@ -14,7 +14,12 @@ export default function ForgotPassword() {
   const [toast, setToast] = useState(null);
 
   const handleSendOtp = async () => {
-    if (!value.trim()) { setError('Email or Phone is required'); return; }
+    if (!value.trim()) { setError('Email or Phone number is required'); return; }
+    // If input looks like a phone number (all digits), apply phone rules
+    if (/^\d+$/.test(value.trim())) {
+      if (value.trim().length !== 10) { setError('Phone number must be exactly 10 digits'); return; }
+      if (!/^[6-9]/.test(value.trim())) { setError('Enter a valid phone number'); return; }
+    }
     setError('');
     setToast(null);
     setLoading(true);
@@ -52,7 +57,12 @@ export default function ForgotPassword() {
             <div className="field">
               <label>Email or Phone Number</label>
               <input type="text" placeholder="Enter email or 10-digit phone" value={value}
-                onChange={e=>{ setValue(e.target.value); setError(''); }} />
+                onChange={e=>{ 
+                  let v = e.target.value;
+                  // If typing digits only, cap at 10
+                  if (/^\d+$/.test(v)) v = v.slice(0, 10);
+                  setValue(v); setError(''); 
+                }} />
               {error && <span className="field-error">{error}</span>}
             </div>
             <button className="btn btn-primary btn-full" style={{ marginTop:'.5rem' }} onClick={handleSendOtp} disabled={loading}>

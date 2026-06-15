@@ -42,6 +42,12 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [cur, setCur] = useState(0);
 
+  // If user already has a session, send them to dashboard instead of login
+  const goToApp = () => {
+    const token = localStorage.getItem('token');
+    navigate(token ? '/dashboard' : '/login');
+  };
+
   useEffect(() => {
     const t = setInterval(() => setCur(p => (p+1) % slides.length), 4500);
     return () => clearInterval(t);
@@ -62,10 +68,10 @@ export default function LandingPage() {
         <div className="lp-navbar-links">
           <a href="#about">About Us</a>
           <a href="#why">Why Us</a>
-          <a href="#testimonials">Testimonials</a>
+          {/* <a href="#testimonials">Testimonials</a> */}
           <a href="#contact">Contact</a>
         </div>
-        <button className="btn btn-gold btn-sm" onClick={() => navigate('/login')}>Login</button>
+        <button className="btn btn-gold btn-sm" onClick={goToApp}>Login</button>
       </nav>
 
       {/* CAROUSEL */}
@@ -83,7 +89,7 @@ export default function LandingPage() {
                 <h1>{s.title}</h1>
                 <p>{s.desc}</p>
                 <div className="lp-slide-btns">
-                  <button className="btn btn-gold btn-lg" onClick={() => navigate('/login')}>Get Started</button>
+                  <button className="btn btn-gold btn-lg" onClick={goToApp}>Get Started</button>
                   {/* <button className="btn btn-outline btn-lg" style={{ color:'var(--cream)', borderColor:'rgba(255,255,255,.3)' }}>Learn More</button> */}
                 </div>
               </div>
@@ -196,7 +202,7 @@ export default function LandingPage() {
         <div className="lp-cta-ring lp-cta-ring-1"/><div className="lp-cta-ring lp-cta-ring-2"/>
         <h2>Ready to Start <em>Your Journey?</em></h2>
         <p>Join 50,000+ learners already building their future with Rao's Law Academy. Login to explore all courses.</p>
-        <button className="btn btn-gold btn-lg" onClick={() => navigate('/login')}>Login & Explore</button>
+        <button className="btn btn-gold btn-lg" onClick={goToApp}>Login & Explore</button>
       </section>
 
       {/* FOOTER */}

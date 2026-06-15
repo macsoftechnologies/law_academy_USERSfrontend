@@ -43,6 +43,7 @@ export default function Cart() {
   };
 
   const remove = async (cartItemId) => {
+    if (!window.confirm("Are you sure you want to remove this item from your cart?")) return;
     try {
       await removeFromCart(userId, cartItemId);
       setCart(c => c.filter(i => i.cartItemId !== cartItemId));

@@ -79,7 +79,7 @@ export default function Dashboard() {
                   </>
                 );
               })()}
-              <BestSellerSection subjects={data.subjects} />
+              {/* <BestSellerSection subjects={data.subjects} /> */}
               <ComboSection subjects={data.subjects} />
             </div>
           )}

@@ -112,7 +112,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, o
         if (onSuccess) onSuccess(res.data);
         setTimeout(() => {
           onClose();
-        }, 1500);
+        }, 2500);
       } else {
         setError(res?.message || 'Enrollment failed. Please try again.');
       }
@@ -144,9 +144,14 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, o
             </div>
           )}
           {success ? (
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
               <div className="result-icon">🎉</div>
-              <h3>Enrolled Successfully!</h3>
+              <h3 style={{ color: 'var(--navy)', marginBottom: '.4rem' }}>Enrolled Successfully!</h3>
+              <p style={{ color: 'var(--gray-500)', fontSize: '.875rem', marginBottom: '1rem' }}>
+                You're now enrolled in <strong>{courseTitle}</strong>.<br />
+                Head to your dashboard to start learning.
+              </p>
+              <button className="btn btn-gold" onClick={onClose}>Go to Dashboard</button>
             </div>
           ) : (
             <>

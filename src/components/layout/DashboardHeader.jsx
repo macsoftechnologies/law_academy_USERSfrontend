@@ -15,7 +15,8 @@ const NAV = [
 const MENU = [
   { icon:'👤', label:'Profile',            path:'/dashboard/profile',   action: null },
   { icon:'🎓', label:'My Courses',         path:'/dashboard/my-courses',action: null },
-  { icon:'⬇️', label:'My Downloads',       path:'/dashboard/downloads', action: null },
+  { icon:'📊', label:'Marks Dashboard',    path:'/dashboard/marks',     action: null },
+  // { icon:'⬇️', label:'My Downloads',       path:'/dashboard/downloads', action: null },
   { icon:'💳', label:'Billing & Payments', path:'/dashboard/payments',  action: null },
   { icon:'❤️', label:'Wishlist',           path:'/dashboard/wishlist',  action: null },
   { icon:'🛒', label:'My Cart',            path:'/dashboard/cart',      action: null },

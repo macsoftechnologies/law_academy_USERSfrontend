@@ -11,8 +11,9 @@ function validate(f) {
   if (!f.name.trim()) e.name = 'Name is required';
   if (!f.email.trim()) e.email = 'Email is required';
   else if (!/\S+@\S+\.\S+/.test(f.email)) e.email = 'Enter a valid email';
-  if (!f.phone.trim()) e.phone = 'Phone is required';
-  else if (!/^\d{10}$/.test(f.phone)) e.phone = 'Enter valid 10-digit number';
+  if (!f.phone.trim()) e.phone = 'Phone number is required';
+  else if (!/^\d{10}$/.test(f.phone)) e.phone = 'Phone number must be exactly 10 digits';
+  else if (!/^[6-9]/.test(f.phone)) e.phone = 'Enter a valid phone number';
   if (!f.password.trim()) e.password = 'Password is required';
   else if (f.password.length < 6) e.password = 'Minimum 6 characters';
   if (f.password !== f.confirm) e.confirm = 'Passwords do not match';
@@ -77,7 +78,7 @@ export default function RegisterPage() {
               </div>
               <div className="field">
                 <label>Phone Number</label>
-                <input type="tel" placeholder="10-digit number" value={f.phone} onChange={e=>set('phone',e.target.value)} />
+                <input type="tel" placeholder="10-digit mobile number" value={f.phone} maxLength={10} onChange={e=>set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))} />
                 {errors.phone && <span className="field-error">{errors.phone}</span>}
               </div>
               <div className="field">

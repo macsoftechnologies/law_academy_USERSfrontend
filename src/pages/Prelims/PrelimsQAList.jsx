@@ -258,7 +258,7 @@ export default function PrelimsQAList() {
                               </div>
                             </div>
                             
-                            <button
+                            {/* <button
                               className="btn btn-outline btn-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -267,7 +267,7 @@ export default function PrelimsQAList() {
                               style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderColor: 'var(--gold)', color: 'var(--gold)', width: '100%' }}
                             >
                               📊 Marks
-                            </button>
+                            </button> */}
                           </div>
                         )}
 

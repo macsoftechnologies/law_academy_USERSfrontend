@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import Loader from '../../../components/common/Loader';
 import { getReferralStats, convertToCoupon } from '../../../api/referrals';
-import { getAllCoupons } from '../../../api/enroll/enrollApi_addition';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
@@ -11,13 +10,15 @@ import '../../../styles/layout.css';
 export default function Referrals() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [couponCopiedIndex, setCouponCopiedIndex] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [myCoupons, setMyCoupons] = useState([]);
   
   // Convert to coupon state
   const [showConvertModal, setShowConvertModal] = useState(false);
   const [convertAmount, setConvertAmount] = useState('');
+  const [convertError, setConvertError] = useState('');
   const [convertLoading, setConvertLoading] = useState(false);
   const [generatedCoupon, setGeneratedCoupon] = useState('');
   const [toast, setToast] = useState(null);
@@ -39,14 +40,6 @@ export default function Referrals() {
       if (res?.data) {
         setStats(res.data);
       }
-      
-      // Fetch user's generated coupons
-      const cRes = await getAllCoupons(1, 100);
-      if (cRes?.statusCode === 200 && cRes?.data?.length) {
-        // Filter coupons that belong to this user and start with 'REF-'
-        const userCoupons = cRes.data.filter(c => c.userId === userId && c.coupon_code.startsWith('REF-'));
-        setMyCoupons(userCoupons);
-      }
     } catch (err) {
       console.error("Failed to fetch referral stats:", err);
     } finally {
@@ -61,23 +54,21 @@ export default function Referrals() {
   const handleConvert = async () => {
     const amt = Number(convertAmount);
     if (!amt || amt <= 0) {
-      setToast({ type: 'error', msg: "Please enter a valid amount" });
-      setTimeout(() => setToast(null), 3000);
+      setConvertError("Please enter a valid amount.");
       return;
     }
     if (amt > (stats?.earningsRemaining || 0)) {
-      setToast({ type: 'error', msg: "Insufficient referral balance." });
-      setTimeout(() => setToast(null), 3000);
+      setConvertError(`Insufficient balance. Max available: ₹${stats?.earningsRemaining || 0}`);
       return;
     }
     try {
+      setConvertError('');
       setConvertLoading(true);
       const res = await convertToCoupon(userId, amt);
       setShowConvertModal(false);
       setConvertAmount('');
       
       if (res?.statusCode === 200 || res?.success) {
-        // Parse the newly generated coupon from the updated API response structure
         const code = res?.data?.coupon?.coupon_code || res?.data?.claim?.coupon_code || res?.data?.coupon_code || res?.coupon_code || 'COUPON_GENERATED';
         setGeneratedCoupon(code);
         fetchStats();
@@ -94,9 +85,22 @@ export default function Referrals() {
     }
   };
 
+  const copyCoupon = (text, index) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      setCouponCopiedIndex(index);
+      setTimeout(() => setCouponCopiedIndex(null), 2000);
+    });
+  };
+
   const copy = (text) => {
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+  };
+
+  const copyLink = (text) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => { setLinkCopied(true); setTimeout(() => setLinkCopied(false), 2000); });
   };
 
   return (
@@ -180,7 +184,7 @@ export default function Referrals() {
                   <button 
                     className="btn btn-primary" 
                     disabled={(stats?.earningsRemaining || 0) <= 0}
-                    onClick={() => setShowConvertModal(true)}
+                    onClick={() => { setConvertError(''); setConvertAmount(''); setShowConvertModal(true); }}
                   >
                     Convert to Coupon
                   </button>
@@ -200,17 +204,18 @@ export default function Referrals() {
                   <div key={i}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem' }}>
                       <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: 'var(--navy)', color: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '.85rem', flexShrink: 0 }}>
-                        {r.referredUserName?.[0] || 'U'}
+                        {r.referredName?.[0]?.toUpperCase() || 'U'}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: '.875rem', color: 'var(--navy)' }}>{r.referredUserName || 'User'}</div>
-                        <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{r.date ? new Date(r.date).toLocaleDateString() : '—'}</div>
+                        <div style={{ fontWeight: 700, fontSize: '.875rem', color: 'var(--navy)' }}>{r.referredName || 'User'}</div>
+                        <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{r.referredEmail || ''}</div>
+                        <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '—'}</div>
                       </div>
-                      <span style={{ fontSize: '.72rem', fontWeight: 700, padding: '.18rem .55rem', borderRadius: 'var(--radius-full)', background: r.status === 'Purchased' ? 'var(--success-bg)' : 'var(--gold-pale)', color: r.status === 'Purchased' ? 'var(--success)' : 'var(--maroon)' }}>
-                        {r.status || 'Signed Up'}
+                      <span style={{ fontSize: '.72rem', fontWeight: 700, padding: '.18rem .55rem', borderRadius: 'var(--radius-full)', background: r.amount ? 'var(--success-bg)' : 'var(--gold-pale)', color: r.amount ? 'var(--success)' : 'var(--maroon)' }}>
+                        {r.amount ? 'Purchased' : 'Signed Up'}
                       </span>
-                      <div style={{ fontWeight: 800, fontSize: '.9rem', color: r.amountEarned ? 'var(--success)' : 'var(--gray-400)', minWidth: 55, textAlign: 'right' }}>
-                        {r.amountEarned ? `+₹${r.amountEarned}` : '—'}
+                      <div style={{ fontWeight: 800, fontSize: '.9rem', color: r.amount ? 'var(--success)' : 'var(--gray-400)', minWidth: 55, textAlign: 'right' }}>
+                        {r.amount ? `+₹${r.amount}` : '—'}
                       </div>
                     </div>
                     {i < stats.referrals.length - 1 && <div style={{ height: 1, background: 'var(--gray-100)', margin: '0 1.25rem' }} />}
@@ -226,22 +231,28 @@ export default function Referrals() {
               <div className="card" style={{ position: 'sticky', top: 'calc(var(--header-h) + 1.5rem)' }}>
                 <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>My Active Coupons</span>
-                  <span style={{ fontSize: '.75rem', fontWeight: 700, background: 'var(--gold-pale)', color: 'var(--maroon)', padding: '.1rem .5rem', borderRadius: 'var(--radius-full)' }}>{myCoupons.length}</span>
+                  <span style={{ fontSize: '.75rem', fontWeight: 700, background: 'var(--gold-pale)', color: 'var(--maroon)', padding: '.1rem .5rem', borderRadius: 'var(--radius-full)' }}>{stats?.claims?.length || 0}</span>
                 </div>
                 <div className="card-body">
-                  {myCoupons.length === 0 ? (
+                  {(!stats?.claims || stats.claims.length === 0) ? (
                     <div style={{ fontSize: '.85rem', color: 'var(--gray-500)', textAlign: 'center', padding: '1rem 0' }}>
                       Convert your earnings to get coupons.
                     </div>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-                      {myCoupons.map((c, i) => (
+                      {stats.claims.map((c, i) => (
                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--gray-50)', padding: '.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
                           <div>
                             <div style={{ fontFamily: 'monospace', fontSize: '.9rem', fontWeight: 800, color: 'var(--navy)' }}>{c.coupon_code}</div>
-                            <div style={{ fontSize: '.7rem', color: 'var(--success)', fontWeight: 600 }}>₹{c.offer_amount || 0} OFF</div>
+                            <div style={{ fontSize: '.7rem', color: 'var(--success)', fontWeight: 600 }}>₹{c.amount || 0} OFF</div>
                           </div>
-                          <button className="btn btn-outline btn-sm" style={{ padding: '.25rem .5rem', fontSize: '.7rem' }} onClick={() => copy(c.coupon_code)}>Copy</button>
+                          <button
+                            className="btn btn-outline btn-sm"
+                            style={{ padding: '.25rem .5rem', fontSize: '.7rem', minWidth: 52, transition: 'background .2s', background: couponCopiedIndex === i ? 'var(--success-bg)' : undefined, color: couponCopiedIndex === i ? 'var(--success)' : undefined }}
+                            onClick={() => copyCoupon(c.coupon_code, i)}
+                          >
+                            {couponCopiedIndex === i ? '✅ Copied' : 'Copy'}
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -256,7 +267,19 @@ export default function Referrals() {
                   {refLink ? (
                   <>
                     <div style={{ background: 'var(--gray-50)', borderRadius: 'var(--radius-md)', padding: '.65rem .85rem', fontSize: '.75rem', color: 'var(--gray-600)', wordBreak: 'break-all', fontFamily: 'monospace' }}>{refLink}</div>
-                    <button className="btn btn-primary btn-full" onClick={() => copy(refLink)}>📋 Copy Referral Link</button>
+                    <button
+                      className="btn btn-full"
+                      onClick={() => copyLink(refLink)}
+                      style={{
+                        background: linkCopied ? 'var(--success, #16a34a)' : 'var(--navy)',
+                        color: 'white',
+                        border: 'none',
+                        transition: 'background .3s',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {linkCopied ? '✅ Link Copied!' : '📋 Copy Referral Link'}
+                    </button>
                   </>
                 ) : (
                   <div style={{ fontSize: '.85rem', color: 'var(--gray-500)', textAlign: 'center' }}>No referral link available.</div>
@@ -298,14 +321,19 @@ export default function Referrals() {
               className="field input" 
               placeholder="Amount (e.g. 500)"
               value={convertAmount}
-              onChange={e => setConvertAmount(e.target.value)}
-              style={{ marginBottom: '1.5rem' }}
+              onChange={e => { setConvertAmount(e.target.value); setConvertError(''); }}
+              style={{ marginBottom: convertError ? '.5rem' : '1.5rem' }}
               min={1}
               max={stats?.earningsRemaining || 0}
             />
+            {convertError && (
+              <div style={{ color: 'var(--error, #dc2626)', fontSize: '.8rem', fontWeight: 600, marginBottom: '1rem', background: 'rgba(220,38,38,.08)', borderRadius: 'var(--radius-sm)', padding: '.4rem .75rem' }}>
+                ⚠️ {convertError}
+              </div>
+            )}
             <div className="logout-actions">
-              <button className="cancel-btn" onClick={() => setShowConvertModal(false)} disabled={convertLoading}>Cancel</button>
-              <button className="confirm-btn" onClick={handleConvert} disabled={convertLoading || !convertAmount || Number(convertAmount) > (stats?.earningsRemaining || 0)}>
+              <button className="cancel-btn" onClick={() => { setShowConvertModal(false); setConvertError(''); }} disabled={convertLoading}>Cancel</button>
+              <button className="confirm-btn" onClick={handleConvert} disabled={convertLoading || !convertAmount}>
                 {convertLoading ? 'Converting...' : 'Convert'}
               </button>
             </div>

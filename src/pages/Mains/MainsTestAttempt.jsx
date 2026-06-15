@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import { submitMainsSubjectAttempt } from '../../api/mains/mainsApi';
+import { updateMarksProgress } from '../../api/marksDashboard';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
@@ -66,6 +67,11 @@ export default function MainsTestAttempt() {
       }
       clearInterval(timerRef.current);
       setSubmitted(true);
+      // Track mains exam completion
+      const userId = localStorage.getItem('userId');
+      if (userId && mainsId) {
+        updateMarksProgress(userId, mainsId, subjectTestId || testId, 'mains', 'civil', true).catch(() => {});
+      }
     } catch (error) {
       console.error('[Mains Attempt UI] Submit failed', {
         message: error?.message,

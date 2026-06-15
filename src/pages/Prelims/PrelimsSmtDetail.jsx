@@ -333,7 +333,7 @@ export default function PrelimsSmtDetail() {
                               >
                                 {attempts > 0 ? '▶ Retake' : '▶ Start'}
                               </button>
-                              <button
+                              {/* <button
                                 className="btn btn-outline btn-sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -342,7 +342,7 @@ export default function PrelimsSmtDetail() {
                                 style={{ flex: 1, padding: '0.25rem', borderColor: 'var(--gold)', color: 'var(--gold)' }}
                               >
                                 📊 Marks
-                              </button>
+                              </button> */}
                             </div>
                           )}
                       </div>

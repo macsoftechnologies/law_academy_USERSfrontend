@@ -49,7 +49,7 @@ export default function TestAttemptHistory() {
     if (!testId) return;
     setLoading(true);
     getUserTestAttempts(testId)
-      .then(r => {
+      .then(async (r) => {
         if (r?.statusCode === 200) {
           const arr = Array.isArray(r.data) ? r.data : [];
           setAttempts(arr);
@@ -57,6 +57,24 @@ export default function TestAttemptHistory() {
             setResolvedTest(arr[0].testInfo);
             setResolvedCategory(arr[0].testInfo.title || categoryLabel);
           }
+          // Auto-fetch detail for every attempt so summary row shows real data
+          const detailMap = {};
+          await Promise.all(arr.map(async (attempt) => {
+            const id = attempt.prelimes_attempt_id || attempt.attempt_id || attempt.id || attempt._id;
+            if (!id) return;
+            // If the attempt object already includes the result, use it directly
+            if (attempt.result) {
+              detailMap[id] = attempt.result;
+              return;
+            }
+            try {
+              const res = await getPrelimsResult({ attemptId: id });
+              if (res?.statusCode === 200) {
+                detailMap[id] = Array.isArray(res.data) ? res.data[0] : res.data;
+              }
+            } catch { /* silent */ }
+          }));
+          setDetailData(detailMap);
         }
       })
       .catch(() => {})
@@ -64,7 +82,7 @@ export default function TestAttemptHistory() {
   }, [testId]);
 
   const handleAttemptClick = async (attempt) => {
-    const id = attempt.prelimes_attempt_id || attempt.attempt_id || attempt.id;
+    const id = attempt.prelimes_attempt_id || attempt.attempt_id || attempt.id || attempt._id;
     if (!id) return;
 
     if (expandedId === id) {
@@ -155,23 +173,31 @@ export default function TestAttemptHistory() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
               {attempts.map((attempt, i) => {
-                const id          = attempt.prelimes_attempt_id || attempt.attempt_id || attempt.id || i;
-                const attNum      = attempt.attempt_number ?? attempt.attempt_no ?? (i + 1);
-                const submittedAt = attempt.submitted_at ?? attempt.createdAt ?? attempt.created_at;
+                const id          = attempt.prelimes_attempt_id || attempt.attempt_id || attempt.id || attempt._id || i;
+                const attNum      = attempt.attemptNumber ?? attempt.attempt_number ?? attempt.attempt_no ?? (i + 1);
+                const submittedAt = attempt.submittedAt ?? attempt.submitted_at ?? attempt.createdAt ?? attempt.created_at;
                 const status      = attempt.status ?? 'submitted';
 
                 // Parse score from string "1/4" or separate fields
                 const { correct: parsedCorrect, total: parsedTotal } = parseScoreString(attempt.score);
-                const attTotal   = attempt.total_questions ?? parsedTotal ?? 0;
-                const attCorrect = attempt.correct_answers ?? attempt.correct_count ?? attempt.correct ?? parsedCorrect ?? 0;
-                const attWrong   = attempt.wrong_answers   ?? attempt.wrong_count   ?? attempt.wrong   ?? 0;
-                const attSkipped = attempt.skipped ?? attempt.unattempted ?? 0;
-                const pct        = attempt.percentage ?? attempt.score_percentage ?? 0;
+                const resObj     = attempt.result || {};
+                const attTotal   = resObj.totalQuestions ?? attempt.total_questions ?? parsedTotal ?? 0;
+                const attCorrect = resObj.correct ?? attempt.correct_answers ?? attempt.correct_count ?? attempt.correct ?? parsedCorrect ?? 0;
+                const attWrong   = resObj.wrong ?? attempt.wrong_answers   ?? attempt.wrong_count   ?? attempt.wrong   ?? 0;
+                const attSkipped = resObj.skipped ?? attempt.skipped ?? attempt.unattempted ?? 0;
+                const pct        = resObj.percentage ?? attempt.percentage ?? attempt.score_percentage ?? 0;
                 const rankC      = getRankColor(pct);
+
+                const attTimeSpent = resObj.timeSpent ?? attempt.timeSpent ?? 0;
+                const attAccuracy  = resObj.accuracy ?? attempt.accuracy ?? 0;
+                const attRank      = resObj.rank ?? attempt.rank;
+                const attTotalParticipants = resObj.totalParticipants ?? attempt.totalParticipants;
+                const attPercentile = resObj.percentile ?? attempt.percentile;
 
                 const isExpanded  = expandedId === id;
                 const detail      = detailData[id];
                 const isPending   = isExpanded && detailLoading && !detail;
+                const detailReady = !!detail;
 
                 // Use detail data if expanded + loaded, else use list data
                 const dispCorrect = detail
@@ -187,6 +213,24 @@ export default function TestAttemptHistory() {
                   ? (detail.percentage ?? detail.score_percentage ?? pct)
                   : pct;
                 const dispRankC   = getRankColor(dispPct);
+
+                const dispTimeSpent = detail ? (detail.timeSpent ?? attTimeSpent) : attTimeSpent;
+                const dispAccuracy  = detail ? (detail.accuracy ?? attAccuracy) : attAccuracy;
+                const dispRank      = detail ? (detail.rank ?? attRank) : attRank;
+                const dispParticipants = detail ? (detail.totalParticipants ?? attTotalParticipants) : attTotalParticipants;
+                const dispPercentile = detail ? (detail.percentile ?? attPercentile) : attPercentile;
+
+                const detailCards = [
+                  { label: 'Correct',   value: dispCorrect,                       icon: '✅', color: '#16a34a' },
+                  { label: 'Wrong',     value: dispWrong,                          icon: '❌', color: '#dc2626' },
+                  { label: 'Skipped',   value: dispSkipped >= 0 ? dispSkipped : '—', icon: '⏭', color: 'var(--gray-500)' },
+                  { label: 'Score',     value: `${dispPct}%`,                      icon: '📊', color: dispRankC },
+                  { label: 'Marks',     value: `${dispCorrect}/${attTotal || '—'}`, icon: '🏅' },
+                  { label: 'Accuracy',  value: `${dispAccuracy}%`,                 icon: '🎯', color: 'var(--navy)' },
+                  { label: 'Time (min)',value: dispTimeSpent ? dispTimeSpent.toFixed(1) : '—', icon: '⏱️', color: 'var(--navy)' },
+                ];
+                if (dispRank != null) detailCards.push({ label: 'Rank', value: `${dispRank}${dispParticipants ? `/${dispParticipants}` : ''}`, icon: '🏆', color: 'var(--gold)' });
+                if (dispPercentile != null) detailCards.push({ label: 'Percentile', value: dispPercentile, icon: '📈', color: 'var(--navy)' });
 
                 return (
                   <div
@@ -238,29 +282,25 @@ export default function TestAttemptHistory() {
                       {/* Stats: correct / wrong / score */}
                       <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
                         <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontWeight: 800, color: '#16a34a', fontSize: '1rem' }}>{attCorrect}</div>
+                          <div style={{ fontWeight: 800, color: '#16a34a', fontSize: '1rem' }}>{dispCorrect}</div>
                           <div style={{ fontSize: '.68rem', color: 'var(--gray-500)' }}>Correct</div>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontWeight: 800, color: '#dc2626', fontSize: '1rem' }}>{attWrong}</div>
+                          <div style={{ fontWeight: 800, color: '#dc2626', fontSize: '1rem' }}>{dispWrong}</div>
                           <div style={{ fontSize: '.68rem', color: 'var(--gray-500)' }}>Wrong</div>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontWeight: 800, color: rankC, fontSize: '1rem' }}>{pct}%</div>
+                          <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: '1rem' }}>{dispSkipped >= 0 ? dispSkipped : '—'}</div>
+                          <div style={{ fontSize: '.68rem', color: 'var(--gray-500)' }}>Skipped</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontWeight: 800, color: dispRankC, fontSize: '1rem' }}>{dispPct}%</div>
                           <div style={{ fontSize: '.68rem', color: 'var(--gray-500)' }}>Score</div>
                         </div>
                       </div>
 
-                      { attempt.status && (
-                        <span style={{
-                          fontSize: '.75rem', fontWeight: 700, padding: '.2rem .6rem',
-                          borderRadius: 'var(--radius-full)',
-                          background: /pass/i.test(attempt.status) ? '#dcfce7' : /fail/i.test(attempt.status) ? '#fee2e2' : 'var(--gray-100)',
-                          color: /pass/i.test(attempt.status) ? '#16a34a' : /fail/i.test(attempt.status) ? '#dc2626' : 'var(--navy)',
-                          flexShrink: 0,
-                        }}>
-                          {attempt.status}
-                        </span>
+                      { !detailReady && (
+                        <span style={{ fontSize: '.7rem', color: 'var(--gray-400)', flexShrink: 0 }}>Loading…</span>
                       )}
 
                       <span style={{ color: 'var(--gray-400)', fontSize: '.8rem', flexShrink: 0, transition: 'transform .2s', transform: isExpanded ? 'rotate(180deg)' : 'none' }}>
@@ -277,13 +317,7 @@ export default function TestAttemptHistory() {
                           </div>
                         ) : (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: '.75rem' }}>
-                            {[
-                              { label: 'Correct',   value: dispCorrect,                       icon: '✅', color: '#16a34a' },
-                              { label: 'Wrong',     value: dispWrong,                          icon: '❌', color: '#dc2626' },
-                              { label: 'Skipped',   value: dispSkipped >= 0 ? dispSkipped : '—', icon: '⏭', color: 'var(--gray-500)' },
-                              { label: 'Score',     value: `${dispPct}%`,                      icon: '📊', color: dispRankC },
-                              { label: 'Marks',     value: `${dispCorrect}/${attTotal || '—'}`, icon: '🏅' },
-                            ].map((s) => (
+                            {detailCards.map((s) => (
                               <div key={s.label} className="card" style={{ border: '1px solid var(--gray-100)' }}>
                                 <div className="card-body" style={{ padding: '.75rem', textAlign: 'center' }}>
                                   <div style={{ fontSize: '1.2rem' }}>{s.icon}</div>

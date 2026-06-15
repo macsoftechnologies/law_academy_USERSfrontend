@@ -6,6 +6,31 @@ import { getEnrollmentDetails } from "../../../api/dashboard/dashboardApi";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+/**
+ * Maps enroll_type + course_id → the correct app route for that course.
+ */
+function getCourseRoute(enrollType, courseId) {
+  if (!courseId) return null;
+  switch ((enrollType || '').toLowerCase()) {
+    case 'prelimes':
+    case 'prelims':
+      return `/prelims/${courseId}`;
+    case 'mains':
+      return `/mains`;
+    case 'notes':
+      return `/notes/${courseId}`;
+    case 'combination':
+      return `/combos/${courseId}`;
+    case 'guest-lecture':
+    case 'guest_lecture':
+      return `/guest-lecture/${courseId}`;
+    case 'subcategory':
+    case 'full-course':
+    default:
+      return `/subcategory/${courseId}`;
+  }
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return "-";
   return new Date(dateStr).toLocaleDateString("en-IN", {
@@ -22,6 +47,7 @@ function normalizeCourse(input) {
     const planRaw = raw.planId;
     const plan = Array.isArray(planRaw) ? planRaw[0] : null;
     return {
+      courseId: input.courseId || raw.course_id || null,
       details: courseDetails,
       plan,
       meta: {
@@ -38,6 +64,7 @@ function normalizeCourse(input) {
   const planRaw = raw.planId;
   const plan = Array.isArray(planRaw) ? planRaw[0] : null;
   return {
+    courseId: raw.course_id || null,
     details: courseDetails,
     plan,
     meta: {
@@ -97,8 +124,9 @@ export default function EnrollmentDetails() {
     </div>
   );
 
-  const { details, plan, meta } = course;
+  const { details, plan, meta, courseId } = course;
   const isActive = meta?.status === "Active";
+  const courseRoute = getCourseRoute(meta?.enrollType, courseId);
 
   const infoCards = [
     { icon: "🎓", label: "Enrollment Type", value: meta?.enrollType || "-" },
@@ -474,6 +502,33 @@ export default function EnrollmentDetails() {
 
               {details?.sub_title && (
                 <p className="hero-subtitle">{details.sub_title}</p>
+              )}
+
+              {courseRoute && (
+                <button
+                  onClick={() => navigate(courseRoute)}
+                  style={{
+                    marginTop: '1.5rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '.5rem',
+                    background: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+                    color: '#0f1923',
+                    fontWeight: 700,
+                    fontSize: '.95rem',
+                    border: 'none',
+                    borderRadius: '999px',
+                    padding: '.75rem 1.75rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(251,191,36,0.35)',
+                    transition: 'transform .2s, box-shadow .2s',
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(251,191,36,0.45)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 15px rgba(251,191,36,0.35)'; }}
+                >
+                  ▶ Go to Course
+                </button>
               )}
             </div>
           </div>

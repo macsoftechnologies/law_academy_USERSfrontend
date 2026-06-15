@@ -10,6 +10,7 @@ import ResetPassword      from './pages/Auth/ResetPassword';
 import Dashboard          from './pages/Dashboard/Dashboard/Dashboard';
 import Profile            from './pages/Dashboard/Profile/Profile';
 import PrivateRoute       from './components/PrivateRoute';
+import PublicRoute        from './components/common/PublicRoute';
 import ReferralScreen     from './pages/Auth/ReferralScreen';
 import PrelimsQAList      from './pages/Prelims/PrelimsQAList';
 import AllSubjects        from './pages/Dashboard/Dashboard/Allsubjects';
@@ -45,7 +46,7 @@ import ExamList   from './pages/Exam/ExamList';
 import MockTest   from './pages/Exam/MockTest';
 import ExamResult from './pages/Exam/ExamResult';
 import MyCourses   from './pages/Dashboard/MyCourses/MyCourses';
-import MyDownloads from './pages/Dashboard/Downloads/MyDownloads';
+// import MyDownloads from './pages/Dashboard/Downloads/MyDownloads';
 import Billing     from './pages/Dashboard/Billing/Billing';
 import Wishlist    from './pages/Dashboard/Wishlist/Wishlist';
 import Cart        from './pages/Dashboard/Cart/Cart';
@@ -66,6 +67,9 @@ import OrderHistory from './pages/Notes/OrderHistory';
 import Notifications from './pages/Dashboard/Notifications/Notifications';
 import { CartWishlistProvider } from './context/CartWishlistContext';
 import MarksDashboard from './pages/Dashboard/MarksDashboard/MarksDashboard';
+import StudyAnalysis from './pages/Dashboard/MarksDashboard/StudyAnalysis';
+import PrelimsPrepDetail from './pages/Dashboard/MarksDashboard/PrelimsPrepDetail';
+import MainsPrepDetail from './pages/Dashboard/MarksDashboard/MainsPrepDetail';
 
 
 export default function App() {
@@ -73,13 +77,13 @@ export default function App() {
     <><ScrollToTop /> 
     <CartWishlistProvider>
     <Routes>
-      {/* Public */}
+      {/* Public — redirects to /dashboard if already logged in */}
       <Route path="/"               element={<LandingPage />} />
-      <Route path="/login"          element={<LoginPage />} />
-      <Route path="/register"       element={<RegisterPage />} />
-      <Route path="/signinotherway" element={<SignInOtherWay />} />
+      <Route path="/login"          element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/register"       element={<PublicRoute><RegisterPage /></PublicRoute>} />
+      <Route path="/signinotherway" element={<PublicRoute><SignInOtherWay /></PublicRoute>} />
       <Route path="/otpverify"      element={<OtpVerify />} />
-      <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route path="/forgotpassword" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
       <Route path="/resetpassword"  element={<ResetPassword />} />
       <Route path="/referral"       element={<ReferralScreen />} />
 
@@ -172,7 +176,7 @@ export default function App() {
 <Route path="/enrollment/:enrollId" element={<PrivateRoute><EnrollmentDetails /></PrivateRoute>} />
 
 
-      <Route path="/dashboard/downloads"  element={<PrivateRoute><MyDownloads /></PrivateRoute>} />
+      {/* <Route path="/dashboard/downloads"  element={<PrivateRoute><MyDownloads /></PrivateRoute>} /> */}
       <Route path="/dashboard/payments"   element={<PrivateRoute><Billing /></PrivateRoute>} />
       <Route path="/dashboard/wishlist"   element={<PrivateRoute><Wishlist /></PrivateRoute>} />
       <Route path="/dashboard/cart"       element={<PrivateRoute><Cart /></PrivateRoute>} />
@@ -182,6 +186,9 @@ export default function App() {
       <Route path="/dashboard/terms"      element={<PrivateRoute><Terms /></PrivateRoute>} />
       <Route path="/dashboard/privacy"    element={<PrivateRoute><Privacy /></PrivateRoute>} />
       <Route path="/dashboard/marks"      element={<PrivateRoute><MarksDashboard /></PrivateRoute>} />
+      <Route path="/dashboard/marks/study-analysis/:courseIndex" element={<PrivateRoute><StudyAnalysis /></PrivateRoute>} />
+      <Route path="/dashboard/marks/prelims-prep/:courseIndex"    element={<PrivateRoute><PrelimsPrepDetail /></PrivateRoute>} />
+      <Route path="/dashboard/marks/mains-prep/:courseIndex"      element={<PrivateRoute><MainsPrepDetail /></PrivateRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

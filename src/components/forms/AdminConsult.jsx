@@ -12,6 +12,7 @@ export default function AdminConsult({ onBack, details }) {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
+  const [phoneError, setPhoneError] = useState('');
 
   const [form, setForm] = useState({
     name: source?.name || "",
@@ -39,6 +40,19 @@ export default function AdminConsult({ onBack, details }) {
 
   const handleSubmit = async () => {
     if (!agreed) return;
+
+    // Validate phone if it was changed
+    if (form.mobile_number !== original.mobile_number) {
+      if (!/^\d{10}$/.test(form.mobile_number)) {
+        setPhoneError('Phone number must be exactly 10 digits');
+        return;
+      }
+      if (!/^[6-9]/.test(form.mobile_number)) {
+        setPhoneError('Enter a valid Indian mobile number (must start with 6, 7, 8 or 9)');
+        return;
+      }
+    }
+    setPhoneError('');
 
     const payload = { userId };
     if (form.name !== original.name) payload.name = form.name;
@@ -100,7 +114,13 @@ export default function AdminConsult({ onBack, details }) {
 
         <div className="field">
           <label>Phone Number</label>
-          <input value={form.mobile_number} onChange={(e) => set("mobile_number", e.target.value)} placeholder="Phone Number" />
+          <input
+            value={form.mobile_number}
+            maxLength={10}
+            onChange={(e) => { set("mobile_number", e.target.value.replace(/\D/g, '').slice(0, 10)); setPhoneError(''); }}
+            placeholder="10-digit mobile number"
+          />
+          {phoneError && <span className="field-error" style={{ color: 'var(--error, #dc2626)', fontSize: '.8rem', fontWeight: 600 }}>{phoneError}</span>}
         </div>
 
         <div className="field">

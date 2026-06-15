@@ -1,9 +1,10 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import { formatDateTime } from '../../utils/formatDate';
 import { getUserTestAttempts, getPrelimsResult } from '../../api/prelims/prelimsApi';
+import { updateMarksProgress } from '../../api/marksDashboard';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
@@ -38,6 +39,7 @@ export default function ExamResult() {
 
   const [backendResult, setBackendResult] = useState(examState?.result || null);
   const [loadingResult, setLoadingResult] = useState(!examState?.result && attemptId && attemptId !== 'no-id');
+  const progressSent = useRef(false);
 
   useEffect(() => {
     if (!examState?.result && attemptId && attemptId !== 'no-id') {
@@ -48,6 +50,16 @@ export default function ExamResult() {
         .finally(() => setLoadingResult(false));
     }
   }, [examState, attemptId]);
+
+  // Fire update-progress once when exam result is shown
+  useEffect(() => {
+    if (progressSent.current) return;
+    const userId = localStorage.getItem('userId');
+    if (!userId || !prelimsId) return;
+    progressSent.current = true;
+    const itemId = testId || prelimes_test_id || item?._id || null;
+    updateMarksProgress(userId, prelimsId, itemId, 'prelimes', 'civil', true).catch(() => {});
+  }, [prelimsId, testId, prelimes_test_id, item]);
 
   if (loadingResult) return (
     <div className="dash-shell">

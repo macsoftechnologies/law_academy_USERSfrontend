@@ -165,32 +165,41 @@ export default function MarksDashboard() {
                       {/* Overall Subject Progress */}
                       <div style={{ padding: '1rem', background: 'var(--gray-50)', borderRadius: 'var(--radius-md)' }}>
                         <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '1rem' }}>Overall Progress</div>
-                        {renderProgressBar('JCJ Course Progress', c.subjectProgress?.jcjCourseProgress || 0, 100)}
-                        {renderProgressBar('Prelims Progress', c.subjectProgress?.prelimsProgress || 0, 100)}
-                        {renderProgressBar('Mains Progress', c.subjectProgress?.mainsProgress || 0, 100)}
+                        {renderProgressBar('JCJ Full Course', c.subjectProgress?.jcjCourseProgress || 0, 100)}
+                        {renderProgressBar('Prelims Prep', c.subjectProgress?.prelimsProgress || 0, 100)}
+                        {renderProgressBar('Mains Prep', c.subjectProgress?.mainsProgress || 0, 100)}
                       </div>
 
                       {/* Study Analysis */}
-                      <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
+                      <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '1rem' }}>Study Analysis</div>
-                        {renderProgressObj(c.studyAnalysis?.videoLessons, "🎥 Video Lessons")}
-                        {renderProgressObj(c.studyAnalysis?.shortNotes, "📝 Short Notes")}
+                        <div style={{ flex: 1 }}>
+                          {renderProgressObj(c.studyAnalysis?.videoLessons, "🎥 Video Lessons")}
+                          {renderProgressObj(c.studyAnalysis?.shortNotes, "📝 Short Notes")}
+                        </div>
+                        <button className="btn btn-navy btn-sm" style={{ marginTop: '1rem', width: '100%' }} onClick={() => navigate(`/dashboard/marks/study-analysis/${i}`)}>Explore Study Analysis</button>
                       </div>
 
                       {/* Prelims & Mains Prep */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
+                        <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column' }}>
                           <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '1rem' }}>Prelims Prep</div>
-                          {renderProgressObj(c.prelimsPrep?.pyqs, "Previous Year Questions")}
-                          {renderProgressObj(c.prelimsPrep?.grandTest, "Grand Tests")}
-                          {renderProgressObj(c.prelimsPrep?.subjectMocks, "Subject Mocks")}
+                          <div style={{ flex: 1 }}>
+                            {renderProgressObj(c.prelimsPrep?.pyqs, "Previous Year Questions")}
+                            {renderProgressObj(c.prelimsPrep?.grandTest, "Grand Tests")}
+                            {renderProgressObj(c.prelimsPrep?.subjectMocks, "Subject Mocks")}
+                          </div>
+                          <button className="btn btn-navy btn-sm" style={{ marginTop: '1rem', width: '100%' }} onClick={() => navigate(`/dashboard/marks/prelims-prep/${i}`)}>Explore Prelims Prep</button>
                         </div>
 
-                        <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)' }}>
+                        <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column' }}>
                           <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '1rem' }}>Mains Prep</div>
-                          {renderProgressObj(c.mainsPrep?.mainsQA?.pdf, "Mains Q&A (PDF)")}
-                          {renderProgressObj(c.mainsPrep?.mainsQA?.video, "Mains Q&A (Video)")}
-                          {renderProgressObj(c.mainsPrep?.mainsTestSeries, "Test Series")}
+                          <div style={{ flex: 1 }}>
+                            {renderProgressObj(c.mainsPrep?.mainsQA?.pdf, "Mains Q&A (PDF)")}
+                            {renderProgressObj(c.mainsPrep?.mainsQA?.video, "Mains Q&A (Video)")}
+                            {renderProgressObj(c.mainsPrep?.mainsTestSeries, "Test Series")}
+                          </div>
+                          <button className="btn btn-navy btn-sm" style={{ marginTop: '1rem', width: '100%' }} onClick={() => navigate(`/dashboard/marks/mains-prep/${i}`)}>Explore Mains Prep</button>
                         </div>
                       </div>
 

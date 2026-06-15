@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
 import Loader from '../../../../components/common/Loader';
 import { getLectureDetail } from '../../../../api/dashboard/dashboardApi';
+import { updateMarksProgress } from '../../../../api/marksDashboard';
 import '../../../../styles/design-system.css';
 import '../../../../styles/components.css';
 import '../../../../styles/layout.css';
@@ -36,6 +37,17 @@ export default function LectureDetails() {
   const [detail,   setDetail]  = useState(null);
   const [loading,  setLoading] = useState(true);
   const [showPdf,  setShowPdf] = useState(false);
+  const videoProgressSent = useRef(false);
+  const notesProgressSent = useRef(false);
+  const userId = localStorage.getItem('userId');
+
+  const sendProgress = useCallback((activityType) => {
+    if (!detail || !userId) return;
+    const courseId = detail.subcategory_id?.[0]?._id || detail.subcategory_id?.[0] || null;
+    const lawType  = detail.lawId?.[0]?.law_type || detail.lawId?.[0]?.title || 'civil';
+    updateMarksProgress(userId, courseId, detail._id || lectureId, activityType, lawType, true)
+      .catch(() => {}); // silent fail — never block the user
+  }, [detail, userId, lectureId]);
 
   useEffect(() => {
     getLectureDetail(lectureId)
@@ -72,14 +84,28 @@ export default function LectureDetails() {
 
                 {/* ── In-page video player (never opens YouTube externally) ── */}
                 {embedUrl && (
-                  <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', background: '#000', aspectRatio: '16/9', boxShadow: 'var(--shadow-lg)' }}>
-                    <iframe
-                      src={embedUrl}
-                      title={detail.title}
-                      style={{ width: '100%', height: '100%', border: 'none' }}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
+                  <div>
+                    <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', background: '#000', aspectRatio: '16/9', boxShadow: 'var(--shadow-lg)' }}>
+                      <iframe
+                        src={embedUrl}
+                        title={detail.title}
+                        style={{ width: '100%', height: '100%', border: 'none' }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                    <button
+                      className={`btn btn-sm ${videoProgressSent.current ? 'btn-success' : 'btn-outline'}`}
+                      style={{ marginTop: '.6rem', fontSize: '.8rem' }}
+                      disabled={videoProgressSent.current}
+                      onClick={() => {
+                        if (videoProgressSent.current) return;
+                        videoProgressSent.current = true;
+                        sendProgress('video');
+                      }}
+                    >
+                      {videoProgressSent.current ? '✅ Video Marked Complete' : '✔ Mark Video as Complete'}
+                    </button>
                   </div>
                 )}
 
@@ -111,7 +137,16 @@ export default function LectureDetails() {
                   <div className="card">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span>📄 Lecture Notes</span>
-                      <button className="btn btn-outline btn-sm" onClick={() => setShowPdf(v => !v)}>
+                      <button className="btn btn-outline btn-sm" onClick={() => {
+                        setShowPdf(v => {
+                          const opening = !v;
+                          if (opening && !notesProgressSent.current) {
+                            notesProgressSent.current = true;
+                            sendProgress('notes');
+                          }
+                          return opening;
+                        });
+                      }}>
                         {showPdf ? 'Hide Notes ▲' : 'View Notes ▼'}
                       </button>
                     </div>

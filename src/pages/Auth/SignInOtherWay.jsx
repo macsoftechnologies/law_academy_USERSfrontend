@@ -14,7 +14,9 @@ export default function SignInOtherWay() {
   const [toast, setToast] = useState(null);
 
   const handleSend = async () => {
-    if (!phone.trim() || !/^\d{10}$/.test(phone)) { setError('Enter a valid 10-digit phone number'); return; }
+    if (!phone.trim()) { setError('Phone number is required'); return; }
+    if (!/^\d{10}$/.test(phone)) { setError('Phone number must be exactly 10 digits'); return; }
+    if (!/^[6-9]/.test(phone)) { setError('Enter a valid phone number'); return; }
     setError(''); setLd(true); setToast(null);
     try {
       const res = await loginAnotherWay({ mobile_number: phone });
@@ -47,8 +49,9 @@ export default function SignInOtherWay() {
             {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
             <div className="field">
               <label>Phone Number</label>
-              <input type="tel" placeholder="10-digit phone number" value={phone}
-                onChange={e=>{ setPhone(e.target.value); setError(''); }} />
+              <input type="tel" placeholder="10-digit mobile number" value={phone}
+                maxLength={10}
+                onChange={e=>{ setPhone(e.target.value.replace(/\D/g, '').slice(0, 10)); setError(''); }} />
               {error && <span className="field-error">{error}</span>}
             </div>
             <button className="btn btn-primary btn-full" style={{ marginTop:'.5rem' }} onClick={handleSend} disabled={loading}>
