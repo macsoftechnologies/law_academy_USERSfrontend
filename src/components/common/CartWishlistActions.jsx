@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addToCart } from '../../api/cart';
 import { addToWishlist, removeFromWishlist } from '../../api/wishlist';
 import { useCartWishlist } from '../../context/CartWishlistContext';
+import useToast from '../../hooks/useToast';
 
 export default function CartWishlistActions({ courseId, enrollType, planId, isEnrolled, courseTitle = '', hideCart = false, hideWishlist = false }) {
   const navigate = useNavigate();
   const { cart, wishlist, refresh } = useCartWishlist();
+  const { showToast, ToastContainer } = useToast();
   
   const [cartLoading, setCartLoading] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
@@ -40,7 +42,7 @@ export default function CartWishlistActions({ courseId, enrollType, planId, isEn
       return;
     }
     if (!planId) {
-      alert('Please select a plan first.');
+      showToast('warning', 'Please select a plan first.');
       return;
     }
     try {
@@ -54,7 +56,7 @@ export default function CartWishlistActions({ courseId, enrollType, planId, isEn
       await refresh();
     } catch (err) {
       console.error(err);
-      alert('Failed to add to cart. ' + (err.message || ''));
+      showToast('error', 'Failed to add to cart. ' + (err.message || ''));
     } finally {
       setCartLoading(false);
     }
@@ -78,14 +80,16 @@ export default function CartWishlistActions({ courseId, enrollType, planId, isEn
       await refresh();
     } catch (err) {
       console.error(err);
-      alert('Failed to update wishlist. ' + (err.message || ''));
+      showToast('error', 'Failed to update wishlist. ' + (err.message || ''));
     } finally {
       setWishlistLoading(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+    <>
+      <ToastContainer />
+      <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
       {!hideCart && (
         <button 
           className="btn btn-outline btn-sm"
@@ -122,5 +126,6 @@ export default function CartWishlistActions({ courseId, enrollType, planId, isEn
         </button>
       )}
     </div>
+    </>
   );
 }

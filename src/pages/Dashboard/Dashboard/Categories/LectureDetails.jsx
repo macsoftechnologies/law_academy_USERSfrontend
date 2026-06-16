@@ -25,12 +25,7 @@ const toYouTubeEmbed = url => {
 
 
 
-/** Wrap PDF in Google Docs Viewer */
-const toInPagePdf = url => {
-  if (!url) return null;
-  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-};
+
 
 export default function LectureDetails() {
   const { lectureId } = useParams();
@@ -42,21 +37,12 @@ export default function LectureDetails() {
   const notesProgressSent = useRef(false);
   const userId = localStorage.getItem('userId');
 
-  const sendProgress = useCallback(async (activityType) => {
+  const sendProgress = useCallback((activityType) => {
     if (!detail || !userId) return;
     const courseId = detail.subcategory_id?.[0]?._id || detail.subcategory_id?.[0] || null;
     const lawType  = detail.lawId?.[0]?.law_type || detail.lawId?.[0]?.title || 'civil';
-    const payload = { userId, courseId, itemId: detail._id || lectureId, activityType, lawType, isCompleted: true };
-    try {
-      const res = await updateMarksProgress(payload.userId, payload.courseId, payload.itemId, payload.activityType, payload.lawType, payload.isCompleted);
-      if (activityType === 'notes') {
-        alert(`[TEST POPUP]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nAPI Response:\n${JSON.stringify(res, null, 2)}`);
-      }
-    } catch (err) {
-      if (activityType === 'notes') {
-        alert(`[TEST POPUP ERROR]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nError:\n${err.message || 'Failed'}`);
-      }
-    }
+    updateMarksProgress(userId, courseId, detail._id || lectureId, activityType, lawType, true)
+      .catch(() => {}); // silent fail — never block the user
   }, [detail, userId, lectureId]);
 
   useEffect(() => {
@@ -67,7 +53,7 @@ export default function LectureDetails() {
   }, [lectureId]);
 
   const embedUrl  = toYouTubeEmbed(detail?.video_url);
-  const pdfUrl    = toInPagePdf(detail?.notes_pdf_url);
+  const pdfUrl    = detail?.notes_pdf_url;
 
   // Resolve nested populated objects
   const sub = detail ? (Array.isArray(detail.subjectId)      ? detail.subjectId[0]      : null) : null;

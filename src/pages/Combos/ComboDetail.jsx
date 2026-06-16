@@ -25,12 +25,7 @@ const toYouTubeEmbed = url => {
 
 
 
-/** Wrap PDF in Google Docs Viewer — view-only, no download */
-const toInPagePdf = url => {
-  if (!url) return null;
-  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-};
+
 
 const getNumberProp = (item, keys) => {
   if (!item) return 0;
@@ -144,17 +139,11 @@ export default function ComboDetail() {
     }))
   ).slice(0, 4);
 
-  const handleNotesScrollEnd = async (note, law) => {
+  const handleNotesScrollEnd = (note, law) => {
     const userId = localStorage.getItem('userId');
     if (!userId || !note) return;
     const courseId = comboId;
-    const payload = { userId, courseId, itemId: note._id, activityType: 'notes', lawType: law?.title || law?.law_name || 'civil', isCompleted: true };
-    try {
-      const res = await updateMarksProgress(payload.userId, payload.courseId, payload.itemId, payload.activityType, payload.lawType, payload.isCompleted);
-      alert(`[TEST POPUP]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nAPI Response:\n${JSON.stringify(res, null, 2)}`);
-    } catch (err) {
-      alert(`[TEST POPUP ERROR]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nError:\n${err.message || 'Failed'}`);
-    }
+    updateMarksProgress(userId, courseId, note._id, 'notes', law?.title || law?.law_name || 'civil', true).catch(() => {});
   };
 
   return (
@@ -438,7 +427,7 @@ export default function ComboDetail() {
                                               const locked   = courseLocked;
                                               const noteId   = note._id || `${subjKey}-note-${ni}`;
                                               const isPdfOpen = activePdf === noteId;
-                                              const pdfUrl   = !locked ? toInPagePdf(note.pdf_url) : null;
+                                              const pdfUrl   = !locked ? note.pdf_url : null;
 
                                               return (
                                                 <div key={noteId} style={{ marginBottom: '.4rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: locked ? 'var(--gray-100)' : 'var(--white)', opacity: locked ? 0.7 : 1 }}>

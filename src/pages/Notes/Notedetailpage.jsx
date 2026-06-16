@@ -14,11 +14,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 
-// Render PDF in-page via Google Docs viewer
-const toPdfViewer = url => {
-  if (!url) return null;
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-};
+
 
 export default function NoteDetailPage() {
   const { notesId } = useParams();
@@ -78,16 +74,10 @@ export default function NoteDetailPage() {
   const availablePlans = passedNote?.availablePlans || [];
   const isEnrolled = note?.isEnrolled || false;
 
-  const handleNotesScrollEnd = async (sn) => {
+  const handleNotesScrollEnd = (sn) => {
     const userId = localStorage.getItem('userId');
     if (!userId || !sn) return;
-    const payload = { userId, courseId: notesId, itemId: sn._id || notesId, activityType: 'notes', lawType: sn.law || 'civil', isCompleted: true };
-    try {
-      const res = await updateMarksProgress(payload.userId, payload.courseId, payload.itemId, payload.activityType, payload.lawType, payload.isCompleted);
-      alert(`[TEST POPUP]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nAPI Response:\n${JSON.stringify(res, null, 2)}`);
-    } catch (err) {
-      alert(`[TEST POPUP ERROR]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nError:\n${err.message || 'Failed'}`);
-    }
+    updateMarksProgress(userId, notesId, sn._id || notesId, 'notes', sn.law || 'civil', true).catch(() => {});
   };
 
   return (
@@ -231,7 +221,7 @@ export default function NoteDetailPage() {
                         {openPdfUrl === sn.pdf_url && (isEnrolled || !sn.isLocked) && (
                           <div style={{ height: 600, background: '#f5f5f5', borderTop: '1px solid var(--gray-100)' }}>
                             <iframe
-                              src={toPdfViewer(sn.pdf_url)}
+                              src={sn.pdf_url}
                               title={sn.title || 'Subject Note'}
                               style={{ width: '100%', height: '100%', border: 'none' }}
                             />

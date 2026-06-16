@@ -3,16 +3,7 @@ import api from "../axios";
 export const enrollCourse = async ({ payment_id, enroll_type, planId, coupon_code = null, final_amount = null, course_title }) => {
   const userId = localStorage.getItem("userId");
 
-  // ✅ Log what is being sent
-  console.log("Enrollment request payload →", {
-    userId,
-    payment_id,
-    enroll_type,
-    planId,
-    coupon_code,
-    final_amount,
-    course_title
-  });
+
 
   const res = await api.post("/enrollments/enroll", {
     userId,
@@ -24,8 +15,6 @@ export const enrollCourse = async ({ payment_id, enroll_type, planId, coupon_cod
     course_title
   });
 
-  // ✅ Log what is received
-  console.log("Enrollment API response →", res.data);
 
   return res.data;
 };

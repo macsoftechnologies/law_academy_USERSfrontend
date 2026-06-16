@@ -78,6 +78,8 @@ export default function DashboardHeader() {
       localStorage.removeItem('user');
       localStorage.removeItem('userId');
       localStorage.removeItem('isLoggedIn');
+      // Remove dark mode so the landing page always renders in light mode
+      document.documentElement.removeAttribute('data-theme');
       navigate('/');
     }
   };

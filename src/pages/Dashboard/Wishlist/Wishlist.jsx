@@ -5,6 +5,7 @@ import { getWishlistList, removeFromWishlist } from '../../../api/wishlist';
 import { moveFromWishlistToCart } from '../../../api/cart';
 import { getPlansByCourseId } from '../../../api/plans';
 import { useCartWishlist } from '../../../context/CartWishlistContext';
+import useToast from '../../../hooks/useToast';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
@@ -14,6 +15,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function Wishlist() {
   const navigate = useNavigate();
   const { refresh } = useCartWishlist();
+  const { showToast, ToastContainer } = useToast();
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [movingId, setMovingId] = useState(null);
@@ -53,13 +55,13 @@ export default function Wishlist() {
       refresh();
     } catch (err) {
       console.error("Failed to remove item:", err);
-      alert("Failed to remove from wishlist.");
+      showToast('error', 'Failed to remove from wishlist.');
     }
   };
 
   const handleMoveToCart = async (wishlistItemId, planId) => {
     if (!planId) {
-      alert('Plan ID is missing for this item.');
+      showToast('warning', 'Plan ID is missing for this item.');
       return;
     }
     try {
@@ -68,10 +70,10 @@ export default function Wishlist() {
       // Remove from wishlist locally after successful move
       setList(l => l.filter(i => i.wishlistItemId !== wishlistItemId));
       refresh();
-      alert('Item moved to cart successfully!');
+      showToast('success', 'Item moved to cart successfully!');
     } catch (err) {
       console.error("Failed to move to cart:", err);
-      alert("Failed to move to cart. " + (err.message || ''));
+      showToast('error', 'Failed to move to cart. ' + (err.message || ''));
     } finally {
       setMovingId(null);
     }
@@ -101,6 +103,7 @@ export default function Wishlist() {
 
   return (
     <div className="dash-shell">
+      <ToastContainer />
       <DashboardHeader />
       <div className="dash-main">
         <div className="dash-content">
@@ -191,8 +194,7 @@ export default function Wishlist() {
       </div>
       {/* Plan Selection Modal */}
       {selectedWishlistItem && (
-        console.log("DEBUG WISHLIST ITEM:", selectedWishlistItem),
-        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <div className="modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div className="card" style={{ width: '100%', maxWidth: 400, background: '#fff', padding: '1.5rem', borderRadius: 'var(--radius-lg)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
               <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Select a Plan</h3>

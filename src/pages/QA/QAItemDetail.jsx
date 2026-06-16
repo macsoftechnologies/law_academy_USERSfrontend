@@ -47,16 +47,7 @@ const toVideoEmbed = (url) => {
 
 
 
-/** Render PDF inside page */
-const toInPagePdf = (url) => {
-  if (!url) return null;
 
-  if (url.startsWith('blob:') || url.startsWith('data:')) {
-    return url;
-  }
-
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-};
 
 const SECTION_KEYS = [
   { key: 'question', label: 'Question' },
@@ -251,7 +242,7 @@ export default function QAItemDetail() {
 
                     {showPdf && !isLocked() && (
                       <iframe
-                        src={toInPagePdf(qa.pdf_url)}
+                        src={qa.pdf_url}
                         style={{ width: '100%', height: 600 }}
                       />
                     )}

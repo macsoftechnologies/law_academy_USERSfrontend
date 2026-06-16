@@ -49,19 +49,12 @@ export default function MainsTestAttempt() {
     if (!file) return;
     setSubmitError('');
     setSubmitting(true);
-    console.log('[Mains Attempt UI] Submit clicked', {
-      mainsId,
-      testId,
-      subjectTestId,
-      file: file ? { name: file.name, type: file.type, size: file.size } : null,
-    });
     try {
       const response = await submitMainsSubjectAttempt({
         mains_test_id: testId,
         mains_subject_test_id: subjectTestId,
         answer_file: file,
       });
-      console.log('[Mains Attempt UI] Submit success payload', response);
       if (response?.statusCode !== 200 && response?.statusCode !== 201) {
         throw new Error(response?.message || 'Submission failed');
       }

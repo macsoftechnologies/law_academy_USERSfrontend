@@ -43,7 +43,6 @@ function TicketList({ onSelect, onCreate }) {
     setLoading(true);
     try {
       const res = await getMyTickets({ status: status || undefined });
-      console.log('Tickets API raw response →', res);
       // Handle multiple possible response shapes
       const list =
         res?.data?.tickets ||

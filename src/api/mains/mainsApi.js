@@ -44,22 +44,6 @@ export const submitMainsSubjectAttempt = async ({ mains_subject_test_id, answer_
   formData.append("userId", userId);
   formData.append("answer_script_file", answer_file);
 
-  console.log("[Mains Submit] Request", {
-    method: "POST",
-    url: "/mains/addattempt",
-    payload: {
-      userId,
-      mains_subject_test_id,
-      answer_script_file: answer_file
-        ? {
-            name: answer_file.name,
-            type: answer_file.type,
-            size: answer_file.size,
-          }
-        : null,
-    },
-    tokenPresent: !!localStorage.getItem("token"),
-  });
 
   // API contract from src/newjson.json:
   // POST /mains/addattempt  (form-data: userId, mains_subject_test_id, answer_script_file)

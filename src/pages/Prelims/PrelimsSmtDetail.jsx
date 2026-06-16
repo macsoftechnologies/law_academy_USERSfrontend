@@ -236,7 +236,6 @@ export default function PrelimsSmtDetail() {
                           className="course-card-enrolled-badge"
                           onClick={(e) => {
                             e.stopPropagation();
-                            console.log('Attempt image badge clicked!', { prelimsId, testId, test, subjectMeta });
                             navigate(`/prelims/${prelimsId}/test/${testId}/attempts`, {
                               state: {
                                 test,
@@ -281,7 +280,6 @@ export default function PrelimsSmtDetail() {
                             className="btn btn-outline btn-sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              console.log('Attempt body button clicked!', { prelimsId, testId, test, subjectMeta });
                               navigate(`/prelims/${prelimsId}/test/${testId}/attempts`, {
                                 state: {
                                   test,

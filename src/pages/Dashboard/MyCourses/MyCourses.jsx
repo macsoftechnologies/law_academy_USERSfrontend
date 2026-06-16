@@ -72,7 +72,6 @@ export default function MyCourses() {
   }, [courses, tab, search]);
 
   const handleContinue = (course) => {
-    console.log("Continuing course:", course);
     navigate(`/enrollment/${course.id}`, { state: { course } });
   };
 

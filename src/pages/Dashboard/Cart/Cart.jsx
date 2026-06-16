@@ -4,6 +4,7 @@ import DashboardHeader from '../../../components/layout/DashboardHeader';
 import { getCartList, removeFromCart } from '../../../api/cart';
 import { useCartWishlist } from '../../../context/CartWishlistContext';
 import EnrollModal from '../../../components/common/EnrollModal';
+import useToast from '../../../hooks/useToast';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
@@ -13,6 +14,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function Cart() {
   const navigate = useNavigate();
   const { refresh } = useCartWishlist();
+  const { showToast, ToastContainer } = useToast();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEnroll, setShowEnroll] = useState(false);
@@ -50,7 +52,7 @@ export default function Cart() {
       refresh();
     } catch (err) {
       console.error("Failed to remove item:", err);
-      alert("Failed to remove item.");
+      showToast('error', 'Failed to remove item from cart.');
     }
   };
 
@@ -76,6 +78,7 @@ export default function Cart() {
 
   return (
     <div className="dash-shell">
+      <ToastContainer />
       <DashboardHeader />
       <div className="dash-main">
         <div className="dash-content">

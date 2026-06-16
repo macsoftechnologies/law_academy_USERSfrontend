@@ -34,18 +34,15 @@ export default function LecturesPage() {
 
     const fetchData = async () => {
       try {
-        console.log("👉 SUBJECT ID:", subjectId);
-        console.log("👉 USER ID:", userId);
+
 
         const lecturesRes = await getLecturesBySubject(subjectId, userId);
         const lectureList = Array.isArray(lecturesRes?.data) ? lecturesRes.data : [];
 
-        console.log("📦 LECTURES RESPONSE:", lecturesRes);
         setLectures(lectureList);
 
         try {
           const subjectRes = await getSubjectDetails(subjectId);
-          console.log("📦 SUBJECT RESPONSE:", subjectRes);
 
           const base = subjectRes?.data || null;
           if (!base) return;
@@ -129,7 +126,6 @@ export default function LecturesPage() {
               })?.expiry_date
           };
 
-          console.log("✅ MERGED SUBJECT:", mergedSubject);
           setSubject(mergedSubject);
         } catch (err) {
           console.error("❌ SUBJECT API FAILED:", err);

@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import Loader from '../../../components/common/Loader';
 import { getMarksDashboardStats, updateMarksGoal } from '../../../api/marksDashboard';
+import useToast from '../../../hooks/useToast';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
 
 export default function MarksDashboard() {
   const navigate = useNavigate();
+  const { showToast, ToastContainer } = useToast();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatingGoal, setUpdatingGoal] = useState(false);
@@ -50,10 +52,10 @@ export default function MarksDashboard() {
     try {
       setUpdatingGoal(true);
       await updateMarksGoal(userId, 0, 0, Number(studyGoalInput), Number(mcqGoalInput));
-      alert("Goal updated successfully!");
+      showToast('success', 'Goal updated successfully!');
       fetchStats();
     } catch (err) {
-      alert("Failed to update goal: " + (err.message || ""));
+      showToast('error', 'Failed to update goal: ' + (err.message || ''));
     } finally {
       setUpdatingGoal(false);
     }
@@ -89,6 +91,7 @@ export default function MarksDashboard() {
 
   return (
     <div className="dash-shell">
+      <ToastContainer />
       <DashboardHeader />
       <div className="dash-main">
         <div className="dash-content">
