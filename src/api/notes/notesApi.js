@@ -26,10 +26,10 @@ export const getPrintedNotes = async () => {
 };
 
 // POST /notes/addorder
-export const addNoteOrder = async ({ notes_id, address_id, payment_id, coupon_id, coupon_code = null, final_amount = null, payment_method }) => {
+export const addNoteOrder = async ({ notes_id, address_id, payment_id, coupon_id, coupon_code = null, final_amount = null, payment_method, planId }) => {
   const userId = localStorage.getItem('userId');
   const res = await api.post('/notes/addorder', {
-    notes_id, userId, address_id, payment_id, coupon_id, coupon_code, final_amount, payment_method
+    notes_id, userId, address_id, payment_id, coupon_id, coupon_code, final_amount, payment_method, planId
   });
   return res.data;
 };

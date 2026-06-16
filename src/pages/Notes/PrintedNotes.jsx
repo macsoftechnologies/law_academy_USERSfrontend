@@ -96,7 +96,6 @@ export default function PrintedNotes() {
       .finally(() => setLoading(false));
   }, []);
 
-  // ── calculatePrice mirrors EnrollModal ────────────────────────────────
   const handleCalculatePrice = async (couponToApply = '', note = orderNote) => {
     if (!note) return;
     const plan = note.availablePlans?.[0];
@@ -256,6 +255,7 @@ export default function PrintedNotes() {
         coupon_code:    appliedCoupon ? appliedCoupon.code : null,
         final_amount:   priceData?.final_price ?? (parseFloat(plan?.original_price || 0) + parseFloat(plan?.handling_fee || 0)),
         payment_method: payMethod,
+        planId:       plan?.planId || plan?._id,
       });
       if (res?.statusCode === 200) {
         setOrderDone(res.data?.order_id || 'success');
@@ -332,6 +332,7 @@ export default function PrintedNotes() {
                               {itemPlan.discount_percent && (
                                 <span style={{ fontSize: '.7rem', color: 'green', fontWeight: 600 }}>({itemPlan.discount_percent}% Off)</span>
                               )}
+                              
                             </>
                           ) : (
                             <span style={{ fontSize: '.75rem', color: 'var(--error)' }}>Price Unavailable</span>

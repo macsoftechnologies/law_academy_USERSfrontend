@@ -50,7 +50,7 @@ export default function Profile() {
                     <div style={{ width:80, height:80, borderRadius:'var(--radius-lg)', background:'linear-gradient(135deg,var(--navy),var(--navy-mid))', color:'var(--cream)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.6rem', fontWeight:800, margin:'0 auto' }}>
                       {ini}
                     </div>
-                    <button style={{ position:'absolute', bottom:-4, right:-4, width:26, height:26, borderRadius:'50%', background:'var(--gold)', border:'2px solid var(--white)', color:'var(--white)', fontSize:'.7rem', cursor:'pointer' }}>✏️</button>
+                    {/* <button style={{ position:'absolute', bottom:-4, right:-4, width:26, height:26, borderRadius:'50%', background:'var(--gold)', border:'2px solid var(--white)', color:'var(--white)', fontSize:'.7rem', cursor:'pointer' }}>✏️</button> */}
                   </div>
                   <div style={{ fontFamily:'var(--font-display)', fontSize:'1.1rem', color:'var(--navy)', marginBottom:'.2rem' }}>{name}</div>
                   <div style={{ fontSize:'.78rem', color:'var(--gray-400)', marginBottom:'.5rem' }}>{details?.role||'Student'}</div>

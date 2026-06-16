@@ -23,10 +23,11 @@ const toYouTubeEmbed = url => {
   return url;
 };
 
-/** Wrap any PDF URL in Google Docs Viewer so it renders inside the page */
+
+
+/** Wrap PDF in Google Docs Viewer */
 const toInPagePdf = url => {
   if (!url) return null;
-  // If already a data-URL or blob, use directly
   if (url.startsWith('data:') || url.startsWith('blob:')) return url;
   return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
 };
@@ -41,12 +42,21 @@ export default function LectureDetails() {
   const notesProgressSent = useRef(false);
   const userId = localStorage.getItem('userId');
 
-  const sendProgress = useCallback((activityType) => {
+  const sendProgress = useCallback(async (activityType) => {
     if (!detail || !userId) return;
     const courseId = detail.subcategory_id?.[0]?._id || detail.subcategory_id?.[0] || null;
     const lawType  = detail.lawId?.[0]?.law_type || detail.lawId?.[0]?.title || 'civil';
-    updateMarksProgress(userId, courseId, detail._id || lectureId, activityType, lawType, true)
-      .catch(() => {}); // silent fail — never block the user
+    const payload = { userId, courseId, itemId: detail._id || lectureId, activityType, lawType, isCompleted: true };
+    try {
+      const res = await updateMarksProgress(payload.userId, payload.courseId, payload.itemId, payload.activityType, payload.lawType, payload.isCompleted);
+      if (activityType === 'notes') {
+        alert(`[TEST POPUP]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nAPI Response:\n${JSON.stringify(res, null, 2)}`);
+      }
+    } catch (err) {
+      if (activityType === 'notes') {
+        alert(`[TEST POPUP ERROR]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nError:\n${err.message || 'Failed'}`);
+      }
+    }
   }, [detail, userId, lectureId]);
 
   useEffect(() => {

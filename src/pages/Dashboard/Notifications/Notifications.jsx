@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { getNotificationsList, markNotificationRead } from '../../../api/notifications';
+import React from 'react';
+import { useNotification } from '../../../context/NotificationContext';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
@@ -7,55 +7,11 @@ import '../../../styles/layout.css';
 import './Notifications.css';
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const user = (() => {
-    try {
-      return JSON.parse(localStorage.getItem('user'));
-    } catch {
-      return {};
-    }
-  })();
-  const userId = localStorage.getItem('userId') || user?._id || user?.id;
-
-  useEffect(() => {
-    if (userId) {
-      fetchNotifications();
-    } else {
-      setLoading(false);
-      setError("User not authenticated.");
-    }
-  }, [userId]);
-
-  const fetchNotifications = async () => {
-    try {
-      setLoading(true);
-      const res = await getNotificationsList(userId);
-      if (res?.data?.items) {
-        setNotifications(res.data.items);
-      }
-    } catch (err) {
-      console.error("Failed to fetch notifications:", err);
-      setError("Failed to load notifications.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { notifications, loading, markAsRead } = useNotification();
+  const error = null; // Removed local error state to match context simplicity
 
   const handleMarkAsRead = async (notificationId) => {
-    try {
-      await markNotificationRead(userId, notificationId);
-      // Optimistically update the UI
-      setNotifications(prev =>
-        prev.map(n =>
-          n.notificationId === notificationId ? { ...n, isRead: true } : n
-        )
-      );
-    } catch (err) {
-      console.error("Failed to mark notification as read:", err);
-    }
+    await markAsRead(notificationId);
   };
 
   if (loading) {

@@ -5,6 +5,7 @@ import Loader from '../../components/common/Loader';
 import EnrollModal from '../../components/common/EnrollModal';
 import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getComboContent, getComboPreview, getCombos } from '../../api/combo/comboApi';
+import { updateMarksProgress } from '../../api/marksDashboard';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
@@ -21,6 +22,8 @@ const toYouTubeEmbed = url => {
   } catch {}
   return url;
 };
+
+
 
 /** Wrap PDF in Google Docs Viewer — view-only, no download */
 const toInPagePdf = url => {
@@ -140,6 +143,19 @@ export default function ComboDetail() {
       noteCount: (subject.notes?.length || 0),
     }))
   ).slice(0, 4);
+
+  const handleNotesScrollEnd = async (note, law) => {
+    const userId = localStorage.getItem('userId');
+    if (!userId || !note) return;
+    const courseId = comboId;
+    const payload = { userId, courseId, itemId: note._id, activityType: 'notes', lawType: law?.title || law?.law_name || 'civil', isCompleted: true };
+    try {
+      const res = await updateMarksProgress(payload.userId, payload.courseId, payload.itemId, payload.activityType, payload.lawType, payload.isCompleted);
+      alert(`[TEST POPUP]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nAPI Response:\n${JSON.stringify(res, null, 2)}`);
+    } catch (err) {
+      alert(`[TEST POPUP ERROR]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nError:\n${err.message || 'Failed'}`);
+    }
+  };
 
   return (
     <div className="dash-shell">
@@ -430,8 +446,10 @@ export default function ComboDetail() {
                                                   <button
                                                     onClick={() => {
                                                       if (locked || !pdfUrl) return;
-                                                      setActivePdf(isPdfOpen ? null : noteId);
+                                                      const opening = !isPdfOpen;
+                                                      setActivePdf(opening ? noteId : null);
                                                       setActiveVideo(null);
+                                                      if (opening) handleNotesScrollEnd(note, law);
                                                     }}
                                                     style={{
                                                       width: '100%', display: 'flex', alignItems: 'center',

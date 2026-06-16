@@ -114,7 +114,10 @@ export default function OrderHistory() {
                           <Row label="Payment" value={order.payment_method?.toUpperCase()} />
                           <Row label="Coupon" value={order.coupon_code || null} />
                           <Row label="Date" value={date} />
-
+<Row label="Plan Price"    value={order.planId?.[0]?.original_price ? `₹${order.planId[0].original_price}` : null} />
+  {/* <Row label="Duration"      value={order.planId?.[0]?.duration || null} /> */}
+  <Row label="Handling Fee"  value={order.planId?.[0]?.handling_fee ? `₹${order.planId[0].handling_fee}` : null} />
+  <Row label="Discount"      value={order.planId?.[0]?.discount_percent ? `${order.planId[0].discount_percent}% Off` : null} />
                           {/* Address — spans full width */}
                           {addr && (
                             <div style={{ gridColumn: '1 / -1', paddingTop: '.5rem', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: '.1rem' }}>

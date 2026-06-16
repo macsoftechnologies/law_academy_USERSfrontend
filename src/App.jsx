@@ -66,6 +66,7 @@ import PrintedNotes from './pages/Notes/PrintedNotes';
 import OrderHistory from './pages/Notes/OrderHistory';
 import Notifications from './pages/Dashboard/Notifications/Notifications';
 import { CartWishlistProvider } from './context/CartWishlistContext';
+import { NotificationProvider } from './context/NotificationContext';
 import MarksDashboard from './pages/Dashboard/MarksDashboard/MarksDashboard';
 import StudyAnalysis from './pages/Dashboard/MarksDashboard/StudyAnalysis';
 import PrelimsPrepDetail from './pages/Dashboard/MarksDashboard/PrelimsPrepDetail';
@@ -75,6 +76,7 @@ import MainsPrepDetail from './pages/Dashboard/MarksDashboard/MainsPrepDetail';
 export default function App() {
   return (
     <><ScrollToTop /> 
+    <NotificationProvider>
     <CartWishlistProvider>
     <Routes>
       {/* Public — redirects to /dashboard if already logged in */}
@@ -193,6 +195,7 @@ export default function App() {
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     </CartWishlistProvider>
+    </NotificationProvider>
     </>
   );
 }

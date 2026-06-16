@@ -17,7 +17,7 @@ export default function BannerCarousel({ banners = [] }) {
           {banners.map((b,i) => (
             <div key={b.bannerId} style={{ minWidth:'100%', height:'100%', cursor:'pointer' }}
               onClick={() => window.open(b.redirect_link,'_blank','noreferrer')}>
-              <img src={`${BASE_URL}/${b.banner_file}`} alt={`Banner ${i+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              <img src={`${BASE_URL}/${b.banner_file}`} alt={`Banner ${i+1}`} style={{ width:'100%', height:'100%', objectFit:'fill' }} />
             </div>
           ))}
         </div>

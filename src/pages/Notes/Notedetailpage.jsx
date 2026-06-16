@@ -5,11 +5,14 @@ import Loader from '../../components/common/Loader';
 import EnrollModal from '../../components/common/EnrollModal';
 import CartWishlistActions from '../../components/common/CartWishlistActions';
 import { getNotesDetail, getSubjectNotes } from '../../api/notes/notesApi';
+import { updateMarksProgress } from '../../api/marksDashboard';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 
 // Render PDF in-page via Google Docs viewer
 const toPdfViewer = url => {
@@ -74,6 +77,18 @@ export default function NoteDetailPage() {
   const note = detail || passedNote;
   const availablePlans = passedNote?.availablePlans || [];
   const isEnrolled = note?.isEnrolled || false;
+
+  const handleNotesScrollEnd = async (sn) => {
+    const userId = localStorage.getItem('userId');
+    if (!userId || !sn) return;
+    const payload = { userId, courseId: notesId, itemId: sn._id || notesId, activityType: 'notes', lawType: sn.law || 'civil', isCompleted: true };
+    try {
+      const res = await updateMarksProgress(payload.userId, payload.courseId, payload.itemId, payload.activityType, payload.lawType, payload.isCompleted);
+      alert(`[TEST POPUP]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nAPI Response:\n${JSON.stringify(res, null, 2)}`);
+    } catch (err) {
+      alert(`[TEST POPUP ERROR]\n\nSent Data:\n${JSON.stringify(payload, null, 2)}\n\nError:\n${err.message || 'Failed'}`);
+    }
+  };
 
   return (
     <div className="dash-shell">
@@ -202,7 +217,11 @@ export default function NoteDetailPage() {
                           {(isEnrolled || !sn.isLocked) && sn.pdf_url && (
                             <button
                               className="btn btn-outline btn-sm"
-                              onClick={() => setOpenPdfUrl(openPdfUrl === sn.pdf_url ? null : sn.pdf_url)}
+                              onClick={() => {
+                                const opening = openPdfUrl !== sn.pdf_url;
+                                setOpenPdfUrl(opening ? sn.pdf_url : null);
+                                if (opening) handleNotesScrollEnd(sn);
+                              }}
                             >
                               {openPdfUrl === sn.pdf_url ? 'Close' : 'View →'}
                             </button>

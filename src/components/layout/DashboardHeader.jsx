@@ -4,6 +4,7 @@ import '../../styles/layout.css';
 import logo from "../../assets/images/rla.png"
 import { getNotificationsList } from '../../api/notifications';
 import { useCartWishlist } from '../../context/CartWishlistContext';
+import { useNotification } from '../../context/NotificationContext';
 
 const NAV = [
   { id:'overview', label:'Dashboard', path:'/dashboard' },
@@ -37,8 +38,8 @@ export default function DashboardHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const [darkMode,   setDarkMode]   = useState(() => localStorage.getItem('darkMode') === 'true');
-  const [unreadCount, setUnreadCount] = useState(0);
   const { cart, wishlist } = useCartWishlist();
+  const { unreadCount } = useNotification();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
@@ -50,23 +51,6 @@ export default function DashboardHeader() {
   const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return {}; } })();
   const name = user?.name || 'User';
   const ini  = initials(name);
-
-  useEffect(() => {
-    const fetchNotifs = async () => {
-      const userIdStr = localStorage.getItem('userId') || user?._id || user?.id;
-      if (!userIdStr) return;
-      try {
-        const res = await getNotificationsList(userIdStr);
-        if (res?.data?.items) {
-          const unread = res.data.items.filter(n => !n.isRead).length;
-          setUnreadCount(unread);
-        }
-      } catch (err) {
-        console.error("Failed to fetch notifications header:", err);
-      }
-    };
-    fetchNotifs();
-  }, []);
 
   const active = p => {
     if (p==='/notes')   return location.pathname.startsWith('/notes');
