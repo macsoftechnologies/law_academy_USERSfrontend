@@ -19,7 +19,7 @@ export default function Dashboard() {
 
   const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return {}; } })();
   const name = user?.name?.split(' ')[0] || 'User';
-  
+
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
@@ -36,24 +36,24 @@ export default function Dashboard() {
         subjects: sRes.statusCode === 200 ? sRes.data : []
       });
     })
-    .catch(err => console.error("Dashboard Load Error:", err))
-    .finally(() => setIsLoading(false));
+      .catch(err => console.error("Dashboard Load Error:", err))
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
     <div className="dash-shell">
       <DashboardHeader />
-      
+
       {/* Use the overlay loader we made for a clean "App-like" entry */}
       <Loader visible={isLoading} overlay />
 
       <div className="dash-main">
         <div className="dash-content">
-          
+
           {/* Welcome Section - Show immediately so page doesn't look empty */}
           <header className="welcome-header">
-            <p className="greeting-label">{greeting}</p>
-            <h1 className="welcome-text">Welcome back, {name} 👋</h1>
+            <h1 className="welcome-text" style={{ fontSize: '1.1rem' }}>Welcome {name} 👋</h1>
+
           </header>
 
           {!isLoading && (
@@ -61,7 +61,7 @@ export default function Dashboard() {
               <div className="full-width-wrapper">
                 <BannerCarousel banners={data.banners} />
               </div>
-              
+
               <CategorySection categories={data.categories} />
               {(() => {
                 const civilSubjects = data.subjects.filter(s => s?.law_id?.[0]?.title?.toLowerCase().includes('civil'));
@@ -83,7 +83,7 @@ export default function Dashboard() {
               <ComboSection subjects={data.subjects} />
             </div>
           )}
-          
+
         </div>
       </div>
     </div>
