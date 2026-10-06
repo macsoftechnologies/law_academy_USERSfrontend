@@ -32,6 +32,7 @@ export default function NoteDetailPage() {
   const [enrollModal,  setEnrollModal]  = useState(null);
   // Track which subject-note is being viewed in-page
   const [openPdfUrl,   setOpenPdfUrl]   = useState(null);
+  const [activeLawTab, setActiveLawTab] = useState('All');
 
   useEffect(() => {
     setLoading(true);
@@ -77,8 +78,15 @@ export default function NoteDetailPage() {
   const handleNotesScrollEnd = (sn) => {
     const userId = localStorage.getItem('userId');
     if (!userId || !sn) return;
-    updateMarksProgress(userId, notesId, sn._id || notesId, 'notes', sn.law || 'civil', true).catch(() => {});
+    const lawTitle = sn.lawId?.[0]?.title || sn.law || 'civil';
+    updateMarksProgress(userId, notesId, sn._id || notesId, 'notes', lawTitle, true).catch(() => {});
   };
+
+  const filteredSubjectNotes = subjectNotes.filter(sn => {
+    if (activeLawTab === 'All') return true;
+    const lawTitle = sn.lawId?.[0]?.title || sn.law || '';
+    return lawTitle.toLowerCase() === activeLawTab.toLowerCase();
+  });
 
   return (
     <div className="dash-shell">
@@ -188,10 +196,27 @@ export default function NoteDetailPage() {
               {!snLoading && subjectNotes.length > 0 && (
                 <div className="card">
                   <div className="card-header">
-                    Subject Notes <span className="page-section-count" style={{ marginLeft: '.4rem' }}>{subjectNotes.length}</span>
+                    Subject Notes <span className="page-section-count" style={{ marginLeft: '.4rem' }}>{filteredSubjectNotes.length}</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    {subjectNotes.map((sn, i) => (
+                  
+                  <div style={{ padding: '1rem 1.25rem 0', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    {['All', 'Civil Laws', 'Criminal Laws'].map(cat => (
+                      <button
+                        key={cat}
+                        className={`btn btn-sm ${activeLawTab === cat ? 'btn-primary' : 'btn-outline'}`}
+                        onClick={() => setActiveLawTab(cat)}
+                      >
+                        {cat === 'Civil Laws' ? '📜 ' : cat === 'Criminal Laws' ? '🚨 ' : cat === 'All' ? '📑 ' : ''}{cat}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', marginTop: '1rem' }}>
+                    {filteredSubjectNotes.length === 0 ? (
+                      <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--gray-500)', fontSize: '0.9rem' }}>
+                        No notes found for this category.
+                      </div>
+                    ) : filteredSubjectNotes.map((sn, i) => (
                       <div key={i} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '.85rem 1.25rem' }}>
                           {/* Icon */}
@@ -201,7 +226,7 @@ export default function NoteDetailPage() {
                           {/* Title */}
                           <div style={{ flex: 1 }}>
                             <div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.875rem' }}>{sn.title || `Subject Note ${i + 1}`}</div>
-                            {sn.law && <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{sn.law}</div>}
+                            {(sn.lawId?.[0]?.title || sn.law) && <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{sn.lawId?.[0]?.title || sn.law}</div>}
                           </div>
                           {/* View in-page — no external link */}
                           {(isEnrolled || !sn.isLocked) && sn.pdf_url && (

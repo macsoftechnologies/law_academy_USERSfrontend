@@ -16,7 +16,6 @@ export default function AllNotes() {
   const navigate = useNavigate();
   const [allNotes, setAllNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('Civil Laws');
 
   useEffect(() => {
     setLoading(true);
@@ -29,18 +28,6 @@ export default function AllNotes() {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
-
-  const categories = ['Civil Laws', 'Criminal Laws'];
-
-  const filteredNotes = allNotes.filter(note => {
-    let rawTitle = note?.about_book?.sections?.[0]?.title?.trim()?.toLowerCase() || "";
-    let mappedCategory = 'Civil Laws'; // Default fallback just in case
-    
-    if (rawTitle.includes('criminal')) mappedCategory = 'Criminal Laws';
-    else if (rawTitle.includes('civil')) mappedCategory = 'Civil Laws';
-
-    return mappedCategory === activeCategory;
-  });
 
   return (
     <div className="dash-shell">
@@ -82,27 +69,8 @@ export default function AllNotes() {
             </div>
           ) : (
             <>
-              {/* Category Tabs */}
-              <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    className={`btn btn-sm ${activeCategory === cat ? 'btn-primary' : 'btn-outline'}`}
-                    onClick={() => setActiveCategory(cat)}
-                  >
-                    {cat === 'Civil Laws' ? '📜 ' : cat === 'Criminal Laws' ? '🚨 ' : ''}{cat}
-                  </button>
-                ))}
-              </div>
-
-              {filteredNotes.length === 0 ? (
-                <div className="empty-state" style={{ marginTop: '2rem' }}>
-                  <div className="empty-state-icon">🔍</div>
-                  <h3>No notes found for this category</h3>
-                </div>
-              ) : (
                 <div className="course-grid">
-                  {filteredNotes.map(note => {
+                  {allNotes.map(note => {
                     const lowestPlan = note.availablePlans?.length
                     ? note.availablePlans.reduce((m, p) => p.original_price < m.original_price ? p : m, note.availablePlans[0])
                     : null;
@@ -174,7 +142,6 @@ export default function AllNotes() {
                   );
                 })}
                 </div>
-              )}
             </>
           )}
         </div>

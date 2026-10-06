@@ -35,7 +35,7 @@ export default function SubjectLawTabs() {
             "";
 
           const isCriminal = rawLaw.toLowerCase().includes("criminal");
-          setActiveLaw(isCriminal ? "Criminal Laws" : "Civil Laws");
+          setActiveLaw(isCriminal ? "Criminal Laws" : "");
         }
       })
       .catch(console.error)

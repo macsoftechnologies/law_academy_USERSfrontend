@@ -102,33 +102,40 @@ function DetailModal({ billing, onClose }) {
 
 export default function Billing() {
   const navigate = useNavigate();
-  const [billings, setBillings] = useState([]);
+  const [allBillings, setAllBillings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('All');
   const [selected, setSelected] = useState(null);
-  const [summary, setSummary] = useState({ total_spent: 0, paid: 0, pending: 0, failed: 0, refunded: 0 });
+  const [summary, setSummary] = useState({ total_spent: 0, active: 0, pending: 0, failed: 0, refunded: 0 });
 
   // EXACT SYNCED GRID DEFINITION
   const GRID_LAYOUT = '1.2fr 2.5fr 1fr 1fr 1.2fr 1.8fr';
 
-  useEffect(() => { fetchBillings(tab); }, [tab]);
+  useEffect(() => { fetchBillings(); }, []);
 
-  const fetchBillings = async (status) => {
+  const fetchBillings = async () => {
     setLoading(true);
     try {
-      const r = await getUserBillings(status === 'All' ? '' : status);
+      const r = await getUserBillings();
       if (r?.statusCode === 200) {
         const billingData = Array.isArray(r.data) ? r.data : Array.isArray(r.data?.billings) ? r.data.billings : [];
-        setBillings(billingData);
+        setAllBillings(billingData);
         if (r.data?.summary) {
           setSummary(r.data.summary);
         } else {
           const getCount = (s) => billingData.filter(b => (pick(b, 'status', 'billing_status', 'payment_status') || '').toLowerCase() === s).length;
-          setSummary({ total_spent: 0, paid: getCount('paid'), pending: getCount('pending'), failed: getCount('failed'), refunded: getCount('refunded') });
+          setSummary({ total_spent: 0, active: getCount('active') + getCount('paid'), pending: getCount('pending'), failed: getCount('failed'), refunded: getCount('refunded') });
         }
       }
     } catch (e) { console.error(e); } finally { setLoading(false); }
   };
+
+  const billings = allBillings.filter(b => {
+    if (tab === 'All') return true;
+    const status = (pick(b, 'status', 'billing_status', 'payment_status') || '').toLowerCase();
+    if (tab === 'active') return status === 'active' || status === 'paid';
+    return status === tab;
+  });
 
   return (
     <div className="dash-shell">
@@ -143,7 +150,7 @@ export default function Billing() {
           <div className="tabs" style={{ marginBottom: '1rem' }}>
             {TABS.map((t) => (
               <button key={t} className={`tab-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-                {TAB_LABELS[t]} <span className="tab-badge">{t === 'All' ? billings.length : summary[t] || 0}</span>
+                {TAB_LABELS[t]} <span className="tab-badge">{t === 'All' ? allBillings.length : summary[t] || 0}</span>
               </button>
             ))}
           </div>
