@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function CategoryBuyModal({ categoryName, onProceed, onClose }) {
+export default function CategoryBuyModal({ categoryName, termsConditions, onProceed, onClose }) {
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 9999,
@@ -20,6 +22,39 @@ export default function CategoryBuyModal({ categoryName, onProceed, onClose }) {
         <p style={{ color: 'var(--gray-600)', lineHeight: '1.6', marginBottom: '25px', fontSize: '0.95rem' }}>
           Purchasing this item will unlock the entire <strong style={{color: 'var(--navy)'}}>{categoryName || 'Prelims'}</strong> category, including all related PYQs, Mock Tests, and Quizzes!
         </p>
+
+        {/* Terms and Conditions Checkbox */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <input
+              type="checkbox"
+              id="category-terms-checkbox"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              style={{ marginTop: '0.25rem', cursor: 'pointer' }}
+            />
+            <label htmlFor="category-terms-checkbox" style={{ fontSize: '0.85rem', color: 'var(--gray-600)', cursor: 'pointer', lineHeight: '1.4' }}>
+              I have read and agree to the <strong>Terms and Conditions</strong>
+            </label>
+          </div>
+          
+          {termsConditions && (
+            <div style={{ 
+              fontSize: '0.8rem', 
+              color: 'var(--gray-600)', 
+              lineHeight: '1.5',
+              maxHeight: '120px', 
+              overflowY: 'auto',
+              padding: '0.75rem',
+              background: '#f9fafb',
+              border: '1px solid var(--border-muted)',
+              borderRadius: 'var(--radius-md)',
+              whiteSpace: 'pre-line'
+            }}>
+              {termsConditions}
+            </div>
+          )}
+        </div>
         
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           <button 
@@ -33,6 +68,7 @@ export default function CategoryBuyModal({ categoryName, onProceed, onClose }) {
             className="btn btn-gold" 
             style={{ flex: 1, padding: '10px' }} 
             onClick={onProceed}
+            disabled={!termsAccepted}
           >
             Proceed to Checkout
           </button>

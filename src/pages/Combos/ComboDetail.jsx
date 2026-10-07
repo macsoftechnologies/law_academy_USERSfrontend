@@ -554,6 +554,7 @@ export default function ComboDetail() {
           item={{ ...item, combo_id: comboId }}
           plan={selectedPlan}
           enroll_type="combination"
+          termsConditions={item?.terms_conditions}
           onClose={() => setShowModal(false)}
           onSuccess={() => { setShowModal(false); setIsEnrolled(true); }}
         />

@@ -354,6 +354,7 @@ export default function PrelimsSmtDetail() {
           {showBuyModal && (
             <CategoryBuyModal 
               categoryName={subjectMeta?.title || 'Subject Mock Tests'} 
+              termsConditions={subjectMeta?.terms_conditions}
               onClose={() => setShowBuyModal(false)}
               onProceed={() => {
                 setShowBuyModal(false);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { enrollCourse, verifyCoupon, calculatePrice } from '../../api/enroll/enrollApi_addition';
 
-export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, onSuccess }) {
+export default function EnrollModal({ plan, courseTitle, enroll_type, termsConditions, onClose, onSuccess }) {
   const navigate = useNavigate();
   const [paymentId, setPaymentId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,6 +14,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, o
   const [couponError, setCouponError] = useState(null);
   const [priceData, setPriceData] = useState(null);
   const [calculatingPrice, setCalculatingPrice] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Load initial price from API
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, o
         userId: userId,
         course_title: courseTitle,
       };
-      
+
       if (plan?.planId || plan?._id) {
         payload.planId = plan.planId || plan._id;
       }
@@ -255,6 +256,39 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, o
                 {appliedCoupon && <div style={{ color: 'green', fontSize: '.85rem', marginTop: '.3rem' }}>✓ Applied: {appliedCoupon.code}</div>}
               </div>
 
+              {/* Terms and Conditions Checkbox */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                  <input
+                    type="checkbox"
+                    id="terms-checkbox"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    style={{ marginTop: '0.25rem', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="terms-checkbox" style={{ fontSize: '0.85rem', color: 'var(--gray-600)', cursor: 'pointer', lineHeight: '1.4' }}>
+                    I have read and agree to the <strong>Terms and Conditions</strong>
+                  </label>
+                </div>
+                
+                {termsConditions && (
+                  <div style={{ 
+                    fontSize: '0.8rem', 
+                    color: 'var(--gray-600)', 
+                    lineHeight: '1.5',
+                    maxHeight: '120px', 
+                    overflowY: 'auto',
+                    padding: '0.75rem',
+                    background: '#f9fafb',
+                    border: '1px solid var(--border-muted)',
+                    borderRadius: 'var(--radius-md)',
+                    whiteSpace: 'pre-line'
+                  }}>
+                    {termsConditions}
+                  </div>
+                )}
+              </div>
+
               <div
                 className="modal-footer"
                 style={{ padding: 0, justifyContent: 'stretch', gap: '.65rem' }}
@@ -270,7 +304,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, onClose, o
                 <button
                   className="btn btn-gold btn-full"
                   onClick={handleEnroll}
-                  disabled={loading || calculatingPrice || !priceData}
+                  disabled={loading || calculatingPrice || !priceData || !termsAccepted}
                   style={{ flex: 1 }}
                 >
                   {loading ? 'Enrolling…' : 'Confirm Enrollment'}

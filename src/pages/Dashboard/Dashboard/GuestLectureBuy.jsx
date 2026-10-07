@@ -4,6 +4,7 @@ import DashboardHeader from "../../../components/layout/DashboardHeader";
 import Loader from "../../../components/common/Loader";
 import EnrollModal from "../../../components/common/EnrollModal";
 import { getGuestLectureDetails, getUserCourses } from "../../../api/dashboard/dashboardApi";
+import { checkFreeGuestLectureAccess } from "../../../utils/guestLectureAccess";
 import "../../../styles/design-system.css";
 import "../../../styles/components.css";
 import "../../../styles/layout.css";
@@ -33,6 +34,7 @@ export default function GuestLectureBuy() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showEnrollModal, setShowEnrollModal] = useState(false);
   const [hasFullCourse, setHasFullCourse] = useState(false);
+  const [hasFreeAccess, setHasFreeAccess] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -41,6 +43,7 @@ export default function GuestLectureBuy() {
         if (res.statusCode === 200 && Array.isArray(res.data)) {
           const hasFull = res.data.some(course => course.enroll_type === 'full-course');
           setHasFullCourse(hasFull);
+          setHasFreeAccess(checkFreeGuestLectureAccess(res.data));
         }
       }).catch(console.error);
     }
@@ -60,7 +63,7 @@ export default function GuestLectureBuy() {
           const lecture = Array.isArray(res.data) ? res.data[0] : res.data;
           setDetail({
             ...lecture,
-            isLocked: normalizeGuestLectureLock(lecture),
+            _originalIsLocked: normalizeGuestLectureLock(lecture),
           });
         }
       })
@@ -91,6 +94,7 @@ export default function GuestLectureBuy() {
     );
   }
 
+  const isLocked = hasFreeAccess ? false : detail._originalIsLocked;
   const availablePlans = detail.availablePlans || [];
   const selectedPlanTitle = selectedPlan?.duration || "Select a plan";
 
@@ -122,8 +126,8 @@ export default function GuestLectureBuy() {
             )}
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "1rem" }}>
               <span className="badge badge-gold">Guest Lecture</span>
-              <span className={`badge ${detail.isLocked ? "badge-danger" : "badge-success"}`}>
-                {detail.isLocked ? "🔒 Locked" : "🔓 Unlocked"}
+              <span className={`badge ${isLocked ? "badge-danger" : "badge-success"}`}>
+                {isLocked ? "🔒 Locked" : "🔓 Unlocked"}
               </span>
             </div>
 
@@ -150,7 +154,7 @@ export default function GuestLectureBuy() {
             )}
           </div>
 
-          {detail.isLocked ? (
+          {isLocked ? (
             <div className="card" style={{ marginBottom: "1rem" }}>
               <div className="card-header">Choose a plan</div>
               <div className="card-body">
@@ -238,7 +242,7 @@ export default function GuestLectureBuy() {
             </div>
           )}
 
-          {detail.isLocked && availablePlans.length > 0 && hasFullCourse && (
+          {isLocked && availablePlans.length > 0 && hasFullCourse && (
             <div className="card" style={{ marginBottom: "1rem" }}>
               <div className="card-body" style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
                 <strong>Selected plan:</strong>
@@ -259,6 +263,7 @@ export default function GuestLectureBuy() {
               plan={selectedPlan}
               courseTitle={detail.title || "Guest Lecture"}
               enroll_type="guest-lecture"
+              termsConditions={detail?.terms_conditions}
               onClose={() => setShowEnrollModal(false)}
               onSuccess={() => {
                 setShowEnrollModal(false);

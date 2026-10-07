@@ -159,7 +159,7 @@ export default function PrelimsDetail() {
               )}
             </>
           )}
-          {selectedPlan && <EnrollModal plan={selectedPlan} courseTitle={item?.title||'Prelims Course'} enroll_type="prelimes" onClose={()=>setSelectedPlan(null)} onSuccess={()=>{ setSelectedPlan(null); fetchAll(); }} />}
+          {selectedPlan && <EnrollModal plan={selectedPlan} courseTitle={item?.title||'Prelims Course'} enroll_type="prelimes" termsConditions={item?.terms_conditions} onClose={()=>setSelectedPlan(null)} onSuccess={()=>{ setSelectedPlan(null); fetchAll(); }} />}
         </div>
       </div>
     </div>

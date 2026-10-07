@@ -185,6 +185,7 @@ export default function Cart() {
                   : 'Course'
               }
               enroll_type={cartPlan.enroll_type}
+              termsConditions={cart.length > 0 ? cart[0].courseDetails?.terms_conditions : null}
               onClose={() => setShowEnroll(false)}
               onSuccess={async () => {
                 // Remove the enrolled item from backend cart

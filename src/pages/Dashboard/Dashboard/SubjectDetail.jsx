@@ -241,6 +241,7 @@ export default function SubjectDetail() {
               plan={selectedPlan}
               courseTitle={detail?.title}
               enroll_type="subject-wise"
+              termsConditions={detail?.terms_conditions}
               onClose={() => setSelectedPlan(null)}
               onSuccess={() => { setSelectedPlan(null); navigate(0); }}
             />

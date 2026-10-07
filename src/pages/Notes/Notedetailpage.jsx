@@ -265,6 +265,7 @@ export default function NoteDetailPage() {
               plan={enrollModal.plan}
               courseTitle={enrollModal.title}
               enroll_type="notes"
+              termsConditions={note?.terms_conditions}
               onClose={() => setEnrollModal(null)}
               onSuccess={data => {
                 setDetail(prev => ({ ...(prev || {}), isEnrolled: true, expiry_date: data?.expiry_date }));

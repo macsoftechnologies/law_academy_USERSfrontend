@@ -125,6 +125,7 @@ export default function SubcategoryCheckout() {
           plan={enrollModal.plan}
           courseTitle={enrollModal.title}
           enroll_type="full-course"
+          termsConditions={sub?.terms_conditions}
           onClose={() => setEnrollModal(null)}
           onSuccess={() => {
             setEnrollModal(null);

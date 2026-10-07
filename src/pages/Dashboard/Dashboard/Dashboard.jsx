@@ -73,7 +73,7 @@ export default function Dashboard() {
 
                 return (
                   <>
-                    {civilSubjects.length > 0 && <SubjectSection subjects={civilSubjects} title="Civil Law Subjects" />}
+                    {civilSubjects.length > 0 && <SubjectSection subjects={civilSubjects} title="Law Subjects" />}
                     {criminalSubjects.length > 0 && <SubjectSection subjects={criminalSubjects} title="Criminal Law Subjects" />}
                     {otherSubjects.length > 0 && <SubjectSection subjects={otherSubjects} title="Other Subjects" />}
                   </>

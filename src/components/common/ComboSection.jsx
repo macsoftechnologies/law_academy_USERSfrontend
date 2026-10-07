@@ -8,7 +8,7 @@ const COMBO_EMOJIS = ['🏆', '📚', '⚖️', '🎓', '📜', '🔏'];
 
 export default function ComboSection() {
   const navigate = useNavigate();
-  const [combos,  setCombos]  = useState([]);
+  const [combos, setCombos] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,23 +49,23 @@ export default function ComboSection() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.1rem' }}>
         {/* FIX: Using .slice(0, 4) ensures only the first 4 items are displayed in this dashboard section */}
         {combos.slice(0, 4).map((item, i) => {
-          const comboId    = item.combo_id || item.id || item._id;
-          const title      = item.title || item.name || `Combo ${i + 1}`;
-          const subtitle   = item.description || item.sub_title || '';
-          const emoji      = COMBO_EMOJIS[i % COMBO_EMOJIS.length];
-          const imgSrc     = item.presentation_image
+          const comboId = item.combo_id || item.id || item._id;
+          const title = item.title || item.name || `Combo ${i + 1}`;
+          const subtitle = item.description || item.sub_title || '';
+          const emoji = COMBO_EMOJIS[i % COMBO_EMOJIS.length];
+          const imgSrc = item.presentation_image
             ? `${BASE_URL}/${item.presentation_image}`
             : null;
           const isEnrolled = item.isEnrolled ?? false;
 
           const lowestPlan = item.availablePlans?.length
             ? item.availablePlans.reduce(
-                (m, p) => (p.original_price < m.original_price ? p : m),
-                item.availablePlans[0]
-              )
+              (m, p) => (p.original_price < m.original_price ? p : m),
+              item.availablePlans[0]
+            )
             : null;
-          const price    = lowestPlan?.original_price ?? item.price ?? null;
-          const strike   = lowestPlan?.strike_price   ?? item.strike_price ?? null;
+          const price = lowestPlan?.original_price ?? item.price ?? null;
+          const strike = lowestPlan?.strike_price ?? item.strike_price ?? null;
           const discount = lowestPlan?.discount_percent ?? item.discount_percent ?? null;
 
           return (
@@ -133,11 +133,11 @@ export default function ComboSection() {
                 <div style={{ marginTop: '.75rem', display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
                   {!isEnrolled && price != null && (
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }} onClick={e => e.stopPropagation()}>
-                      <CartWishlistActions 
-                        courseId={comboId} 
-                        enrollType="combination" 
-                        planId={lowestPlan?.planId || lowestPlan?.plan_id} 
-                        isEnrolled={isEnrolled} 
+                      <CartWishlistActions
+                        courseId={comboId}
+                        enrollType="combination"
+                        planId={lowestPlan?.planId || lowestPlan?.plan_id}
+                        isEnrolled={isEnrolled}
                       />
                     </div>
                   )}

@@ -10,7 +10,7 @@ import '../../styles/components.css';
 import '../../styles/layout.css';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 const COMBO_EMOJIS = ['🏆', '📚', '⚖️', '🎓', '📜', '🔏'];
 
 export default function AllCombos() {

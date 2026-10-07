@@ -175,7 +175,7 @@ export default function MainsDetail() {
               </div>
             </>
           )}
-          {selectedPlan && <EnrollModal plan={selectedPlan} courseTitle={item?.title||'Mains Course'} enroll_type="mains" onClose={()=>setSelectedPlan(null)} onSuccess={()=>{ setSelectedPlan(null); setIsEnrolled(true); }} />}
+          {selectedPlan && <EnrollModal plan={selectedPlan} courseTitle={item?.title||'Mains Course'} enroll_type="mains" termsConditions={item?.terms_conditions} onClose={()=>setSelectedPlan(null)} onSuccess={()=>{ setSelectedPlan(null); setIsEnrolled(true); }} />}
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import Loader from "../../../components/common/Loader";
 import Pagination from "../../../components/common/Pagination";
 import Button from "../../../components/common/Button";
 import { getGuestLectures, getUserCourses } from "../../../api/dashboard/dashboardApi";
+import { checkFreeGuestLectureAccess } from "../../../utils/guestLectureAccess";
 import "../../../styles/design-system.css";
 import "../../../styles/components.css";
 import "../../../styles/layout.css";
@@ -34,6 +35,7 @@ export default function AllGuestLectures() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [hasFullCourse, setHasFullCourse] = useState(false);
+  const [hasFreeAccess, setHasFreeAccess] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -42,6 +44,7 @@ export default function AllGuestLectures() {
         if (res.statusCode === 200 && Array.isArray(res.data)) {
           const hasFull = res.data.some(course => course.enroll_type === 'full-course');
           setHasFullCourse(hasFull);
+          setHasFreeAccess(checkFreeGuestLectureAccess(res.data));
         }
       }).catch(console.error);
     }
@@ -109,7 +112,9 @@ export default function AllGuestLectures() {
           ) : (
             <>
               <div className="course-grid">
-                {lectures.map((lecture) => (
+                {lectures.map((lecture) => {
+                  const isLocked = hasFreeAccess ? false : lecture.isLocked;
+                  return (
                   <div
                     key={lecture.guest_lecture_id}
                     className="course-card"
@@ -138,12 +143,12 @@ export default function AllGuestLectures() {
                       >
                         <span
                           className={`badge ${
-                            lecture.isLocked
+                            isLocked
                               ? "badge-danger"
                               : "badge-success"
                           }`}
                         >
-                          {lecture.isLocked
+                          {isLocked
                             ? "🔒 Locked"
                             : "🔓 Unlocked"}
                         </span>
@@ -177,13 +182,13 @@ export default function AllGuestLectures() {
                             )
                           }
                         >
-                          {lecture.isLocked
+                          {isLocked
                             ? "Preview"
                             : "Continue"}
                         </Button>
 
                         {/* buy only if locked and has full course */}
-                        {lecture.isLocked && hasFullCourse && (
+                        {isLocked && hasFullCourse && (
                           <Button
                             variant="primary"
                             onClick={() =>
@@ -198,7 +203,7 @@ export default function AllGuestLectures() {
                       </div>
 
                       {/* Warning if locked and NO full course */}
-                      {lecture.isLocked && !hasFullCourse && (
+                      {isLocked && !hasFullCourse && (
                         <div style={{
                           marginTop: "14px",
                           padding: "10px 14px",
@@ -219,7 +224,8 @@ export default function AllGuestLectures() {
                       )}
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               <Pagination

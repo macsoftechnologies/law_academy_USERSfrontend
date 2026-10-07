@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
 import Loader from "../../../components/common/Loader";
 import { getGuestLectureDetails, getUserCourses } from "../../../api/dashboard/dashboardApi";
+import { checkFreeGuestLectureAccess } from "../../../utils/guestLectureAccess";
 import "../../../styles/design-system.css";
 import "../../../styles/components.css";
 import "../../../styles/layout.css";
@@ -57,6 +58,7 @@ export default function GuestLectureDetail() {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasFullCourse, setHasFullCourse] = useState(false);
+  const [hasFreeAccess, setHasFreeAccess] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -65,6 +67,7 @@ export default function GuestLectureDetail() {
         if (res.statusCode === 200 && Array.isArray(res.data)) {
           const hasFull = res.data.some(course => course.enroll_type === 'full-course');
           setHasFullCourse(hasFull);
+          setHasFreeAccess(checkFreeGuestLectureAccess(res.data));
         }
       }).catch(console.error);
     }
@@ -86,7 +89,7 @@ export default function GuestLectureDetail() {
             : res.data;
           setDetail({
             ...lecture,
-            isLocked: normalizeGuestLectureLock(lecture),
+            _originalIsLocked: normalizeGuestLectureLock(lecture),
           });
         }
       })
@@ -114,6 +117,7 @@ export default function GuestLectureDetail() {
     );
   }
 
+  const isLocked = hasFreeAccess ? false : detail._originalIsLocked;
   const embeddedUrl = getEmbedUrl(detail.video_url);
 
   return (
@@ -143,7 +147,7 @@ export default function GuestLectureDetail() {
             {/* LEFT SIDE */}
             <div>
               {/* VIDEO OR LOCKED THUMBNAIL */}
-              {!detail.isLocked && detail.video_url ? (
+              {!isLocked && detail.video_url ? (
                 <div
                   style={{
                     borderRadius: "16px",
@@ -266,12 +270,12 @@ export default function GuestLectureDetail() {
 
                   <span
                     className={`badge ${
-                      detail.isLocked
+                      isLocked
                         ? "badge-danger"
                         : "badge-success"
                     }`}
                   >
-                    {detail.isLocked
+                    {isLocked
                       ? "🔒 Locked"
                       : "🔓 Unlocked"}
                   </span>
@@ -358,7 +362,7 @@ export default function GuestLectureDetail() {
               </p>
 
               <div style={{ marginTop: "20px" }}>
-                {detail.isLocked ? (
+                {isLocked ? (
                   hasFullCourse ? (
                     <button
                       className="buy-btn"

@@ -307,6 +307,7 @@ export default function PrelimsQAList() {
           {showBuyModal && (
             <CategoryBuyModal 
               categoryName={categoryLabel || item?.title} 
+              termsConditions={item?.terms_conditions}
               onClose={() => setShowBuyModal(false)}
               onProceed={() => {
                 setShowBuyModal(false);
