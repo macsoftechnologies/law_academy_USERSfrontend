@@ -197,12 +197,24 @@ export default function QAItemDetail() {
                   </div>
                 )}
 
-                <div style={{ display: 'flex', gap: '.85rem' }}>
+                <div style={{ display: 'flex', gap: '.85rem', alignItems: 'flex-start' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '.72rem' }}>{qa.module}</div>
                     <h1>{qa.title}</h1>
                   </div>
-                  <span className="badge badge-navy">{qa.module_type}</span>
+                  <button
+                    onClick={() => {
+                      // TODO: Connect to backend API once available
+                      alert("Wishlist feature for videos coming soon!");
+                    }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', padding: '0', transition: 'transform 0.2s', marginTop: '5px' }}
+                    title="Add Video to Wishlist"
+                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    🤍
+                  </button>
+                  <span className="badge badge-navy" style={{ marginTop: '10px' }}>{qa.module_type}</span>
                 </div>
 
                 <div style={{ display: 'grid', gap: '1rem' }}>
@@ -231,13 +243,29 @@ export default function QAItemDetail() {
                 {/* PDF */}
                 {qa?.pdf_url && (
                   <div className="card">
-                    <div className="card-header">
-                      📄 PDF Material
-                      {!isLocked() && (
-                        <button onClick={() => setShowPdf(v => !v)}>
-                          {showPdf ? 'Hide ▲' : 'View ▼'}
-                        </button>
-                      )}
+                    <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>📄 PDF Material</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {!isLocked() && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Wishlist feature for notes coming soon!");
+                            }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.2rem', transition: 'transform 0.2s' }}
+                            title="Add Note to Wishlist"
+                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                          >
+                            🤍
+                          </button>
+                        )}
+                        {!isLocked() && (
+                          <button className="btn btn-outline btn-sm" onClick={() => setShowPdf(v => !v)}>
+                            {showPdf ? 'Hide ▲' : 'View ▼'}
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {showPdf && !isLocked() && (

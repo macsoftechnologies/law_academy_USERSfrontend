@@ -15,6 +15,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, termsCondi
   const [priceData, setPriceData] = useState(null);
   const [calculatingPrice, setCalculatingPrice] = useState(true);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [demoWatchedAgreed, setDemoWatchedAgreed] = useState(false);
 
   // Load initial price from API
   useEffect(() => {
@@ -103,6 +104,8 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, termsCondi
       coupon_code: appliedCoupon ? appliedCoupon.code : null,
       final_amount: priceData?.final_price || 0,
       course_title: courseTitle,
+      demo_watched_agreed: ['full-course', 'subject-wise', 'combo'].includes(finalEnrollType) ? demoWatchedAgreed : undefined,
+      demo_watched_agreed_at: (['full-course', 'subject-wise', 'combo'].includes(finalEnrollType) && demoWatchedAgreed) ? new Date().toISOString() : undefined,
     };
 
     try {
@@ -289,6 +292,24 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, termsCondi
                 )}
               </div>
 
+              {/* Demo Watched Confirmation Checkbox */}
+              {(['full-course', 'subject-wise', 'combo'].includes(enroll_type || plan?.enroll_type)) && (
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                  <input
+                    type="checkbox"
+                    id="demo-checkbox"
+                    checked={demoWatchedAgreed}
+                    onChange={(e) => setDemoWatchedAgreed(e.target.checked)}
+                    style={{ marginTop: '0.25rem', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="demo-checkbox" style={{ fontSize: '0.85rem', color: 'var(--gray-600)', cursor: 'pointer', lineHeight: '1.4' }}>
+                    I confirm that I have watched the free demo videos for the subjects.<br/>
+                    I am completely satisfied with the teaching quality.<br/>
+                    I understand and explicitly agree that the fee is non-refundable once paid under any circumstances.
+                  </label>
+                </div>
+              )}
+
               <div
                 className="modal-footer"
                 style={{ padding: 0, justifyContent: 'stretch', gap: '.65rem' }}
@@ -304,7 +325,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, termsCondi
                 <button
                   className="btn btn-gold btn-full"
                   onClick={handleEnroll}
-                  disabled={loading || calculatingPrice || !priceData || !termsAccepted}
+                  disabled={loading || calculatingPrice || !priceData || !termsAccepted || ((['full-course', 'subject-wise', 'combo'].includes(enroll_type || plan?.enroll_type)) && !demoWatchedAgreed)}
                   style={{ flex: 1 }}
                 >
                   {loading ? 'Enrolling…' : 'Confirm Enrollment'}

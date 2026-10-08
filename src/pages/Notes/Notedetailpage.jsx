@@ -228,6 +228,19 @@ export default function NoteDetailPage() {
                             <div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.875rem' }}>{sn.title || `Subject Note ${i + 1}`}</div>
                             {(sn.lawId?.[0]?.title || sn.law) && <div style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{sn.lawId?.[0]?.title || sn.law}</div>}
                           </div>
+                          {/* Note Wishlist Icon */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Wishlist feature for notes coming soon!");
+                            }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.2rem', flexShrink: 0, transition: 'transform 0.2s' }}
+                            title="Add Note to Wishlist"
+                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                          >
+                            🤍
+                          </button>
                           {/* View in-page — no external link */}
                           {(isEnrolled || !sn.isLocked) && sn.pdf_url && (
                             <button

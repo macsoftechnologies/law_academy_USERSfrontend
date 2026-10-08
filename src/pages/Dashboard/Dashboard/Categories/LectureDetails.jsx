@@ -120,6 +120,18 @@ export default function LectureDetails() {
                           <div style={{ fontSize: '.82rem', color: 'var(--gray-500)', marginTop: '.25rem' }}>By {detail.author}</div>
                         )}
                       </div>
+                      <button
+                        onClick={() => {
+                          // TODO: Connect to backend API once available
+                          alert("Wishlist feature for videos coming soon!");
+                        }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', padding: '0.2rem', transition: 'transform 0.2s' }}
+                        title="Add Video to Wishlist"
+                        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        🤍
+                      </button>
                       <span className="badge badge-navy">Lecture</span>
                     </div>
                     {detail.description && (
@@ -133,7 +145,20 @@ export default function LectureDetails() {
                   <div className="card">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span>📄 Lecture Notes</span>
-                      <button className="btn btn-outline btn-sm" onClick={() => {
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Wishlist feature for notes coming soon!");
+                          }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.2rem', transition: 'transform 0.2s' }}
+                          title="Add Note to Wishlist"
+                          onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                          onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                          🤍
+                        </button>
+                        <button className="btn btn-outline btn-sm" onClick={() => {
                         setShowPdf(v => {
                           const opening = !v;
                           if (opening && !notesProgressSent.current) {
@@ -145,6 +170,7 @@ export default function LectureDetails() {
                       }}>
                         {showPdf ? 'Hide Notes ▲' : 'View Notes ▼'}
                       </button>
+                      </div>
                     </div>
                     {showPdf && (
                       <div style={{ height: 620, background: '#f5f5f5', borderRadius: '0 0 var(--radius-lg) var(--radius-lg)', overflow: 'hidden' }}>

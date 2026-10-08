@@ -281,9 +281,23 @@ export default function GuestLectureDetail() {
                   </span>
                 </div>
 
-                <h1 className="detail-hero-title">
-                  {detail.title}
-                </h1>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
+                  <h1 className="detail-hero-title" style={{ flex: 1 }}>
+                    {detail.title}
+                  </h1>
+                  <button
+                    onClick={() => {
+                      // TODO: Connect to backend API once available
+                      alert("Wishlist feature for videos coming soon!");
+                    }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.8rem', padding: '0', transition: 'transform 0.2s', marginTop: '-5px' }}
+                    title="Add Video to Wishlist"
+                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    🤍
+                  </button>
+                </div>
 
                 {detail.author && (
                   <p

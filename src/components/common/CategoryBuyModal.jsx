@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 export default function CategoryBuyModal({ categoryName, termsConditions, onProceed, onClose }) {
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [demoWatchedAgreed, setDemoWatchedAgreed] = useState(false);
 
   return (
     <div style={{
@@ -55,6 +56,24 @@ export default function CategoryBuyModal({ categoryName, termsConditions, onProc
             </div>
           )}
         </div>
+
+        {/* Demo Watched Confirmation Checkbox */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <input
+              type="checkbox"
+              id="category-demo-checkbox"
+              checked={demoWatchedAgreed}
+              onChange={(e) => setDemoWatchedAgreed(e.target.checked)}
+              style={{ marginTop: '0.25rem', cursor: 'pointer' }}
+            />
+            <label htmlFor="category-demo-checkbox" style={{ fontSize: '0.85rem', color: 'var(--gray-600)', cursor: 'pointer', lineHeight: '1.4' }}>
+              I confirm that I have watched the free demo videos for the subjects.<br/>
+              I am completely satisfied with the teaching quality.<br/>
+              I understand and explicitly agree that the fee is non-refundable once paid under any circumstances.
+            </label>
+          </div>
+        </div>
         
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           <button 
@@ -68,7 +87,7 @@ export default function CategoryBuyModal({ categoryName, termsConditions, onProc
             className="btn btn-gold" 
             style={{ flex: 1, padding: '10px' }} 
             onClick={onProceed}
-            disabled={!termsAccepted}
+            disabled={!termsAccepted || !demoWatchedAgreed}
           >
             Proceed to Checkout
           </button>

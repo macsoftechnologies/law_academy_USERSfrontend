@@ -368,11 +368,21 @@ export default function ComboDetail() {
                                               return (
                                                 <div key={lecId} style={{ marginBottom: '.5rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: lockedLecture ? 'var(--gray-100)' : 'var(--white)' }}>
                                                   {/* Lecture row */}
-                                                  <button
+                                                  <div
                                                     onClick={() => {
                                                       if (lockedLecture) return;
                                                       setActiveVideo(isPlaying ? null : lecId);
                                                       setActivePdf(null);
+                                                    }}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    onKeyDown={(e) => {
+                                                      if(e.key === 'Enter' || e.key === ' ') {
+                                                        e.preventDefault();
+                                                        if (lockedLecture) return;
+                                                        setActiveVideo(isPlaying ? null : lecId);
+                                                        setActivePdf(null);
+                                                      }
                                                     }}
                                                     style={{
                                                       width: '100%', display: 'flex', alignItems: 'center',
@@ -394,10 +404,28 @@ export default function ComboDetail() {
                                                         </div>
                                                       )}
                                                     </div>
+                                                    
+                                                    {/* Video Wishlist Icon */}
+                                                    {!lockedLecture && (
+                                                      <button
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          // TODO: Connect to backend API once available
+                                                          alert("Wishlist feature for videos coming soon!");
+                                                        }}
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.2rem', flexShrink: 0, transition: 'transform 0.2s' }}
+                                                        title="Add Video to Wishlist"
+                                                        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                                        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                                      >
+                                                        🤍
+                                                      </button>
+                                                    )}
+
                                                     <span style={{ fontSize: '.72rem', fontWeight: 700, color: lockedLecture ? 'var(--gray-400)' : 'var(--gold)', whiteSpace: 'nowrap', flexShrink: 0 }}>
                                                       {lockedLecture ? 'Locked' : isPlaying ? 'Close ▲' : 'Watch ▼'}
                                                     </span>
-                                                  </button>
+                                                  </div>
 
                                                   {/* Inline video player */}
                                                   {isPlaying && embedUrl && (
@@ -453,6 +481,21 @@ export default function ComboDetail() {
                                                     <span style={{ flex: 1, fontWeight: 600, fontSize: '.8rem', color: 'var(--navy)' }}>
                                                       {note.title || `Note ${ni + 1}`}
                                                     </span>
+                                                    {/* Note Wishlist Icon */}
+                                                    {!locked && (
+                                                      <button
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          alert("Wishlist feature for notes coming soon!");
+                                                        }}
+                                                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.2rem', flexShrink: 0, transition: 'transform 0.2s' }}
+                                                        title="Add Note to Wishlist"
+                                                        onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                                        onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                                      >
+                                                        🤍
+                                                      </button>
+                                                    )}
                                                     {!locked && pdfUrl && (
                                                       <span style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--gold)', whiteSpace: 'nowrap', flexShrink: 0 }}>
                                                         {isPdfOpen ? 'Close ▲' : 'View ▼'}

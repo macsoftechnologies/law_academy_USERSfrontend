@@ -26,12 +26,12 @@ function AddressForm({ initial = EMPTY_ADDR, onSave, onCancel, saving }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '.65rem' }}>
       {[
-        { k: 'full_name',  label: 'Full Name *',    placeholder: 'Your full name' },
-        { k: 'address',    label: 'Address *',       placeholder: 'Street / Colony' },
-        { k: 'city',       label: 'City *',           placeholder: 'City' },
-        { k: 'region',     label: 'State / Region *', placeholder: 'State' },
-        { k: 'zip_code',   label: 'PIN Code *',       placeholder: '000000' },
-        { k: 'country',    label: 'Country',          placeholder: 'India' },
+        { k: 'full_name', label: 'Full Name *', placeholder: 'Your full name' },
+        { k: 'address', label: 'Address *', placeholder: 'Street / Colony' },
+        { k: 'city', label: 'City *', placeholder: 'City' },
+        { k: 'region', label: 'State / Region *', placeholder: 'State' },
+        { k: 'zip_code', label: 'PIN Code *', placeholder: '000000' },
+        { k: 'country', label: 'Country', placeholder: 'India' },
       ].map(({ k, label, placeholder }) => (
         <div key={k}>
           <label style={labelStyle}>{label}</label>
@@ -67,26 +67,27 @@ export default function PrintedNotes() {
 
   // Order modal state
   const [orderNote, setOrderNote] = useState(null);
-  const [ordering, setOrdering]   = useState(false);
+  const [ordering, setOrdering] = useState(false);
   const [orderDone, setOrderDone] = useState(null);
   const [orderError, setOrderError] = useState(null);
   const [payMethod, setPayMethod] = useState('card');
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Address state
-  const [addresses, setAddresses]       = useState([]);
-  const [addrLoading, setAddrLoading]   = useState(false);
+  const [addresses, setAddresses] = useState([]);
+  const [addrLoading, setAddrLoading] = useState(false);
   const [selectedAddrId, setSelectedAddrId] = useState(null);
-  const [addrView, setAddrView]         = useState('list'); // 'list' | 'add' | 'edit'
-  const [editingAddr, setEditingAddr]   = useState(null);
-  const [addrSaving, setAddrSaving]     = useState(false);
-  const [addrError, setAddrError]       = useState(null);
+  const [addrView, setAddrView] = useState('list'); // 'list' | 'add' | 'edit'
+  const [editingAddr, setEditingAddr] = useState(null);
+  const [addrSaving, setAddrSaving] = useState(false);
+  const [addrError, setAddrError] = useState(null);
 
   // Coupon state — mirrors EnrollModal exactly
-  const [couponCode, setCouponCode]       = useState('');
+  const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
-  const [couponError, setCouponError]     = useState(null);
-  const [priceData, setPriceData]         = useState(null);
+  const [couponError, setCouponError] = useState(null);
+  const [priceData, setPriceData] = useState(null);
   const [calculatingPrice, setCalculatingPrice] = useState(false);
 
   useEffect(() => {
@@ -103,15 +104,15 @@ export default function PrintedNotes() {
     try {
       setCalculatingPrice(true);
       setCouponError(null);
-      const userStr   = localStorage.getItem('user');
+      const userStr = localStorage.getItem('user');
       const parsedUser = userStr ? JSON.parse(userStr) : {};
-      const userId    = localStorage.getItem('userId') || parsedUser?._id || parsedUser?.id;
+      const userId = localStorage.getItem('userId') || parsedUser?._id || parsedUser?.id;
 
       const payload = {
         userId,
         course_title: note.title,
-        planId:       plan.planId || plan._id,
-        enroll_type:  'notes',
+        planId: plan.planId || plan._id,
+        enroll_type: 'notes',
         ...(couponToApply ? { coupon_code: couponToApply } : {}),
       };
 
@@ -160,6 +161,7 @@ export default function PrintedNotes() {
     setAddrError(null);
     setAddrView('list');
     setSelectedAddrId(null);
+    setTermsAccepted(false);
     setCouponCode('');
     setAppliedCoupon(null);
     setCouponError(null);
@@ -186,7 +188,7 @@ export default function PrintedNotes() {
     try {
       const res = await addAddress(form);
       if (res?.statusCode === 200) {
-        const r2   = await getUserAddresses();
+        const r2 = await getUserAddresses();
         const list = Array.isArray(r2?.data) ? r2.data : [];
         setAddresses(list);
         const newId = res.data?.address_id || res.data?.id || (list.length && (list[list.length - 1].address_id || list[list.length - 1].id));
@@ -212,7 +214,7 @@ export default function PrintedNotes() {
         ...form,
       });
       if (res?.statusCode === 200) {
-        const r2   = await getUserAddresses();
+        const r2 = await getUserAddresses();
         const list = Array.isArray(r2?.data) ? r2.data : [];
         setAddresses(list);
         setAddrView('list');
@@ -249,13 +251,13 @@ export default function PrintedNotes() {
     const plan = orderNote.availablePlans?.[0];
     try {
       const res = await addNoteOrder({
-        notes_id:       orderNote.notes_id,
-        address_id:     selectedAddrId,
-        payment_id:     'TEST_TXN_000001',
-        coupon_code:    appliedCoupon ? appliedCoupon.code : null,
-        final_amount:   priceData?.final_price ?? (parseFloat(plan?.original_price || 0) + parseFloat(plan?.handling_fee || 0)),
+        notes_id: orderNote.notes_id,
+        address_id: selectedAddrId,
+        payment_id: 'TEST_TXN_000001',
+        coupon_code: appliedCoupon ? appliedCoupon.code : null,
+        final_amount: priceData?.final_price ?? (parseFloat(plan?.original_price || 0) + parseFloat(plan?.handling_fee || 0)),
         payment_method: payMethod,
-        planId:       plan?.planId || plan?._id,
+        planId: plan?.planId || plan?._id,
       });
       if (res?.statusCode === 200) {
         setOrderDone(res.data?.order_id || 'success');
@@ -270,12 +272,12 @@ export default function PrintedNotes() {
   };
 
   // ── Derived price values from API (same as EnrollModal) ───────────────
-  const plan          = orderNote?.availablePlans?.[0] || null;
+  const plan = orderNote?.availablePlans?.[0] || null;
   const originalPrice = priceData?.original_price ?? parseFloat(plan?.original_price || 0);
-  const strikePrice   = parseFloat(plan?.strike_price || 0);
-  const handlingFee   = priceData?.handling_fee ?? parseFloat(plan?.handling_fee || 0);
-  const discountAmt   = priceData?.discount_amount ?? 0;
-  const finalPrice    = priceData?.final_price ?? Math.max(0, originalPrice + handlingFee);
+  const strikePrice = parseFloat(plan?.strike_price || 0);
+  const handlingFee = priceData?.handling_fee ?? parseFloat(plan?.handling_fee || 0);
+  const discountAmt = priceData?.discount_amount ?? 0;
+  const finalPrice = priceData?.final_price ?? Math.max(0, originalPrice + handlingFee);
 
   const labelStyle = { fontSize: '.75rem', fontWeight: 700, color: 'var(--navy)', display: 'block', marginBottom: '.2rem' };
 
@@ -308,7 +310,7 @@ export default function PrintedNotes() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {notes.map(note => {
-                const imgSrc   = note.presentation_image ? `${BASE_URL}/${note.presentation_image}` : null;
+                const imgSrc = note.presentation_image ? `${BASE_URL}/${note.presentation_image}` : null;
                 const itemPlan = note.availablePlans?.[0] || null;
 
                 return (
@@ -332,13 +334,27 @@ export default function PrintedNotes() {
                               {itemPlan.discount_percent && (
                                 <span style={{ fontSize: '.7rem', color: 'green', fontWeight: 600 }}>({itemPlan.discount_percent}% Off)</span>
                               )}
-                              
+
                             </>
                           ) : (
                             <span style={{ fontSize: '.75rem', color: 'var(--error)' }}>Price Unavailable</span>
                           )}
                         </div>
-                        <h3 style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1rem', margin: '0 0 .2rem' }}>{note.title}</h3>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <h3 style={{ fontWeight: 800, color: 'var(--navy)', fontSize: '1rem', margin: '0 0 .2rem', flex: 1 }}>{note.title}</h3>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Wishlist feature for notes coming soon!");
+                            }}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0 0.2rem', flexShrink: 0, transition: 'transform 0.2s', marginTop: '-0.2rem' }}
+                            title="Add Note to Wishlist"
+                            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                          >
+                            🤍
+                          </button>
+                        </div>
                         {note.sub_title && (
                           <p style={{ fontSize: '.8rem', color: 'var(--gray-500)', marginBottom: '.5rem' }}>{note.sub_title}</p>
                         )}
@@ -426,43 +442,43 @@ export default function PrintedNotes() {
                         : addresses.length === 0
                           ? <div className="card" style={{ padding: '1rem', textAlign: 'center', fontSize: '.82rem' }}>No addresses found. Add one to continue.</div>
                           : <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-                              {addresses.map((addr) => {
-                                const id       = addr.address_id || addr.id || addr._id;
-                                const isActive = selectedAddrId === id;
-                                return (
-                                  <div
-                                    key={id}
-                                    onClick={() => setSelectedAddrId(id)}
-                                    style={{
-                                      border: `2px solid ${isActive ? 'var(--navy)' : 'var(--gray-200)'}`,
-                                      borderRadius: 'var(--radius-md)', padding: '.7rem .9rem', cursor: 'pointer',
-                                      background: isActive ? 'rgba(212,175,55,0.05)' : 'white',
-                                    }}
-                                  >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                      <div>
-                                        <div style={{ fontWeight: 700, fontSize: '.85rem' }}>{addr.full_name} {isActive && '✓'}</div>
-                                        <div style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>{addr.address}, {addr.city}, {addr.zip_code}</div>
-                                        {addr.region && <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{addr.region}, {addr.country}</div>}
-                                      </div>
-                                      {/* Edit / Delete buttons */}
-                                      <div style={{ display: 'flex', gap: '.35rem', flexShrink: 0, marginLeft: '.5rem' }} onClick={e => e.stopPropagation()}>
-                                        <button
-                                          className="btn btn-outline btn-sm"
-                                          style={{ padding: '.2rem .55rem', fontSize: '.72rem' }}
-                                          onClick={() => { setEditingAddr(addr); setAddrView('edit'); setAddrError(null); }}
-                                        >✏ Edit</button>
-                                        <button
-                                          className="btn btn-outline btn-sm"
-                                          style={{ padding: '.2rem .55rem', fontSize: '.72rem', color: 'var(--error)', borderColor: 'var(--error)' }}
-                                          onClick={() => handleDeleteAddress(addr)}
-                                        >🗑 Delete</button>
-                                      </div>
+                            {addresses.map((addr) => {
+                              const id = addr.address_id || addr.id || addr._id;
+                              const isActive = selectedAddrId === id;
+                              return (
+                                <div
+                                  key={id}
+                                  onClick={() => setSelectedAddrId(id)}
+                                  style={{
+                                    border: `2px solid ${isActive ? 'var(--navy)' : 'var(--gray-200)'}`,
+                                    borderRadius: 'var(--radius-md)', padding: '.7rem .9rem', cursor: 'pointer',
+                                    background: isActive ? 'rgba(212,175,55,0.05)' : 'white',
+                                  }}
+                                >
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div>
+                                      <div style={{ fontWeight: 700, fontSize: '.85rem' }}>{addr.full_name} {isActive && '✓'}</div>
+                                      <div style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>{addr.address}, {addr.city}, {addr.zip_code}</div>
+                                      {addr.region && <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{addr.region}, {addr.country}</div>}
+                                    </div>
+                                    {/* Edit / Delete buttons */}
+                                    <div style={{ display: 'flex', gap: '.35rem', flexShrink: 0, marginLeft: '.5rem' }} onClick={e => e.stopPropagation()}>
+                                      <button
+                                        className="btn btn-outline btn-sm"
+                                        style={{ padding: '.2rem .55rem', fontSize: '.72rem' }}
+                                        onClick={() => { setEditingAddr(addr); setAddrView('edit'); setAddrError(null); }}
+                                      >✏ Edit</button>
+                                      <button
+                                        className="btn btn-outline btn-sm"
+                                        style={{ padding: '.2rem .55rem', fontSize: '.72rem', color: 'var(--error)', borderColor: 'var(--error)' }}
+                                        onClick={() => handleDeleteAddress(addr)}
+                                      >🗑 Delete</button>
                                     </div>
                                   </div>
-                                );
-                              })}
-                            </div>
+                                </div>
+                              );
+                            })}
+                          </div>
                     )}
                   </div>
 
@@ -491,7 +507,7 @@ export default function PrintedNotes() {
                           </>
                         )],
                         ...(handlingFee > 0 ? [['Handling Fee', `₹${handlingFee}`]] : []),
-                        ...(discountAmt  > 0 ? [['Discount', <span style={{ color: 'green' }}>-₹{discountAmt}</span>]] : []),
+                        ...(discountAmt > 0 ? [['Discount', <span style={{ color: 'green' }}>-₹{discountAmt}</span>]] : []),
                       ].map(([label, val]) => (
                         <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.4rem 0', borderBottom: '1px solid rgba(200,146,42,.15)' }}>
                           <span style={{ fontSize: '.82rem', color: 'var(--gray-500)', fontWeight: 500 }}>{label}</span>
@@ -528,7 +544,7 @@ export default function PrintedNotes() {
                           >{couponLoading ? '...' : 'Apply'}</button>
                         )}
                       </div>
-                      {couponError   && <div style={{ color: 'var(--error)', fontSize: '.8rem', marginTop: '.3rem' }}>{couponError}</div>}
+                      {couponError && <div style={{ color: 'var(--error)', fontSize: '.8rem', marginTop: '.3rem' }}>{couponError}</div>}
                       {appliedCoupon && <div style={{ color: 'green', fontSize: '.85rem', marginTop: '.3rem' }}>✓ Applied: {appliedCoupon.code}</div>}
                     </div>
                   )}
@@ -551,6 +567,41 @@ export default function PrintedNotes() {
 
                   {orderError && <div style={{ padding: '0.8rem', background: '#fee2e2', color: '#b91c1c', borderRadius: 'var(--radius-md)', marginBottom: '.75rem', fontSize: '0.9rem' }}>⚠ {orderError}</div>}
 
+                  {/* ── Terms and Conditions ── */}
+                  {addrView === 'list' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                        <input
+                          type="checkbox"
+                          id="printed-terms-checkbox"
+                          checked={termsAccepted}
+                          onChange={(e) => setTermsAccepted(e.target.checked)}
+                          style={{ marginTop: '0.25rem', cursor: 'pointer' }}
+                        />
+                        <label htmlFor="printed-terms-checkbox" style={{ fontSize: '0.85rem', color: 'var(--gray-600)', cursor: 'pointer', lineHeight: '1.4' }}>
+                          I have read and agree to the <strong>Terms and Conditions</strong>
+                        </label>
+                      </div>
+
+                      {orderNote.terms_conditions && (
+                        <div style={{
+                          fontSize: '0.8rem',
+                          color: 'var(--gray-600)',
+                          lineHeight: '1.5',
+                          maxHeight: '120px',
+                          overflowY: 'auto',
+                          padding: '0.75rem',
+                          background: '#f9fafb',
+                          border: '1px solid var(--border-muted)',
+                          borderRadius: 'var(--radius-md)',
+                          whiteSpace: 'pre-line'
+                        }}>
+                          {orderNote.terms_conditions}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* ── Footer buttons ── */}
                   {addrView === 'list' && (
                     <div className="modal-footer" style={{ padding: 0, justifyContent: 'stretch', gap: '.65rem' }}>
@@ -558,7 +609,7 @@ export default function PrintedNotes() {
                       <button
                         className="btn btn-gold btn-full"
                         onClick={handleOrder}
-                        disabled={!selectedAddrId || ordering || calculatingPrice || !priceData}
+                        disabled={!selectedAddrId || ordering || calculatingPrice || !priceData || !termsAccepted}
                         style={{ flex: 1 }}
                       >
                         {ordering ? 'Placing…' : 'Place Order'}

@@ -38,13 +38,8 @@ export default function PrelimsSubjectSelect() {
   const categories = ['Civil Laws', 'Criminal Laws'];
 
   const filteredSubjects = subjects.filter(subject => {
-    let rawTitle = subject?.law?.title?.trim()?.toLowerCase() || "";
-    let mappedCategory = 'Civil Laws'; // Default fallback
-    
-    if (rawTitle.includes('criminal')) mappedCategory = 'Criminal Laws';
-    else if (rawTitle.includes('civil')) mappedCategory = 'Civil Laws';
-
-    return mappedCategory === activeCategory;
+    const lawTitle = subject?.law?.title?.trim() || 'Civil Laws';
+    return lawTitle === activeCategory;
   });
 
   const handleSubjectClick = (subject) => {
