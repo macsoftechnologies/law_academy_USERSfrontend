@@ -1,3 +1,4 @@
+import { CheckCircle, PartyPopper, Clock, AlarmClock, FileText, Upload } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -83,7 +84,7 @@ export default function MainsTestAttempt() {
       <div className="dash-main">
         <div className="dash-content">
           <div style={{ maxWidth:520, margin:'3rem auto', textAlign:'center' }}>
-            <div style={{ fontSize:'4rem', marginBottom:'1rem' }}>🎉</div>
+            <div style={{ fontSize:'4rem', marginBottom:'1rem' }}>{<PartyPopper size={18} color="#10b981" />}</div>
             <h2 style={{ fontFamily:'var(--font-display)', fontSize:'1.6rem', color:'var(--navy)', marginBottom:'.5rem' }}>Submitted Successfully!</h2>
             <p style={{ color:'var(--gray-500)', marginBottom:'1.5rem', lineHeight:1.8 }}>Your responses have been submitted. Answers are evaluated within 48hrs.</p>
             <div style={{ background:'var(--cream)', borderRadius:'var(--radius-lg)', padding:'1.25rem', marginBottom:'1.5rem', textAlign:'left' }}>
@@ -118,7 +119,7 @@ export default function MainsTestAttempt() {
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.25rem', flexWrap:'wrap', gap:'1rem' }}>
             <h1 style={{ fontFamily:'var(--font-display)', fontSize:'1.3rem', color:'var(--navy)' }}>{subject?.title||'Test Attempt'}</h1>
             <div style={{ background:isExpiring?'var(--error-bg)':'var(--navy)', color:isExpiring?'var(--error)':'var(--cream)', padding:'.55rem 1.1rem', borderRadius:'var(--radius-lg)', fontWeight:800, fontSize:'1rem', display:'flex', alignItems:'center', gap:'.5rem' }}>
-              🕐 {formatTime(secs)}
+              {<Clock size={18} color="#64748b" />} {formatTime(secs)}
             </div>
           </div>
 
@@ -126,7 +127,7 @@ export default function MainsTestAttempt() {
             <div className="toast warning" style={{ marginBottom:'1rem' }}>⚠️ Less than 15 minutes remaining. Submit your answers soon!</div>
           )}
           {secs===0 && (
-            <div className="toast error" style={{ marginBottom:'1rem' }}>⏰ Time's up! Please submit your answers immediately.</div>
+            <div className="toast error" style={{ marginBottom:'1rem' }}>{<AlarmClock size={18} color="#ef4444" />} Time's up! Please submit your answers immediately.</div>
           )}
           {submitError && (
             <div className="toast error" style={{ marginBottom:'1rem' }}>{submitError}</div>
@@ -143,7 +144,7 @@ export default function MainsTestAttempt() {
                 <iframe src={subject.question_paper_file} title="Question Paper" style={{ width:'100%', height:'100%', border:'none' }} />
               ) : (
                 <div style={{ height:'100%', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'.75rem', color:'var(--gray-400)' }}>
-                  <span style={{ fontSize:'3rem' }}>📄</span>
+                  <span style={{ fontSize:'3rem' }}>{<FileText size={18} color="#64748b" />}</span>
                   <p>Question paper will be displayed here</p>
                 </div>
               )}
@@ -157,7 +158,7 @@ export default function MainsTestAttempt() {
               <label style={{ display:'flex', alignItems:'center', gap:'.85rem', padding:'1.25rem', border:'2px dashed var(--gray-300)', borderRadius:'var(--radius-lg)', cursor:'pointer', transition:'border-color .18s' }}
                 onMouseOver={e=>e.currentTarget.style.borderColor='var(--navy)'}
                 onMouseOut={e=>e.currentTarget.style.borderColor='var(--gray-300)'}>
-                <span style={{ fontSize:'2rem' }}>{file ? '✅' : '⬆️'}</span>
+                <span style={{ fontSize:'2rem' }}>{file ? <CheckCircle size={18} color="#10b981" /> : <Upload size={18} color="#4b5563" />}</span>
                 <div>
                   <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.9rem' }}>{file ? file.name : 'Click to upload your answer script'}</div>
                   <div style={{ fontSize:'.78rem', color:'var(--gray-400)', marginTop:'.2rem' }}>PDF, JPG, or PNG accepted</div>

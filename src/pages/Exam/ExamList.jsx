@@ -1,3 +1,4 @@
+import { Scale, FileText, PenTool, Lock, FileEdit, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import '../../styles/design-system.css';
@@ -15,7 +16,7 @@ const STATIC_EXAMS = [
     difficulty: 'Beginner',
     diffColor: '#16a34a',
     diffBg: '#dcfce7',
-    icon: '⚖️',
+    icon: <Scale size={18} color="#d4af37" />,
     attempts: 240,
     description: 'Covers basic legal reasoning, constitutional provisions, and IPC fundamentals.',
   },
@@ -28,7 +29,7 @@ const STATIC_EXAMS = [
     difficulty: 'Intermediate',
     diffColor: '#2563eb',
     diffBg: '#dbeafe',
-    icon: '📜',
+    icon: <FileText size={18} color="#3b82f6" />,
     attempts: 185,
     description: 'Tests knowledge of Fundamental Rights, DPSP, and landmark constitutional cases.',
     locked: true,
@@ -42,7 +43,7 @@ const STATIC_EXAMS = [
     difficulty: 'Advanced',
     diffColor: '#dc2626',
     diffBg: '#fee2e2',
-    icon: '🔏',
+    icon: <PenTool size={18} color="#4b5563" />,
     attempts: 132,
     description: 'Comprehensive coverage of IPC sections, criminal procedure, and recent amendments.',
     locked: true,
@@ -72,21 +73,21 @@ export default function ExamList() {
                   <span className="exam-card-diff" style={{ color: exam.diffColor, background: exam.diffBg }}>
                     {exam.difficulty}
                   </span>
-                  {exam.locked && <span className="exam-card-lock">🔒</span>}
+                  {exam.locked && <span className="exam-card-lock">{<Lock size={18} color="#dc2626" />}</span>}
                 </div>
                 <h3 className="exam-card-title">{exam.title}</h3>
                 <p className="exam-card-desc">{exam.description}</p>
                 <div className="exam-card-meta">
-                  <span className="exam-meta-item">📝 {exam.questions} Questions</span>
+                  <span className="exam-meta-item">{<FileEdit size={18} color="#8b5cf6" />} {exam.questions} Questions</span>
                   <span className="exam-meta-item">⏱ {exam.duration}</span>
-                  <span className="exam-meta-item">👥 {exam.attempts} attempts</span>
+                  <span className="exam-meta-item">{<Users size={18} color="#4b5563" />} {exam.attempts} attempts</span>
                 </div>
                 <button
                   className={`btn ${exam.locked ? 'btn-secondary' : 'btn-primary'} exam-card-btn`}
                   onClick={() => !exam.locked && navigate(`/exam/mock-test/${exam.id}`)}
                   disabled={exam.locked}
                 >
-                  {exam.locked ? '🔒 Locked' : 'Start Test →'}
+                  {exam.locked ? (<>{<Lock size={18} color="#dc2626" />} Locked</>) : 'Start Test →'}
                 </button>
               </div>
             ))}

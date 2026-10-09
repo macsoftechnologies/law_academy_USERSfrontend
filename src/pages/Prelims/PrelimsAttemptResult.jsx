@@ -1,3 +1,4 @@
+import { Trophy, Target, TrendingUp, BookOpen, ClipboardList, CheckCircle, XCircle, BarChart } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -22,10 +23,10 @@ export default function PrelimsAttemptResult() {
   }, [attemptId]);
 
   const getRank = (pct) => {
-    if (pct >= 90) return { label:'Excellent',         color:'#16a34a', bg:'#dcfce7', icon:'🏆' };
-    if (pct >= 75) return { label:'Good',              color:'#2563eb', bg:'#dbeafe', icon:'🎯' };
-    if (pct >= 60) return { label:'Average',           color:'#d97706', bg:'#fef3c7', icon:'📈' };
-    return                { label:'Needs Improvement', color:'#dc2626', bg:'#fee2e2', icon:'📚' };
+    if (pct >= 90) return { label:'Excellent',         color:'#16a34a', bg:'#dcfce7', icon:<Trophy size={18} color="#eab308" /> };
+    if (pct >= 75) return { label:'Good',              color:'#2563eb', bg:'#dbeafe', icon:<Target size={18} color="#ef4444" /> };
+    if (pct >= 60) return { label:'Average',           color:'#d97706', bg:'#fef3c7', icon:<TrendingUp size={18} color="#10b981" /> };
+    return                { label:'Needs Improvement', color:'#dc2626', bg:'#fee2e2', icon:<BookOpen size={18} color="#3b82f6" /> };
   };
 
   return (
@@ -37,7 +38,7 @@ export default function PrelimsAttemptResult() {
 
           {loading ? <Loader /> : !result ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📋</div>
+              <div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div>
               <h3>Result not found</h3>
               <p style={{ color:'var(--gray-500)', fontSize:'.875rem' }}>This attempt may not exist or has been removed.</p>
             </div>
@@ -83,12 +84,12 @@ export default function PrelimsAttemptResult() {
                   {/* Stats Row */}
                   <div className="result-stats-row">
                     <div className="result-stat correct">
-                      <span className="rs-icon">✅</span>
+                      <span className="rs-icon">{<CheckCircle size={18} color="#10b981" />}</span>
                       <span className="rs-val">{correct}</span>
                       <span className="rs-label">Correct</span>
                     </div>
                     <div className="result-stat wrong">
-                      <span className="rs-icon">❌</span>
+                      <span className="rs-icon">{<XCircle size={18} color="#ef4444" />}</span>
                       <span className="rs-val">{wrong}</span>
                       <span className="rs-label">Wrong</span>
                     </div>
@@ -98,7 +99,7 @@ export default function PrelimsAttemptResult() {
                       <span className="rs-label">Skipped</span>
                     </div>
                     <div className="result-stat" style={{ borderLeft:'1px solid var(--gray-200)', paddingLeft:'1rem' }}>
-                      <span className="rs-icon">📊</span>
+                      <span className="rs-icon">{<BarChart size={18} color="#3b82f6" />}</span>
                       <span className="rs-val" style={{ color:'var(--navy)' }}>{pct}%</span>
                       <span className="rs-label">Score</span>
                     </div>

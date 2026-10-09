@@ -1,3 +1,4 @@
+import { Gift } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { claimReferral } from '../../api/auth/claimReferral';
@@ -43,7 +44,7 @@ export default function ReferralScreen() {
       />
       <div className="auth-right">
         <div className="auth-card">
-          <div className="auth-illus">🎁</div>
+          <div className="auth-illus">{<Gift size={18} color="#ec4899" />}</div>
           <div className="auth-body">
             <h2>Referral Program</h2>
             <p className="auth-sub">Claim a referral or share your code</p>

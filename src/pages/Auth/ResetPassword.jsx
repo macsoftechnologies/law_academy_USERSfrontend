@@ -1,3 +1,4 @@
+import { Unlock, Lock, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthLeft } from './LoginPage';
@@ -57,7 +58,7 @@ export default function ResetPassword() {
         <div className="auth-card">
           <div className="auth-body">
             <div className="result-screen">
-              <div className="result-icon">✅</div>
+              <div className="result-icon">{<CheckCircle size={18} color="#10b981" />}</div>
               <h3>Password Updated!</h3>
               <p>Your password has been reset. Please login with your new credentials.</p>
               <button className="btn btn-primary btn-full" onClick={()=>navigate('/login')}>Back to Login</button>
@@ -73,7 +74,7 @@ export default function ResetPassword() {
       <AuthLeft tag="Reset Password" title={<>Set a New <em>Password</em></>} sub="Choose a strong password to keep your account secure." />
       <div className="auth-right">
         <div className="auth-card">
-          <div className="auth-illus">🔒</div>
+          <div className="auth-illus">{<Lock size={18} color="#dc2626" />}</div>
           <div className="auth-body">
             <h2>Reset Password</h2>
             <p className="auth-sub">Create a new password for your account</p>
@@ -82,7 +83,7 @@ export default function ResetPassword() {
                 <label>New Password</label>
                 <div className="pw-wrap">
                   <input type={showPw?'text':'password'} placeholder="Min. 6 characters" value={f.password} onChange={e=>set('password',e.target.value)} />
-                  <button type="button" className="eye-btn" onClick={()=>setShow(p=>!p)}>{showPw?'🔓':'🔒'}</button>
+                  <button type="button" className="eye-btn" onClick={()=>setShow(p=>!p)}>{showPw?<Unlock size={18} color="#10b981" />:<Lock size={18} color="#dc2626" />}</button>
                 </div>
                 {errors.password && <span className="field-error">{errors.password}</span>}
               </div>
@@ -90,7 +91,7 @@ export default function ResetPassword() {
                 <label>Confirm Password</label>
                 <div className="pw-wrap">
                   <input type={showCf?'text':'password'} placeholder="Re-enter new password" value={f.confirm} onChange={e=>set('confirm',e.target.value)} />
-                  <button type="button" className="eye-btn" onClick={()=>setShowCf(p=>!p)}>{showCf?'🔓':'🔒'}</button>
+                  <button type="button" className="eye-btn" onClick={()=>setShowCf(p=>!p)}>{showCf?<Unlock size={18} color="#10b981" />:<Lock size={18} color="#dc2626" />}</button>
                 </div>
                 {errors.confirm && <span className="field-error">{errors.confirm}</span>}
               </div>

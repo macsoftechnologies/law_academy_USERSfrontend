@@ -1,3 +1,4 @@
+import { Video, FileEdit, BookOpen } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -88,7 +89,7 @@ export default function StudyAnalysis() {
           <button className="back-btn" onClick={() => navigate('/dashboard/marks')}>← Back to Marks Dashboard</button>
 
           <div className="page-section-head">
-            <h1 className="page-section-title">🎥 Study Analysis</h1>
+            <h1 className="page-section-title">{<Video size={18} color="#6366f1" />} Study Analysis</h1>
           </div>
 
           {loading ? <Loader /> : !stats ? (
@@ -99,7 +100,7 @@ export default function StudyAnalysis() {
               {/* Course summary header */}
               <div className="card sa-summary">
                 <div className="card-body sa-summary-body">
-                  <div className="sa-summary-icon">📖</div>
+                  <div className="sa-summary-icon">{<BookOpen size={18} color="#3b82f6" />}</div>
                   <div>
                     <div style={{ fontSize: '.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--gray-500)', marginBottom: '.2rem' }}>
                       Course
@@ -116,12 +117,12 @@ export default function StudyAnalysis() {
 
               {hasData ? (
                 <div className="sa-grid">
-                  {renderSubjectGroup('Total Video Lessons', '🎥', videoLessons)}
-                  {renderSubjectGroup('Total Short Notes', '📝', shortNotes)}
+                  {renderSubjectGroup('Total Video Lessons', <Video size={18} color="#6366f1" />, videoLessons)}
+                  {renderSubjectGroup('Total Short Notes', <FileEdit size={18} color="#8b5cf6" />, shortNotes)}
                 </div>
               ) : (
                 <div className="empty-state">
-                  <div className="empty-state-icon">🎥</div>
+                  <div className="empty-state-icon">{<Video size={18} color="#6366f1" />}</div>
                   <h3>No study activity yet</h3>
                   <p>Watch a lecture or open lecture notes to start tracking your progress here.</p>
                 </div>

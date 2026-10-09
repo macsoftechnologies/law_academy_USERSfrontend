@@ -1,3 +1,4 @@
+import { FileEdit, CheckCircle, RefreshCw, Smartphone, Lock, Lightbulb, Hash, FolderOpen, Pin, Rocket } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import '../../styles/design-system.css';
@@ -24,7 +25,7 @@ export default function ExamInstructions() {
   const instructions = termsData?.instructions || [];
   const typeLabel = { QZ: 'Quiz', SMT: 'Subject Mock Test', GT: 'Grand Test', PQA: 'Previous Year Questions' };
 
-  const INSTRUCTION_ICONS = ['⏱', '📝', '✅', '⚠️', '🔄', '📱', '🔒', '💡'];
+  const INSTRUCTION_ICONS = ['⏱', <FileEdit size={18} color="#8b5cf6" />, <CheckCircle size={18} color="#10b981" />, '⚠️', <RefreshCw size={18} color="#3b82f6" />, <Smartphone size={18} color="#4b5563" />, <Lock size={18} color="#dc2626" />, <Lightbulb size={18} color="#eab308" />];
 
   const handleStartExam = () => {
     if (isLocked && !isEnrolled) {
@@ -54,10 +55,10 @@ export default function ExamInstructions() {
           {/* Quick stats */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
             {[
-              { icon: '📝', label: 'Total Questions', value: test.no_of_qos || '—' },
+              { icon: <FileEdit size={18} color="#8b5cf6" />, label: 'Total Questions', value: test.no_of_qos || '—' },
               { icon: '⏱', label: 'Duration', value: test.duration ? `${test.duration} mins` : '—' },
-              { icon: '🔢', label: 'Test Number', value: `#${test.test_number}` },
-              { icon: '📂', label: 'Type', value: typeLabel[module_type] || module_type },
+              { icon: <Hash size={18} color="#64748b" />, label: 'Test Number', value: `#${test.test_number}` },
+              { icon: <FolderOpen size={18} color="#f59e0b" />, label: 'Type', value: typeLabel[module_type] || module_type },
             ].map((s, i) => (
               <div key={i} className="card" style={{ textAlign: 'center' }}>
                 <div className="card-body" style={{ padding: '1rem' }}>
@@ -73,7 +74,7 @@ export default function ExamInstructions() {
           <div className="card" style={{ marginBottom: '1.5rem' }}>
             <div className="card-body">
               <h2 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                📌 Exam Instructions
+                {<Pin size={18} color="#ef4444" />} Exam Instructions
               </h2>
 
               {instructions.length > 0 ? (
@@ -115,13 +116,13 @@ export default function ExamInstructions() {
 
           {/* Actions */}
           {isLocked && !isEnrolled && (
-            <div className="toast warning" style={{ marginBottom: '1rem' }}>🔒 This test is locked. Enroll to attempt.</div>
+            <div className="toast warning" style={{ marginBottom: '1rem' }}>{<Lock size={18} color="#dc2626" />} This test is locked. Enroll to attempt.</div>
           )}
 
           <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'flex-end' }}>
             <button className="btn btn-secondary" onClick={() => navigate(-1)}>← Back</button>
             <button className="btn btn-primary" onClick={handleStartExam} disabled={isLocked && !isEnrolled}>
-              🚀 Start Exam
+              {<Rocket size={18} color="#8b5cf6" />} Start Exam
             </button>
           </div>
         </div>

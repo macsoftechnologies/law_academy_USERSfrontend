@@ -1,3 +1,4 @@
+import { ClipboardList, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import '../../../styles/design-system.css';
@@ -83,7 +84,7 @@ export default function Terms() {
               <div className="card" style={{ marginBottom: '1rem' }}>
                 <div className="card-body" style={{ padding: '1.75rem' }}>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                    <div style={{ fontSize: '2.5rem' }}>📋</div>
+                    <div style={{ fontSize: '2.5rem' }}>{<ClipboardList size={18} color="#4b5563" />}</div>
                     <div>
                       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--navy)', marginBottom: '.35rem' }}>Terms & Conditions</h1>
                       <p style={{ fontSize: '.82rem', color: 'var(--gray-500)' }}>Last revised: 1 January 2025 &nbsp;•&nbsp; Effective immediately upon registration</p>
@@ -108,7 +109,7 @@ export default function Terms() {
               <div className="card" style={{ marginTop: '.25rem' }}>
                 <div className="card-body" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                   <div style={{ fontSize: '.82rem', color: 'var(--gray-500)' }}>Questions about our Terms?</div>
-                  <button className="btn btn-outline btn-sm" onClick={() => navigate('/dashboard/help')}>📬 Contact Us</button>
+                  <button className="btn btn-outline btn-sm" onClick={() => navigate('/dashboard/help')}>{<Mail size={18} color="#64748b" />} Contact Us</button>
                 </div>
               </div>
             </div>

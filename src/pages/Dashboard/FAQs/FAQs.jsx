@@ -1,3 +1,4 @@
+import { HelpCircle, Search, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -40,7 +41,7 @@ export default function FAQs() {
 
           {/* Hero */}
           <div style={{ background: 'linear-gradient(135deg,var(--navy),var(--navy-mid))', borderRadius: 'var(--radius-xl)', padding: '2.5rem 2rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>❓</div>
+            <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>{<HelpCircle size={18} color="#4b5563" />}</div>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.3rem,3vw,1.9rem)', color: 'var(--cream)', marginBottom: '.5rem' }}>Frequently Asked Questions</h1>
             <p style={{ fontSize: '.875rem', color: 'rgba(255,247,224,.65)', marginBottom: '1.25rem' }}>Find answers to the most common questions</p>
             <input
@@ -60,7 +61,7 @@ export default function FAQs() {
           {visible.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon">🔍</div>
+                <div className="empty-state-icon">{<Search size={18} color="#4b5563" />}</div>
                 <h3>No results found</h3>
                 <p>Try a different keyword or category.</p>
               </div>
@@ -94,7 +95,7 @@ export default function FAQs() {
                 <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--navy)', marginBottom: '.25rem' }}>Still have questions?</div>
                 <div style={{ fontSize: '.875rem', color: 'var(--gray-500)' }}>Our support team is happy to help you out.</div>
               </div>
-              <button className="btn btn-primary" onClick={() => navigate('/dashboard/help')}>📬 Contact Support</button>
+              <button className="btn btn-primary" onClick={() => navigate('/dashboard/help')}>{<Mail size={18} color="#64748b" />} Contact Support</button>
             </div>
           </div>
         </div>

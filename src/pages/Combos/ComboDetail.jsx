@@ -1,3 +1,4 @@
+import { Lock, BookOpen, FileText, Package, Clapperboard, Scale } from "lucide-react";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -9,6 +10,7 @@ import { updateMarksProgress } from '../../api/marksDashboard';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
+import WishlistIcon from '../../components/common/WishlistIcon';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -160,7 +162,7 @@ export default function ComboDetail() {
                 <div className="detail-hero-img">
                   {imgSrc
                     ? <img src={imgSrc} alt={title} />
-                    : <div className="detail-hero-img-placeholder">📦</div>}
+                    : <div className="detail-hero-img-placeholder">{<Package size={18} color="#8b5cf6" />}</div>}
                 </div>
                 <div className="detail-hero-body">
                   <div className="detail-hero-tag">
@@ -213,7 +215,7 @@ export default function ComboDetail() {
 
               {courseLocked && (
                 <div className="toast warning" style={{ marginBottom: '1rem' }}>
-                  🔒 Enroll to unlock the full combo content.
+                  {<Lock size={18} color="#dc2626" />} Enroll to unlock the full combo content.
                 </div>
               )}
 
@@ -301,7 +303,7 @@ export default function ComboDetail() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
                               {law.law_image
                                 ? <img src={`${BASE_URL}/${law.law_image}`} alt="" style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'cover' }} />
-                                : <span style={{ fontSize: '1.2rem' }}>⚖️</span>}
+                                : <span style={{ fontSize: '1.2rem' }}>{<Scale size={18} color="#d4af37" />}</span>}
                               <span style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '.9rem' }}>{law.title}</span>
                               <span style={{ fontSize: '.72rem', color: 'var(--gray-500)' }}>
                                 {subjectList.length} Subject{subjectList.length !== 1 ? 's' : ''}
@@ -339,12 +341,12 @@ export default function ComboDetail() {
                                       <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
                                         {subject.subject_image
                                           ? <img src={`${BASE_URL}/${subject.subject_image}`} alt="" style={{ width: 24, height: 24, borderRadius: 4, objectFit: 'cover' }} />
-                                          : <span style={{ fontSize: '1rem' }}>📘</span>}
+                                          : <span style={{ fontSize: '1rem' }}>{<BookOpen size={18} color="#3b82f6" />}</span>}
                                         <span style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.85rem' }}>{subject.title}</span>
                                       </div>
                                       <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                                        {lectures.length > 0 && <span style={{ fontSize: '.7rem', color: 'var(--gray-500)' }}>🎬 {lectures.length}</span>}
-                                        {notes.length > 0 && <span style={{ fontSize: '.7rem', color: 'var(--gray-500)' }}>📄 {notes.length}</span>}
+                                        {lectures.length > 0 && <span style={{ fontSize: '.7rem', color: 'var(--gray-500)' }}>{<Clapperboard size={18} color="#6366f1" />} {lectures.length}</span>}
+                                        {notes.length > 0 && <span style={{ fontSize: '.7rem', color: 'var(--gray-500)' }}>{<FileText size={18} color="#64748b" />} {notes.length}</span>}
                                         <span style={{ fontSize: '.75rem', color: 'var(--gray-400)' }}>{subjOpen ? '▲' : '▼'}</span>
                                       </div>
                                     </button>
@@ -392,7 +394,7 @@ export default function ComboDetail() {
                                                     }}
                                                   >
                                                     <span style={{ fontSize: '1rem', flexShrink: 0 }}>
-                                                      {lockedLecture ? '🔒' : isPlaying ? '⏸' : '▶️'}
+                                                      {lockedLecture ? <Lock size={18} color="#dc2626" /> : isPlaying ? '⏸' : '▶️'}
                                                     </span>
                                                     <div style={{ flex: 1, minWidth: 0 }}>
                                                       <div style={{ fontWeight: 600, fontSize: '.8rem', color: 'var(--navy)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -418,7 +420,7 @@ export default function ComboDetail() {
                                                         onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                                                         onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                                                       >
-                                                        🤍
+                                                        {<WishlistIcon size={18} color="var(--navy)" />}
                                                       </button>
                                                     )}
 
@@ -476,7 +478,7 @@ export default function ComboDetail() {
                                                     }}
                                                   >
                                                     <span style={{ fontSize: '1rem', flexShrink: 0 }}>
-                                                      {locked ? '🔒' : isPdfOpen ? '📖' : '📄'}
+                                                      {locked ? <Lock size={18} color="#dc2626" /> : isPdfOpen ? <BookOpen size={18} color="#3b82f6" /> : <FileText size={18} color="#64748b" />}
                                                     </span>
                                                     <span style={{ flex: 1, fontWeight: 600, fontSize: '.8rem', color: 'var(--navy)' }}>
                                                       {note.title || `Note ${ni + 1}`}
@@ -493,7 +495,7 @@ export default function ComboDetail() {
                                                         onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                                                         onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                                                       >
-                                                        🤍
+                                                        {<WishlistIcon size={18} color="var(--navy)" />}
                                                       </button>
                                                     )}
                                                     {!locked && pdfUrl && (

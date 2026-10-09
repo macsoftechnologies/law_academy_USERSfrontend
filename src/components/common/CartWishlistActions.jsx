@@ -4,6 +4,8 @@ import { addToCart } from '../../api/cart';
 import { addToWishlist, removeFromWishlist } from '../../api/wishlist';
 import { useCartWishlist } from '../../context/CartWishlistContext';
 import useToast from '../../hooks/useToast';
+import WishlistIcon from './WishlistIcon';
+import { ShoppingCart } from 'lucide-react';
 
 export default function CartWishlistActions({ courseId, enrollType, planId, isEnrolled, courseTitle = '', hideCart = false, hideWishlist = false }) {
   const navigate = useNavigate();
@@ -89,40 +91,28 @@ export default function CartWishlistActions({ courseId, enrollType, planId, isEn
   return (
     <>
       <ToastContainer />
-      <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       {!hideCart && (
         <button 
-          className="btn btn-outline btn-sm"
+          className={`action-btn ${addedToCart ? 'active' : ''} ${cartLoading ? 'loading' : ''}`}
           onClick={handleAddToCartClick}
           disabled={cartLoading || addedToCart}
-          style={{ fontSize: '0.7rem', padding: '0.25rem 0.5rem', minHeight: 'auto', lineHeight: 1 }}
+          style={{ borderRadius: '6px', padding: '0 0.75rem', flex: 'none', width: 'max-content' }}
           title="Add to Cart"
         >
-          {cartLoading ? '...' : addedToCart ? '✓ In Cart' : '🛒 Add to Cart'}
+          {cartLoading ? '...' : addedToCart ? '✓ In Cart' : (<>{<ShoppingCart size={16} color="currentColor" />} Add to Cart</>)}
         </button>
       )}
 
       {!hideWishlist && (
         <button 
+          className={`action-btn ${addedToWishlist ? 'active' : ''} ${wishlistLoading ? 'loading' : ''}`}
           onClick={handleToggleWishlist}
           disabled={wishlistLoading}
-          style={{ 
-            background: addedToWishlist ? '#ffebf0' : '#f5f7fa', 
-            border: '1px solid ' + (addedToWishlist ? '#ffb3c6' : '#e2e8f0'), 
-            borderRadius: '50%', 
-            width: '26px', 
-            height: '26px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            cursor: wishlistLoading ? 'default' : 'pointer',
-            color: addedToWishlist ? '#e63946' : '#a0aec0',
-            fontSize: '0.9rem',
-            transition: 'all 0.2s ease'
-          }}
+          style={{ borderRadius: '50%', width: '34px', padding: 0 }}
           title={addedToWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
         >
-          {wishlistLoading ? '...' : addedToWishlist ? '❤️' : '🤍'}
+          {wishlistLoading ? '...' : addedToWishlist ? <WishlistIcon size={22} color="currentColor" fill="currentColor" /> : <WishlistIcon size={22} color="currentColor" />}
         </button>
       )}
     </div>

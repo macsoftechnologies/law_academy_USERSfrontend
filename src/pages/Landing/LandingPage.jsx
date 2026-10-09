@@ -1,3 +1,4 @@
+import { Target, Lightbulb, GraduationCap, FileText, Smartphone, RefreshCw, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/design-system.css';
@@ -22,15 +23,15 @@ const aboutPoints = [
   { title:'Results That Matter', desc:'Over 80% of our learners report career growth within 6 months of completing a course.' },
 ];
 const mission = [
-  { icon:'🎯', title:'Our Mission', desc:'To make high-quality, career-focused education accessible to every learner, regardless of background or location.' },
+  { icon:<Target size={18} color="#ef4444" />, title:'Our Mission', desc:'To make high-quality, career-focused education accessible to every learner, regardless of background or location.' },
   { icon:'👁️', title:'Our Vision', desc:'A world where every person has the skills and knowledge to build the career and life they deserve.' },
-  { icon:'💡', title:'Our Values', desc:"Integrity, inclusivity, innovation, and impact. These four pillars guide everything we do at Rao's Law Academy." },
+  { icon:<Lightbulb size={18} color="#eab308" />, title:'Our Values', desc:"Integrity, inclusivity, innovation, and impact. These four pillars guide everything we do at Rao's Law Academy." },
 ];
 const features = [
-  { icon:'🎓', title:'Expert Instructors', desc:'Learn directly from industry professionals with years of real-world experience.' },
-  { icon:'📜', title:'Recognised Certificates', desc:'Earn certificates trusted by top employers and institutions across the country.' },
-  { icon:'📱', title:'Learn Anywhere', desc:'Access your courses on any device — mobile, tablet, or desktop — at any time.' },
-  { icon:'🔄', title:'Lifetime Access', desc:'Pay once and access your course forever, including all future content updates.' },
+  { icon:<GraduationCap size={18} color="#1e40af" />, title:'Expert Instructors', desc:'Learn directly from industry professionals with years of real-world experience.' },
+  { icon:<FileText size={18} color="#3b82f6" />, title:'Recognised Certificates', desc:'Earn certificates trusted by top employers and institutions across the country.' },
+  { icon:<Smartphone size={18} color="#4b5563" />, title:'Learn Anywhere', desc:'Access your courses on any device — mobile, tablet, or desktop — at any time.' },
+  { icon:<RefreshCw size={18} color="#3b82f6" />, title:'Lifetime Access', desc:'Pay once and access your course forever, including all future content updates.' },
 ];
 const testimonials = [
   { av:'lp-av-1', initials:'RK', text:"Rao's Law Academy completely changed my career path. The courses are practical, well-structured, and the instructors are incredibly knowledgeable.", name:'Rahul Kumar', role:'Software Engineer, Bangalore' },
@@ -217,7 +218,7 @@ export default function LandingPage() {
       </div>
         <div className="lp-footer-bottom">
           <span>© 2026 <span className="hl">Rao's Law Academy</span>. All rights reserved.</span>
-          <span>Made with ❤️ <a href="https://www.macsof.com" target="_blank" rel="noreferrer">@macsof technologies</a></span>
+          <span>Made with {<Heart size={18} color="#ef4444" fill="#ef4444" />} <a href="https://www.macsof.com" target="_blank" rel="noreferrer">@macsof technologies</a></span>
         </div>
       </footer>
     </div>

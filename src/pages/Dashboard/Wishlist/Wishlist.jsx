@@ -1,3 +1,4 @@
+import { ShoppingCart, BookOpen } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -9,6 +10,7 @@ import useToast from '../../../hooks/useToast';
 import '../../../styles/design-system.css';
 import '../../../styles/components.css';
 import '../../../styles/layout.css';
+import WishlistIcon from '../../../components/common/WishlistIcon';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -111,11 +113,11 @@ export default function Wishlist() {
 
           <div className="page-section-head">
             <h1 className="page-section-title">
-              ❤️ Wishlist
+              {<WishlistIcon size={18} color="var(--navy)" fill="var(--navy)" />} Wishlist
               <span className="page-section-count">{list.length}</span>
             </h1>
             {list.length > 0 && (
-              <button className="btn btn-gold btn-sm" onClick={() => navigate('/dashboard/cart')}>🛒 Go to Cart</button>
+              <button className="btn btn-gold btn-sm" onClick={() => navigate('/dashboard/cart')}>{<ShoppingCart size={18} color="#f59e0b" />} Go to Cart</button>
             )}
           </div>
 
@@ -124,7 +126,7 @@ export default function Wishlist() {
           ) : list.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon">💔</div>
+                <div className="empty-state-icon">{<WishlistIcon size={18} color="var(--navy)" />}</div>
                 <h3>Your wishlist is empty</h3>
                 <p>Save courses you love and come back to them anytime.</p>
                 <button className="btn btn-primary btn-sm" style={{ marginTop: '.5rem' }} onClick={() => navigate('/dashboard')}>Explore Courses</button>
@@ -144,7 +146,7 @@ export default function Wishlist() {
                       {c.courseDetails?.presentation_image ? (
                         <img src={`${BASE_URL}/${c.courseDetails.presentation_image}`} alt={c.courseDetails?.title || 'Course'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <div className="course-card-img-placeholder" style={{ fontSize: '3rem' }}>📚</div>
+                        <div className="course-card-img-placeholder" style={{ fontSize: '3rem' }}>{<BookOpen size={18} color="#3b82f6" />}</div>
                       )}
                       
                       {/* Remove Button Overlay */}
@@ -181,7 +183,7 @@ export default function Wishlist() {
                           onClick={() => handleOpenPlanModal(c)}
                           style={{ padding: '0.6rem', fontWeight: 'bold' }}
                         >
-                          {isMoving ? 'Moving...' : '🛒 Move to Cart'}
+                          {isMoving ? 'Moving...' : (<>{<ShoppingCart size={18} color="#f59e0b" />} Move to Cart</>)}
                         </button>
                       </div>
                     </div>

@@ -1,3 +1,4 @@
+import { GraduationCap } from 'lucide-react';
 import { useState } from 'react';
 import { addCertificate, deleteCertificate } from '../../../../api/Profile/profileApi';
 
@@ -98,7 +99,7 @@ export default function EducationalInfo({ certificates = [], onRefetch }) {
 
       {certificates.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🎓</div>
+          <div className="empty-state-icon">{<GraduationCap size={18} color="#1e40af" />}</div>
           <h3>No certificates added</h3>
           <p>Add your educational qualifications.</p>
         </div>
@@ -107,7 +108,7 @@ export default function EducationalInfo({ certificates = [], onRefetch }) {
           {certificates.map((cert, i) => (
             <div key={i} className="card">
               <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'var(--gold-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>🎓</div>
+                <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'var(--gold-pale)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>{<GraduationCap size={18} color="#1e40af" />}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, color: 'var(--navy)' }}>{cert.certificate_standard}</div>
                   <div style={{ fontSize: '.82rem', color: 'var(--gray-500)' }}>{cert.institute_name} {cert.marks_cgpa && `· ${cert.marks_cgpa}`}</div>

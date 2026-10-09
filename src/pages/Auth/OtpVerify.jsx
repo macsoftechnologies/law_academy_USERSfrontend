@@ -1,3 +1,4 @@
+import { LockKeyhole } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyUser } from '../../api/auth/verify';
@@ -104,7 +105,7 @@ export default function OtpVerify() {
       />
       <div className="auth-right">
         <div className="auth-card">
-          <div className="auth-illus">🔐</div>
+          <div className="auth-illus">{<LockKeyhole size={18} color="#dc2626" />}</div>
           <div className="auth-body">
             <button className="auth-back" onClick={()=>navigate('/login')}>← Back</button>
             <h2>Verify Your Mobile Number</h2>

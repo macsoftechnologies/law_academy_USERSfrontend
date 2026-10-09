@@ -1,3 +1,4 @@
+import { Trophy, BookOpen, Scale, GraduationCap, FileText, PenTool, Package } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -11,7 +12,7 @@ import '../../styles/layout.css';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PAGE_SIZE = 12;
-const COMBO_EMOJIS = ['🏆', '📚', '⚖️', '🎓', '📜', '🔏'];
+const COMBO_EMOJIS = [<Trophy size={18} color="#eab308" />, <BookOpen size={18} color="#3b82f6" />, <Scale size={18} color="#d4af37" />, <GraduationCap size={18} color="#1e40af" />, <FileText size={18} color="#3b82f6" />, <PenTool size={18} color="#4b5563" />];
 
 export default function AllCombos() {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ export default function AllCombos() {
 
           {loading ? <Loader /> : combos.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📦</div>
+              <div className="empty-state-icon">{<Package size={18} color="#8b5cf6" />}</div>
               <h3>No combo courses available</h3>
             </div>
           ) : (

@@ -1,3 +1,4 @@
+import { GraduationCap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import BannerCarousel from '../../../components/common/BannerCarousel';
@@ -52,7 +53,7 @@ export default function Dashboard() {
 
           {/* Welcome Section - Show immediately so page doesn't look empty */}
           <header className="welcome-header">
-            <h1 className="welcome-text" style={{ fontSize: '1.1rem' }}>Welcome {name} 👋</h1>
+            <h1 className="welcome-text" style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>Welcome {name} <GraduationCap size={22} color="var(--navy)" strokeWidth={2.2} /></h1>
 
           </header>
 

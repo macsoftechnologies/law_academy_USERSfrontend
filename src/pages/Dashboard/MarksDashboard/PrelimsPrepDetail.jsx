@@ -1,3 +1,4 @@
+import { BookOpen, Files, Flag, Puzzle } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -41,14 +42,14 @@ export default function PrelimsPrepDetail() {
           <button className="back-btn" onClick={() => navigate('/dashboard/marks')}>← Back to Marks Dashboard</button>
 
           <div className="page-section-head">
-            <h1 className="page-section-title">📘 Prelims Prep</h1>
+            <h1 className="page-section-title">{<BookOpen size={18} color="#3b82f6" />} Prelims Prep</h1>
           </div>
 
           {loading ? <Loader /> : !stats ? (
             <div className="empty-state"><h3>No data available</h3></div>
           ) : !hasData ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📘</div>
+              <div className="empty-state-icon">{<BookOpen size={18} color="#3b82f6" />}</div>
               <h3>No prelims activity yet</h3>
               <p>Attempt a PYQ, grand test, or subject mock to start tracking your progress here.</p>
             </div>
@@ -58,7 +59,7 @@ export default function PrelimsPrepDetail() {
               {/* PYQs */}
               {pyqs && (
                 <div className="card pp-card">
-                  <div className="card-header">📑 PYQS</div>
+                  <div className="card-header">{<Files size={18} color="#64748b" />} PYQS</div>
                   <div className="card-body">
                     <div className="pp-subtitle">PYQs Modules</div>
                     <ProgressRow
@@ -75,7 +76,7 @@ export default function PrelimsPrepDetail() {
               {/* Grand Test */}
               {grandTest && (
                 <div className="card pp-card">
-                  <div className="card-header">🏁 Grand Test</div>
+                  <div className="card-header">{<Flag size={18} color="#10b981" />} Grand Test</div>
                   <div className="card-body">
                     <div className="pp-subtitle">Grand Test Modules</div>
                     <ProgressRow
@@ -92,7 +93,7 @@ export default function PrelimsPrepDetail() {
               {/* Subject Wise Mocks */}
               {(subjectMocks.civil || subjectMocks.criminal || subjectMocks.total != null) && (
                 <div className="card pp-card">
-                  <div className="card-header">🧩 Subject Wise Mocks{subjectMocks.total != null ? ` - Total Mock Tests ${subjectMocks.total}` : ''}</div>
+                  <div className="card-header">{<Puzzle size={18} color="#f59e0b" />} Subject Wise Mocks{subjectMocks.total != null ? ` - Total Mock Tests ${subjectMocks.total}` : ''}</div>
                   <div className="card-body">
                     {subjectMocks.civil && (
                       <>

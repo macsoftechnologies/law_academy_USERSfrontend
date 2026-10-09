@@ -1,3 +1,4 @@
+import { PartyPopper } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { enrollCourse, verifyCoupon, calculatePrice } from '../../api/enroll/enrollApi_addition';
@@ -149,7 +150,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, termsCondi
           )}
           {success ? (
             <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-              <div className="result-icon">🎉</div>
+              <div className="result-icon">{<PartyPopper size={18} color="#10b981" />}</div>
               <h3 style={{ color: 'var(--navy)', marginBottom: '.4rem' }}>Enrolled Successfully!</h3>
               <p style={{ color: 'var(--gray-500)', fontSize: '.875rem', marginBottom: '1rem' }}>
                 You're now enrolled in <strong>{courseTitle}</strong>.<br />

@@ -1,3 +1,4 @@
+import { BookOpen, CreditCard, ClipboardList } from "lucide-react";
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
@@ -34,7 +35,7 @@ export default function SubcategoryCheckout() {
             <div className="detail-hero-img">
               {sub.presentation_image
                 ? <img src={`${BASE_URL}/${sub.presentation_image}`} alt={sub.title} />
-                : <div className="detail-hero-img-placeholder">📘</div>}
+                : <div className="detail-hero-img-placeholder">{<BookOpen size={18} color="#3b82f6" />}</div>}
             </div>
             <div className="detail-hero-body">
               <span className="badge badge-navy">Course</span>
@@ -56,7 +57,7 @@ export default function SubcategoryCheckout() {
           {/* ── Plans ── */}
           {sub.availablePlans?.length > 0 ? (
             <div className="card" style={{ marginBottom: '1.25rem' }}>
-              <div className="card-header">💳 Choose a Plan</div>
+              <div className="card-header">{<CreditCard size={18} color="#6366f1" />} Choose a Plan</div>
               <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                 {sub.availablePlans.map(p => (
                   <div key={p.planId} style={{
@@ -105,7 +106,7 @@ export default function SubcategoryCheckout() {
           {/* ── Terms & Conditions ── */}
           {sub.terms_conditions && (
             <div className="card">
-              <div className="card-header">📋 Terms & Conditions</div>
+              <div className="card-header">{<ClipboardList size={18} color="#4b5563" />} Terms & Conditions</div>
               <div className="card-body" style={{
                 fontSize: '.875rem',
                 color: 'var(--gray-600)',

@@ -1,3 +1,4 @@
+import { XCircle, Lock, CheckCircle, Clapperboard } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
@@ -89,7 +90,7 @@ export default function LecturesPage() {
                 };
               }
             } catch (err) {
-              console.error("❌ USER SUBJECT ERROR:", err);
+              console.error((<>{<XCircle size={18} color="#ef4444" />} USER SUBJECT ERROR:</>), err);
             }
           }
 
@@ -100,7 +101,7 @@ export default function LecturesPage() {
                 userCourses = coursesRes.data;
               }
             } catch (err) {
-              console.error("❌ USER COURSES ERROR:", err);
+              console.error((<>{<XCircle size={18} color="#ef4444" />} USER COURSES ERROR:</>), err);
             }
           }
 
@@ -128,10 +129,10 @@ export default function LecturesPage() {
 
           setSubject(mergedSubject);
         } catch (err) {
-          console.error("❌ SUBJECT API FAILED:", err);
+          console.error((<>{<XCircle size={18} color="#ef4444" />} SUBJECT API FAILED:</>), err);
         }
       } catch (err) {
-        console.error("❌ LECTURES API FAILED:", err);
+        console.error((<>{<XCircle size={18} color="#ef4444" />} LECTURES API FAILED:</>), err);
       } finally {
         setLoading(false);
       }
@@ -158,7 +159,7 @@ export default function LecturesPage() {
             ← Back
           </button>
 
-          {/* ✅ Subject header */}
+          {/* {<CheckCircle size={18} color="#10b981" />} Subject header */}
           {subject && (
             <div className="card" style={{ marginBottom: '1.25rem' }}>
               <div
@@ -268,7 +269,7 @@ export default function LecturesPage() {
             <Loader />
           ) : lectures.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">🎬</div>
+              <div className="empty-state-icon">{<Clapperboard size={18} color="#6366f1" />}</div>
               <h3>No lectures available</h3>
             </div>
           ) : (
@@ -319,10 +320,10 @@ export default function LecturesPage() {
                           color: locked
                             ? 'var(--gray-400)'
                             : 'var(--maroon)',
-                          flexShrink: 0
+                          flexShrink: 0, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: '0 4px'
                         }}
                       >
-                        {locked ? '🔒' : `L${l.lecture_no ?? i + 1}`}
+                        {locked ? <Lock size={18} color="#dc2626" /> : `L${l.lecture_no ?? i + 1}`}
                       </div>
 
                       <div style={{ flex: 1, minWidth: 0 }}>

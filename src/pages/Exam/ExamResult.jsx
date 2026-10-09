@@ -1,3 +1,4 @@
+import { CheckCircle, Target, TrendingUp, XCircle, BookOpen, FileEdit, BarChart, Medal, AlarmClock, RefreshCw, ClipboardList, Lightbulb } from "lucide-react";
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -105,11 +106,11 @@ export default function ExamResult() {
   const getRank = () => {
     const label = backendResult?.status ?? backendResult?.rank_label ?? backendResult?.rank ?? backendResult?.label ?? null;
     if (!label) return null;
-    if (/excell?ent|pass/i.test(label)) return { label, color: '#16a34a', bg: '#dcfce7', icon: '✅' };
-    if (/good/i.test(label))       return { label, color: '#2563eb', bg: '#dbeafe', icon: '🎯' };
-    if (/average/i.test(label))    return { label, color: '#d97706', bg: '#fef3c7', icon: '📈' };
-    if (/fail/i.test(label))       return { label, color: '#dc2626', bg: '#fee2e2', icon: '❌' };
-    return { label, color: 'var(--navy)', bg: 'var(--gray-100)', icon: '📚' };
+    if (/excell?ent|pass/i.test(label)) return { label, color: '#16a34a', bg: '#dcfce7', icon: <CheckCircle size={18} color="#10b981" /> };
+    if (/good/i.test(label))       return { label, color: '#2563eb', bg: '#dbeafe', icon: <Target size={18} color="#ef4444" /> };
+    if (/average/i.test(label))    return { label, color: '#d97706', bg: '#fef3c7', icon: <TrendingUp size={18} color="#10b981" /> };
+    if (/fail/i.test(label))       return { label, color: '#dc2626', bg: '#fee2e2', icon: <XCircle size={18} color="#ef4444" /> };
+    return { label, color: 'var(--navy)', bg: 'var(--gray-100)', icon: <BookOpen size={18} color="#3b82f6" /> };
   };
   const rank = getRank();
 
@@ -148,7 +149,7 @@ export default function ExamResult() {
           <div className="result-shell">
 
             <div className="result-hero">
-              {auto && <div className="result-auto-badge">⏰ Time's up — Auto submitted</div>}
+              {auto && <div className="result-auto-badge">{<AlarmClock size={18} color="#ef4444" />} Time's up — Auto submitted</div>}
               {rank && (
                 <div className="result-rank-badge" style={{ background: rank.bg, color: rank.color }}>
                   <span>{rank.icon}</span> {rank.label}
@@ -170,12 +171,12 @@ export default function ExamResult() {
 
               <div className="result-stats-row">
                 <div className="result-stat correct">
-                  <span className="rs-icon">✅</span>
+                  <span className="rs-icon">{<CheckCircle size={18} color="#10b981" />}</span>
                   <span className="rs-val">{correct}</span>
                   <span className="rs-label">Correct</span>
                 </div>
                 <div className="result-stat wrong">
-                  <span className="rs-icon">❌</span>
+                  <span className="rs-icon">{<XCircle size={18} color="#ef4444" />}</span>
                   <span className="rs-val">{wrong}</span>
                   <span className="rs-label">Wrong</span>
                 </div>
@@ -185,7 +186,7 @@ export default function ExamResult() {
                   <span className="rs-label">Skipped</span>
                 </div>
                 <div className="result-stat" style={{ borderLeft: '1px solid var(--gray-200)', paddingLeft: '1rem' }}>
-                  <span className="rs-icon">📊</span>
+                  <span className="rs-icon">{<BarChart size={18} color="#3b82f6" />}</span>
                   <span className="rs-val" style={{ color: 'var(--navy)' }}>{percentage}%</span>
                   <span className="rs-label">Score</span>
                 </div>
@@ -206,8 +207,8 @@ export default function ExamResult() {
                 }
                 navigate('/prelims');
               }}>← Back to Tests</button>
-              <button className="btn btn-secondary" onClick={loadAttempts}>📊 All Attempts</button>
-              <button className="btn btn-primary" onClick={handleRetake}>🔄 Retake Test</button>
+              <button className="btn btn-secondary" onClick={loadAttempts}>{<BarChart size={18} color="#3b82f6" />} All Attempts</button>
+              <button className="btn btn-primary" onClick={handleRetake}>{<RefreshCw size={18} color="#3b82f6" />} Retake Test</button>
             </div>
 
             <div style={{ display: 'flex', gap: '.5rem', borderBottom: '2px solid var(--gray-200)', marginBottom: '1rem' }}>
@@ -238,12 +239,12 @@ export default function ExamResult() {
                 <h2 className="result-review-title">Performance Summary</h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: '1rem' }}>
                   {[
-                    { label: 'Questions Attempted', value: () => `${attempted} / ${total}`, icon: '📝' },
-                    { label: 'Correct Answers',      value: () => correct,                   icon: '✅', color: '#16a34a' },
-                    { label: 'Wrong Answers',         value: () => wrong,                    icon: '❌', color: '#dc2626' },
+                    { label: 'Questions Attempted', value: () => `${attempted} / ${total}`, icon: <FileEdit size={18} color="#8b5cf6" /> },
+                    { label: 'Correct Answers',      value: () => correct,                   icon: <CheckCircle size={18} color="#10b981" />, color: '#16a34a' },
+                    { label: 'Wrong Answers',         value: () => wrong,                    icon: <XCircle size={18} color="#ef4444" />, color: '#dc2626' },
                     { label: 'Skipped',               value: () => skipped,                  icon: '⏭', color: 'var(--gray-500)' },
-                    { label: 'Score (%)',              value: () => `${percentage}%`,         icon: '📊', color: rank?.color || 'var(--navy)' },
-                    { label: 'Marks Obtained',         value: () => `${correct} / ${total}`, icon: '🏅' },
+                    { label: 'Score (%)',              value: () => `${percentage}%`,         icon: <BarChart size={18} color="#3b82f6" />, color: rank?.color || 'var(--navy)' },
+                    { label: 'Marks Obtained',         value: () => `${correct} / ${total}`, icon: <Medal size={18} color="#f59e0b" /> },
                   ].map((s, i) => (
                     <div key={i} className="card" style={{ textAlign: 'center' }}>
                       <div className="card-body" style={{ padding: '1rem' }}>
@@ -265,7 +266,7 @@ export default function ExamResult() {
                   <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--gray-500)' }}>Loading attempts…</div>
                 ) : pastAttempts.length === 0 ? (
                   <div className="empty-state">
-                    <div className="empty-state-icon">📋</div>
+                    <div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div>
                     <h3>No past attempts found</h3>
                     <p style={{ color: 'var(--gray-500)', fontSize: '.875rem' }}>This is your first attempt or attempts couldn't be loaded.</p>
                   </div>
@@ -386,7 +387,7 @@ export default function ExamResult() {
                         <div key={q.questionId || q.id || idx} className={`result-q-item ${status}`}>
                           <div className="result-q-top">
                             <span className={`result-q-badge ${status}`}>
-                              {status === 'correct' ? '✅ Correct' : status === 'wrong' ? '❌ Wrong' : '⏭ Skipped'}
+                              {status === 'correct' ? (<>{<CheckCircle size={18} color="#10b981" />} Correct</>) : status === 'wrong' ? (<>{<XCircle size={18} color="#ef4444" />} Wrong</>) : '⏭ Skipped'}
                             </span>
                             <span className="result-q-num">Q{qNum}</span>
                           </div>
@@ -408,7 +409,7 @@ export default function ExamResult() {
                           </div>
                           {q.summary?.length > 0 && (
                             <div style={{ marginTop: '.85rem', padding: '.75rem', background: 'rgba(255,255,255,.8)', borderRadius: 'var(--radius-md)', borderLeft: '3px solid var(--gold)', fontSize: '.82rem', color: 'var(--gray-700)', lineHeight: 1.65 }}>
-                              <strong style={{ color: 'var(--navy)', display: 'block', marginBottom: '.3rem' }}>💡 Explanation</strong>
+                              <strong style={{ color: 'var(--navy)', display: 'block', marginBottom: '.3rem' }}>{<Lightbulb size={18} color="#eab308" />} Explanation</strong>
                               {q.summary.map((s, si) => <p key={si} style={{ margin: '0 0 .35rem 0' }}>{s}</p>)}
                             </div>
                           )}

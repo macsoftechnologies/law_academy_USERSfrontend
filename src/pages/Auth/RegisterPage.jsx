@@ -1,3 +1,4 @@
+import { Unlock, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../api/auth/register';
@@ -85,7 +86,7 @@ export default function RegisterPage() {
                 <label>Password</label>
                 <div className="pw-wrap">
                   <input type={showPw?'text':'password'} placeholder="Min. 6 characters" value={f.password} onChange={e=>set('password',e.target.value)} />
-                  <button type="button" className="eye-btn" onClick={()=>setShow(p=>!p)}>{showPw?'🔓':'🔒'}</button>
+                  <button type="button" className="eye-btn" onClick={()=>setShow(p=>!p)}>{showPw?<Unlock size={18} color="#10b981" />:<Lock size={18} color="#dc2626" />}</button>
                 </div>
                 {errors.password && <span className="field-error">{errors.password}</span>}
               </div>
@@ -93,7 +94,7 @@ export default function RegisterPage() {
                 <label>Confirm Password</label>
                 <div className="pw-wrap">
                   <input type={showCf?'text':'password'} placeholder="Re-enter password" value={f.confirm} onChange={e=>set('confirm',e.target.value)} />
-                  <button type="button" className="eye-btn" onClick={()=>setShowCf(p=>!p)}>{showCf?'🔓':'🔒'}</button>
+                  <button type="button" className="eye-btn" onClick={()=>setShowCf(p=>!p)}>{showCf?<Unlock size={18} color="#10b981" />:<Lock size={18} color="#dc2626" />}</button>
                 </div>
                 {errors.confirm && <span className="field-error">{errors.confirm}</span>}
               </div>

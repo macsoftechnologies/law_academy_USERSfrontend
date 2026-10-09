@@ -8,6 +8,8 @@ import { calculatePrice } from '../../api/enroll/enrollApi_addition';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
+import WishlistIcon from '../../components/common/WishlistIcon';
+import { Package, CheckCircle } from 'lucide-react';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const EMPTY_ADDR = { full_name: '', address: '', city: '', region: '', zip_code: '', country: 'India' };
@@ -352,22 +354,24 @@ export default function PrintedNotes() {
                             onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                           >
-                            🤍
+                            <WishlistIcon size={22} color="var(--navy)" />
                           </button>
                         </div>
                         {note.sub_title && (
                           <p style={{ fontSize: '.8rem', color: 'var(--gray-500)', marginBottom: '.5rem' }}>{note.sub_title}</p>
                         )}
                         {note.about_book?.sections?.length > 0 && (
-                          <div style={{ marginBottom: '.75rem' }}>
-                            {note.about_book.sections.slice(0, 1).map((sec, si) => (
-                              <div key={si}>
-                                <div style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.15rem' }}>{sec.title}</div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.25rem' }}>
-                                  {sec.topics?.slice(0, 3).map((t, ti) => (
-                                    <span key={ti} style={{ fontSize: '.65rem', background: 'var(--gray-100)', color: 'var(--gray-600)', padding: '.15rem .45rem', borderRadius: 'var(--radius-full)' }}>{t}</span>
+                          <div style={{ marginBottom: '.75rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'start' }}>
+                            {note.about_book.sections.map((sec, si) => (
+                              <div key={si} style={{ background: 'var(--gray-50)', padding: '0.6rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
+                                <div style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.4rem', textTransform: 'uppercase', letterSpacing: '0.02em', borderBottom: '1px solid var(--gray-200)', paddingBottom: '.25rem' }}>{sec.title}</div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '.35rem' }}>
+                                  {sec.topics?.map((t, ti) => (
+                                    <div key={ti} style={{ fontSize: '.7rem', color: 'var(--gray-700)', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                                      <span style={{ color: 'var(--gray-400)', marginTop: '-1px' }}>•</span>
+                                      <span style={{ lineHeight: '1.2' }}>{t}</span>
+                                    </div>
                                   ))}
-                                  {sec.topics?.length > 3 && <span style={{ fontSize: '.65rem', color: 'var(--gray-400)' }}>+{sec.topics.length - 3} more</span>}
                                 </div>
                               </div>
                             ))}

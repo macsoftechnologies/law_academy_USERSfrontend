@@ -1,3 +1,4 @@
+import { BookOpen, FileText } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -43,7 +44,7 @@ export default function AllNotes() {
             marginBottom: '2rem' 
           }}>
             <h1 className="page-section-title" style={{ margin: 0 }}>
-              📚 Digital Notes
+              {<BookOpen size={18} color="#3b82f6" />} Digital Notes
               {!loading && <span className="page-section-count">{allNotes.length}</span>}
             </h1>
 
@@ -61,7 +62,7 @@ export default function AllNotes() {
             <Loader />
           ) : allNotes.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📄</div>
+              <div className="empty-state-icon">{<FileText size={18} color="#64748b" />}</div>
               <h3>No digital notes available</h3>
               <p style={{ color: 'var(--gray-500)', fontSize: '.875rem' }}>
                 Your enrolled notes will appear here.
@@ -80,7 +81,7 @@ export default function AllNotes() {
                       <div className="course-card-img">
                         {note.presentation_image
                           ? <img src={`${BASE_URL}/${note.presentation_image}`} alt={note.title} />
-                          : <div className="course-card-img-placeholder">📄</div>}
+                          : <div className="course-card-img-placeholder">{<FileText size={18} color="#64748b" />}</div>}
                         
                         <div className="course-card-enrolled-badge">
                           {note.isEnrolled && <span className="badge badge-success">✓ Enrolled</span>}

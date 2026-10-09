@@ -1,3 +1,4 @@
+import { Lock, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import '../../../styles/design-system.css';
@@ -83,7 +84,7 @@ export default function Privacy() {
               <div className="card" style={{ marginBottom: '1rem' }}>
                 <div className="card-body" style={{ padding: '1.75rem' }}>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                    <div style={{ fontSize: '2.5rem' }}>🔒</div>
+                    <div style={{ fontSize: '2.5rem' }}>{<Lock size={18} color="#dc2626" />}</div>
                     <div>
                       <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--navy)', marginBottom: '.35rem' }}>Privacy Policy</h1>
                       <p style={{ fontSize: '.82rem', color: 'var(--gray-500)' }}>Last revised: 1 January 2025 &nbsp;•&nbsp; Effective upon account registration</p>
@@ -112,7 +113,7 @@ export default function Privacy() {
                     <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--cream)', marginBottom: '.25rem' }}>Privacy Questions?</div>
                     <div style={{ fontSize: '.82rem', color: 'rgba(255,247,224,.65)' }}>Reach out to our Data Protection team at privacy@makaslaw.in</div>
                   </div>
-                  <button className="btn btn-gold btn-sm" onClick={() => navigate('/dashboard/help')}>📬 Contact Us</button>
+                  <button className="btn btn-gold btn-sm" onClick={() => navigate('/dashboard/help')}>{<Mail size={18} color="#64748b" />} Contact Us</button>
                 </div>
               </div>
             </div>

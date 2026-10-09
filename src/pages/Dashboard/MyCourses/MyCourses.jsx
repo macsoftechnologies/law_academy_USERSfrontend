@@ -1,3 +1,4 @@
+import { GraduationCap, BookOpen } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
@@ -88,7 +89,7 @@ export default function MyCourses() {
 
           <div className="page-section-head">
             <h1 className="page-section-title">
-              🎓 My Courses
+              {<GraduationCap size={18} color="#1e40af" />} My Courses
               <span className="page-section-count">{courses.length}</span>
             </h1>
 
@@ -127,7 +128,7 @@ export default function MyCourses() {
           {!filtered.length ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon">🎓</div>
+                <div className="empty-state-icon">{<GraduationCap size={18} color="#1e40af" />}</div>
                 <h3>No courses found</h3>
               </div>
             </div>
@@ -177,7 +178,7 @@ export default function MyCourses() {
                               height: "100%",
                             }}
                           >
-                            📚
+                            {<BookOpen size={18} color="#3b82f6" />}
                           </div>
                         )}
                       </div>

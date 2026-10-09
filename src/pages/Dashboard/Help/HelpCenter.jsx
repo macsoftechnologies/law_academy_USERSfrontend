@@ -1,3 +1,4 @@
+import { Hourglass, Circle, CheckCircle, MinusCircle, GraduationCap, Ticket, Mail, MessageSquare, Phone, HelpCircle } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -14,10 +15,10 @@ import '../../../styles/components.css';
 import '../../../styles/layout.css';
 
 const STATUS_COLORS = {
-  pending:    { bg: '#fff7e6', color: '#b45309', label: '⏳ Pending' },
-  open:       { bg: '#eff6ff', color: '#1d4ed8', label: '🟢 Open' },
-  resolved:   { bg: '#f0fdf4', color: '#15803d', label: '✅ Resolved' },
-  closed:     { bg: '#f3f4f6', color: '#6b7280', label: '⛔ Closed' },
+  pending:    { bg: '#fff7e6', color: '#b45309', label: (<>{<Hourglass size={18} color="#f59e0b" />} Pending</>) },
+  open:       { bg: '#eff6ff', color: '#1d4ed8', label: (<>{<Circle size={18} color="#10b981" fill="#10b981" />} Open</>) },
+  resolved:   { bg: '#f0fdf4', color: '#15803d', label: (<>{<CheckCircle size={18} color="#10b981" />} Resolved</>) },
+  closed:     { bg: '#f3f4f6', color: '#6b7280', label: (<>{<MinusCircle size={18} color="#ef4444" />} Closed</>) },
 };
 
 const STATUS_BADGE = (status) => {
@@ -84,7 +85,7 @@ function TicketList({ onSelect, onCreate }) {
       ) : tickets.length === 0 ? (
         <div className="card">
           <div className="empty-state" style={{ padding: '3rem' }}>
-            <div className="empty-state-icon">🎫</div>
+            <div className="empty-state-icon">{<Ticket size={18} color="#8b5cf6" />}</div>
             <h3>No tickets yet</h3>
             <p>Raise a support ticket and we'll get back to you within 24 hours.</p>
             <button className="btn btn-primary btn-sm" style={{ marginTop: '.5rem' }} onClick={onCreate}>Raise a Ticket</button>
@@ -96,7 +97,7 @@ function TicketList({ onSelect, onCreate }) {
             <div key={t.ticketId || t._id} className="card" style={{ cursor: 'pointer' }} onClick={() => onSelect(t.ticketId || t._id)}>
               <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ fontSize: '1.8rem', flexShrink: 0 }}>
-                  {t.ticket_type === 'course' ? '🎓' : '🛠️'}
+                  {t.ticket_type === 'course' ? <GraduationCap size={18} color="#1e40af" /> : '🛠️'}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '.2rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -144,7 +145,7 @@ function CreateTicket({ onBack, onCreated }) {
 
   return (
     <div className="card">
-      <div className="card-header">📬 Raise a Support Ticket</div>
+      <div className="card-header">{<Mail size={18} color="#64748b" />} Raise a Support Ticket</div>
       <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
 
         {/* Ticket type */}
@@ -152,7 +153,7 @@ function CreateTicket({ onBack, onCreated }) {
           <label style={{ fontWeight: 600, fontSize: '.82rem', color: 'var(--gray-600)', display: 'block', marginBottom: '.5rem' }}>Ticket Type *</label>
           <div style={{ display: 'flex', gap: '.75rem' }}>
             {[
-              { val: 'course',  icon: '🎓', label: 'Course Issue' },
+              { val: 'course',  icon: <GraduationCap size={18} color="#1e40af" />, label: 'Course Issue' },
               { val: 'support', icon: '🛠️', label: 'General Support' },
             ].map(opt => (
               <button
@@ -272,7 +273,7 @@ function TicketDetail({ ticketId, onBack }) {
       {/* ── Conversation panel ── */}
       <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
         <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>💬 Conversation</span>
+          <span>{<MessageSquare size={18} color="#3b82f6" />} Conversation</span>
           {STATUS_BADGE(ticket?.status)}
         </div>
         <div className="card-body" style={{ flex: 1 }}>
@@ -281,7 +282,7 @@ function TicketDetail({ ticketId, onBack }) {
             <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '.25rem' }}>{ticket?.title}</div>
             <div style={{ fontSize: '.8rem', color: 'var(--gray-600)', marginBottom: '.4rem' }}>{ticket?.description}</div>
             <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>
-              {ticket?.ticket_type === 'course' ? '🎓 Course Issue' : '🛠️ Support'} · Raised on {fmtDate(ticket?.createdAt)}
+              {ticket?.ticket_type === 'course' ? (<>{<GraduationCap size={18} color="#1e40af" />} Course Issue</>) : '🛠️ Support'} · Raised on {fmtDate(ticket?.createdAt)}
             </div>
           </div>
 
@@ -344,11 +345,11 @@ function TicketDetail({ ticketId, onBack }) {
 
         {/* Ticket info card */}
         <div className="card">
-          <div className="card-header">🎫 Ticket Info</div>
+          <div className="card-header">{<Ticket size={18} color="#8b5cf6" />} Ticket Info</div>
           <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '.6rem', fontSize: '.82rem' }}>
             {[
               { label: 'Ticket ID',  value: ticket?.ticketId || '—' },
-              { label: 'Type',       value: ticket?.ticket_type === 'course' ? '🎓 Course' : '🛠️ Support' },
+              { label: 'Type',       value: ticket?.ticket_type === 'course' ? (<>{<GraduationCap size={18} color="#1e40af" />} Course</>) : '🛠️ Support' },
               { label: 'Status',     value: STATUS_BADGE(ticket?.status) },
               { label: 'Raised On',  value: fmtDate(ticket?.createdAt) },
               { label: 'Updated',    value: fmtDate(ticket?.updatedAt) },
@@ -364,7 +365,7 @@ function TicketDetail({ ticketId, onBack }) {
         {/* Schedule callback */}
         {!isClosed && (
           <div className="card">
-            <div className="card-header">📞 Schedule a Callback</div>
+            <div className="card-header">{<Phone size={18} color="#10b981" />} Schedule a Callback</div>
             <div className="card-body">
               {schedSuccess && <div className="toast success" style={{ marginBottom: '.75rem', fontSize: '.8rem' }}>{schedSuccess}</div>}
               {!showSched ? (
@@ -421,7 +422,7 @@ export default function HelpCenter() {
           }}>← Back</button>
 
           <div className="page-section-head" style={{ marginBottom: '1rem' }}>
-            <h1 className="page-section-title">❓ Help Center</h1>
+            <h1 className="page-section-title">{<HelpCircle size={18} color="#4b5563" />} Help Center</h1>
           </div>
 
           {/* Conditional views */}

@@ -1,3 +1,4 @@
+import { BookOpen } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
@@ -42,7 +43,7 @@ export default function SubjectsPage() {
 
           {loading ? <Loader /> : subjects.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📚</div>
+              <div className="empty-state-icon">{<BookOpen size={18} color="#3b82f6" />}</div>
               <h3>No subjects available</h3>
             </div>
           ) : (
@@ -61,7 +62,7 @@ export default function SubjectsPage() {
                     >
                       {s.subject_image
                         ? <img src={`${BASE_URL}/${s.subject_image}`} alt={s.title} />
-                        : <div className="course-card-img-placeholder">📚</div>}
+                        : <div className="course-card-img-placeholder">{<BookOpen size={18} color="#3b82f6" />}</div>}
                       {s.isEnrolled && (
                         <span className="course-card-enrolled-badge">
                           <span className="badge badge-success">✓ Enrolled</span>

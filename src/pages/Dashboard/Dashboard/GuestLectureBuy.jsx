@@ -1,3 +1,4 @@
+import { Lock, Unlock, Mic } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
@@ -85,7 +86,7 @@ export default function GuestLectureBuy() {
               ← Back
             </button>
             <div className="empty-state">
-              <div className="empty-state-icon">🎤</div>
+              <div className="empty-state-icon">{<Mic size={18} color="#ec4899" />}</div>
               <h3>Guest lecture not found</h3>
             </div>
           </div>
@@ -127,7 +128,7 @@ export default function GuestLectureBuy() {
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "1rem" }}>
               <span className="badge badge-gold">Guest Lecture</span>
               <span className={`badge ${isLocked ? "badge-danger" : "badge-success"}`}>
-                {isLocked ? "🔒 Locked" : "🔓 Unlocked"}
+                {isLocked ? (<>{<Lock size={18} color="#dc2626" />} Locked</>) : (<>{<Unlock size={18} color="#10b981" />} Unlocked</>)}
               </span>
             </div>
 
@@ -173,7 +174,7 @@ export default function GuestLectureBuy() {
                     justifyContent: "center",
                     gap: "10px"
                   }}>
-                    <span style={{ fontSize: "1.3rem" }}>🔒</span>
+                    <span style={{ fontSize: "1.3rem" }}>{<Lock size={18} color="#dc2626" />}</span>
                     <span>Purchase a <strong>Full Course</strong> to unlock this guest lecture.</span>
                   </div>
                 ) : availablePlans.length === 0 ? (

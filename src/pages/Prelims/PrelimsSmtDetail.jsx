@@ -1,3 +1,4 @@
+import { FileEdit, BarChart } from 'lucide-react';
 /**
  * PrelimsSmtDetail
  * ─────────────────
@@ -199,7 +200,7 @@ export default function PrelimsSmtDetail() {
 
           {loading ? <Loader /> : tests.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📝</div>
+              <div className="empty-state-icon">{<FileEdit size={18} color="#8b5cf6" />}</div>
               <h3>No tests available</h3>
               <p style={{ color: 'var(--gray-500)', fontSize: '.875rem' }}>
                 Tests for this subject will appear here once available.
@@ -228,7 +229,7 @@ export default function PrelimsSmtDetail() {
                     <div className="course-card-img">
                       {imgSrc
                         ? <img src={imgSrc} alt={title} />
-                        : <div className="course-card-img-placeholder">📝</div>}
+                        : <div className="course-card-img-placeholder">{<FileEdit size={18} color="#8b5cf6" />}</div>}
 
                       {/* Attempt badge overlay */}
                       {attempts > 0 && (
@@ -263,7 +264,7 @@ export default function PrelimsSmtDetail() {
                       <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', marginBottom: '.5rem' }}>
                         {questions && (
                           <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>
-                            📝 {questions} Qs
+                            {<FileEdit size={18} color="#8b5cf6" />} {questions} Qs
                           </span>
                         )}
                         {duration && (
@@ -339,7 +340,7 @@ export default function PrelimsSmtDetail() {
                                 }}
                                 style={{ flex: 1, padding: '0.25rem', borderColor: 'var(--gold)', color: 'var(--gold)' }}
                               >
-                                📊 Marks
+                                {<BarChart size={18} color="#3b82f6" />} Marks
                               </button> */}
                             </div>
                           )}

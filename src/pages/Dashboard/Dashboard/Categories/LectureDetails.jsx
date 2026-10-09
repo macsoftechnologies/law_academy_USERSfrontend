@@ -1,3 +1,4 @@
+import { CheckCircle, Clapperboard, FileText, BookOpen, GraduationCap, Scale } from "lucide-react";
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
@@ -7,6 +8,7 @@ import { updateMarksProgress } from '../../../../api/marksDashboard';
 import '../../../../styles/design-system.css';
 import '../../../../styles/components.css';
 import '../../../../styles/layout.css';
+import WishlistIcon from '../../../../components/common/WishlistIcon';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -69,7 +71,7 @@ export default function LectureDetails() {
 
           {loading ? <Loader /> : !detail ? (
             <div className="empty-state">
-              <div className="empty-state-icon">🎬</div>
+              <div className="empty-state-icon">{<Clapperboard size={18} color="#6366f1" />}</div>
               <h3>Lecture not found</h3>
             </div>
           ) : (
@@ -100,7 +102,7 @@ export default function LectureDetails() {
                         sendProgress('video');
                       }}
                     >
-                      {videoProgressSent.current ? '✅ Video Marked Complete' : '✔ Mark Video as Complete'}
+                      {videoProgressSent.current ? (<>{<CheckCircle size={18} color="#10b981" />} Video Marked Complete</>) : '✔ Mark Video as Complete'}
                     </button>
                   </div>
                 )}
@@ -130,7 +132,7 @@ export default function LectureDetails() {
                         onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                         onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                       >
-                        🤍
+                        {<WishlistIcon size={18} color="var(--navy)" />}
                       </button>
                       <span className="badge badge-navy">Lecture</span>
                     </div>
@@ -144,7 +146,7 @@ export default function LectureDetails() {
                 {pdfUrl && (
                   <div className="card">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>📄 Lecture Notes</span>
+                      <span>{<FileText size={18} color="#64748b" />} Lecture Notes</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <button
                           onClick={(e) => {
@@ -156,7 +158,7 @@ export default function LectureDetails() {
                           onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                           onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
-                          🤍
+                          {<WishlistIcon size={18} color="var(--navy)" />}
                         </button>
                         <button className="btn btn-outline btn-sm" onClick={() => {
                         setShowPdf(v => {
@@ -191,7 +193,7 @@ export default function LectureDetails() {
                 {/* Subject card */}
                 {sub && (
                   <div className="card">
-                    <div className="card-header">📚 Subject</div>
+                    <div className="card-header">{<BookOpen size={18} color="#3b82f6" />} Subject</div>
                     <div className="card-body">
                       {sub.subject_image && (
                         <img src={`${BASE_URL}/${sub.subject_image}`} alt={sub.title}
@@ -217,7 +219,7 @@ export default function LectureDetails() {
                 {/* Law card */}
                 {law && (
                   <div className="card">
-                    <div className="card-header">⚖️ Law</div>
+                    <div className="card-header">{<Scale size={18} color="#d4af37" />} Law</div>
                     <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                       {law.law_image && (
                         <img src={`${BASE_URL}/${law.law_image}`} alt={law.title}
@@ -238,7 +240,7 @@ export default function LectureDetails() {
                 {/* Course (subcategory) card */}
                 {sc && typeof sc === 'object' && (
                   <div className="card">
-                    <div className="card-header">🎓 Course</div>
+                    <div className="card-header">{<GraduationCap size={18} color="#1e40af" />} Course</div>
                     <div className="card-body">
                       {sc.presentation_image && (
                         <img src={`${BASE_URL}/${sc.presentation_image}`} alt={sc.title}

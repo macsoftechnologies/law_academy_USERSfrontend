@@ -1,3 +1,4 @@
+import { FileText, CreditCard, Receipt } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -92,7 +93,7 @@ function DetailModal({ billing, onClose }) {
                 </div>
               ))}
             </div>
-            <a href={invoiceUrl} target="_blank" rel="noopener noreferrer" className="btn btn-gold" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>📄 Download Invoice</a>
+            <a href={invoiceUrl} target="_blank" rel="noopener noreferrer" className="btn btn-gold" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>{<FileText size={18} color="#64748b" />} Download Invoice</a>
           </>
         )}
       </div>
@@ -144,7 +145,7 @@ export default function Billing() {
         <div className="dash-content">
           <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
           <div className="page-section-head">
-            <h1 className="page-section-title">💳 Billing & Payments</h1>
+            <h1 className="page-section-title">{<CreditCard size={18} color="#6366f1" />} Billing & Payments</h1>
           </div>
 
           <div className="tabs" style={{ marginBottom: '1rem' }}>
@@ -157,7 +158,7 @@ export default function Billing() {
 
           {loading ? <Loader /> : billings.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">🧾</div>
+              <div className="empty-state-icon">{<Receipt size={18} color="#64748b" />}</div>
               <h3>No transactions yet</h3>
             </div>
           ) : (
@@ -222,7 +223,7 @@ export default function Billing() {
                       </div>
 
                       <div style={{ display: 'flex', gap: '.5rem', justifyContent: 'end' }}>
-                        <button className="btn btn-outline btn-sm" onClick={() => setSelected(b)}>📄 Details</button>
+                        <button className="btn btn-outline btn-sm" onClick={() => setSelected(b)}>{<FileText size={18} color="#64748b" />} Details</button>
                         <a href={getInvoiceUrl(billingId)} target="_blank" rel="noopener noreferrer" className="btn btn-gold btn-sm" style={{ textDecoration: 'none' }}>⬇ Invoice</a>
                       </div>
                     </div>

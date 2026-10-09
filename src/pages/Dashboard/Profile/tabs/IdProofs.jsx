@@ -1,3 +1,4 @@
+import { IdCard } from 'lucide-react';
 import { useState } from 'react';
 import { addIdProof, deleteIdProof } from '../../../../api/Profile/profileApi';
 
@@ -92,7 +93,7 @@ export default function IdProofs({ idProofs = [], onRefetch }) {
       {/* Empty State */}
       {idProofs.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🪪</div>
+          <div className="empty-state-icon">{<IdCard size={18} color="#64748b" />}</div>
           <h3>No ID proofs added</h3>
           <p>Upload your identity documents.</p>
         </div>
@@ -102,7 +103,7 @@ export default function IdProofs({ idProofs = [], onRefetch }) {
             <div key={i} className="card">
               <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 {/* Icon */}
-                <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'var(--info-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>🪪</div>
+                <div style={{ width: 44, height: 44, borderRadius: 'var(--radius-md)', background: 'var(--info-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>{<IdCard size={18} color="#64748b" />}</div>
 
                 {/* Info */}
                 <div style={{ flex: 1 }}>

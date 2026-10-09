@@ -1,3 +1,4 @@
+import { FileEdit, PenTool, ClipboardList, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -41,7 +42,7 @@ export default function MainsQAList() {
       .catch(console.error).finally(()=>setLoading(false));
   }, [mainsId, module_type, page]);
 
-  const iconFor = (mt) => mt==='MQA' ? '📝' : mt==='MET' ? '✍️' : '📋';
+  const iconFor = (mt) => mt==='MQA' ? <FileEdit size={18} color="#8b5cf6" /> : mt==='MET' ? <PenTool size={18} color="#4b5563" /> : <ClipboardList size={18} color="#4b5563" />;
 
   return (
     <div className="dash-shell">
@@ -71,14 +72,14 @@ export default function MainsQAList() {
                       }}>
                     <div className="card-body" style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
                       <div style={{ width:42, height:42, borderRadius:'var(--radius-md)', background:isLocked?'var(--gray-100)':'var(--gold-pale)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.1rem', flexShrink:0 }}>
-                        {isLocked ? '🔒' : iconFor(module_type)}
+                        {isLocked ? <Lock size={18} color="#dc2626" /> : iconFor(module_type)}
                       </div>
                       <div style={{ flex:1 }}>
                         <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.9rem' }}>{qa.title || `${categoryLabel} ${i+1}`}</div>
                         {qa.question_count && <div style={{ fontSize:'.78rem', color:'var(--gray-400)', marginTop:'.1rem' }}>{qa.question_count} Questions</div>}
                         {attempts > 0 && <div style={{ fontSize:'.78rem', color:'var(--gray-500)', marginTop:'.25rem' }}>{attempts} Attempt{attempts > 1 ? 's' : ''}</div>}
                       </div>
-                      <span style={{ color:isLocked?'var(--gray-300)':'var(--gold)' }}>{isLocked?'🔒':'→'}</span>
+                      <span style={{ color:isLocked?'var(--gray-300)':'var(--gold)' }}>{isLocked?<Lock size={18} color="#dc2626" />:'→'}</span>
                     </div>
                    </div>
                   );

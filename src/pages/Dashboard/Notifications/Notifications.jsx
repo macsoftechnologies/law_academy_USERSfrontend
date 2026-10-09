@@ -1,3 +1,4 @@
+import { Megaphone, Bell } from 'lucide-react';
 import React from 'react';
 import { useNotification } from '../../../context/NotificationContext';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -51,7 +52,7 @@ export default function Notifications() {
                     }}
                   >
                     <div className="notification-icon">
-                      {notif.type === 'announcement' ? '📢' : '🔔'}
+                      {notif.type === 'announcement' ? <Megaphone size={18} color="#3b82f6" /> : <Bell size={18} color="#f59e0b" />}
                     </div>
                     <div className="notification-content">
                       <h3 className="notification-title">{notif.title}</h3>

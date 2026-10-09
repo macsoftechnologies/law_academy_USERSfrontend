@@ -1,3 +1,4 @@
+import { Video, FileEdit, BarChart, Trophy, Target } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -98,7 +99,7 @@ export default function MarksDashboard() {
           <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
           
           <div className="page-section-head">
-            <h1 className="page-section-title">📊 Marks & Analytics Dashboard</h1>
+            <h1 className="page-section-title">{<BarChart size={18} color="#3b82f6" />} Marks & Analytics Dashboard</h1>
           </div>
 
           {loading ? <Loader /> : !stats ? (
@@ -112,7 +113,7 @@ export default function MarksDashboard() {
                 {/* Overall Score */}
                 <div className="card">
                   <div className="card-body" style={{ textAlign: 'center', padding: '2rem' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '.5rem' }}>🏆</div>
+                    <div style={{ fontSize: '3rem', marginBottom: '.5rem' }}>{<Trophy size={18} color="#eab308" />}</div>
                     <div style={{ fontSize: '.9rem', color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>Overall Score</div>
                     <div style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'var(--navy)', fontWeight: 800 }}>{stats.overallScore}</div>
                   </div>
@@ -120,7 +121,7 @@ export default function MarksDashboard() {
 
                 {/* Goal Tracker */}
                 <div className="card">
-                  <div className="card-header">🎯 Goal Tracker</div>
+                  <div className="card-header">{<Target size={18} color="#ef4444" />} Goal Tracker</div>
                   <div className="card-body">
                     {stats.goalTracker ? (
                       <>
@@ -177,8 +178,8 @@ export default function MarksDashboard() {
                       <div style={{ padding: '1rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '1rem' }}>Study Analysis</div>
                         <div style={{ flex: 1 }}>
-                          {renderProgressObj(c.studyAnalysis?.videoLessons, "🎥 Video Lessons")}
-                          {renderProgressObj(c.studyAnalysis?.shortNotes, "📝 Short Notes")}
+                          {renderProgressObj(c.studyAnalysis?.videoLessons, (<>{<Video size={18} color="#6366f1" />} Video Lessons</>))}
+                          {renderProgressObj(c.studyAnalysis?.shortNotes, (<>{<FileEdit size={18} color="#8b5cf6" />} Short Notes</>))}
                         </div>
                         <button className="btn btn-navy btn-sm" style={{ marginTop: '1rem', width: '100%' }} onClick={() => navigate(`/dashboard/marks/study-analysis/${i}`)}>Explore Study Analysis</button>
                       </div>

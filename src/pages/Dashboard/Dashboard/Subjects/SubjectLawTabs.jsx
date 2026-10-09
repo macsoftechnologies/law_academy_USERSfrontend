@@ -1,3 +1,4 @@
+import { BookOpen, Scale } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -97,7 +98,7 @@ export default function SubjectLawTabs() {
                 }`}
                 onClick={() => setActiveLaw(law)}
               >
-                ⚖️ {law}
+                {<Scale size={18} color="#d4af37" />} {law}
               </button>
             ))}
           </div>
@@ -119,7 +120,7 @@ export default function SubjectLawTabs() {
                       alt={subject.title}
                     />
                   ) : (
-                    <div className="course-card-img-placeholder">📚</div>
+                    <div className="course-card-img-placeholder">{<BookOpen size={18} color="#3b82f6" />}</div>
                   )}
                 </div>
 

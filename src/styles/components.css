@@ -47,9 +47,9 @@
 
 /* Outline */
 .btn-outline {
-  background: #0961F533;
+  background: transparent;
   color: var(--navy);
-  border-color: #0961F533;
+  border-color: var(--navy);
 }
 .btn-outline:hover {
   border-color: var(--navy);
@@ -185,7 +185,7 @@
   transform: translateY(-2px);
 }
 .card-body { padding: 1.25rem; }
-.card-header {
+.card-header { display: flex; align-items: center; gap: 0.5rem;
   padding: 1.1rem 1.25rem;
   border-bottom: 1px solid var(--gray-100);
   font-weight: 700;
@@ -511,17 +511,17 @@ tbody tr:last-child { border-bottom: none; }
   display: inline-flex;
   align-items: center;
   gap: .35rem;
-  padding: .3rem .7rem;
-  background: var(--gold-pale);
-  border: 1px solid rgba(200,146,42,.25);
+  padding: .3rem .6rem;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: var(--radius-sm);
   font-size: .8rem;
-  font-weight: 600;
-  color: var(--maroon);
+  font-weight: 700;
+  color: var(--navy);
   white-space: nowrap;
 }
-.plan-chip del { opacity: .55; text-decoration: line-through; }
-.plan-chip em  { font-style: normal; font-size: .72rem; color: var(--gray-500); margin-left: .15rem; }
+.plan-chip del { opacity: .5; text-decoration: line-through; font-weight: 600; }
+.plan-chip em  { font-style: normal; font-size: .72rem; color: var(--gray-500); margin-left: .15rem; font-weight: 500; }
 .plan-discount {
   background: var(--success-bg);
   color: var(--success);
@@ -721,4 +721,41 @@ tbody tr:last-child { border-bottom: none; }
   .detail-hero { grid-template-columns: 1fr; }
   .detail-hero-img { min-height: 200px; max-height: 220px; }
   .detail-hero-body { padding: 1.25rem; }
+}
+
+/* Action Buttons (Cart & Wishlist) */
+.action-btn {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-weight: 600;
+  height: 34px;
+  flex: none;
+  font-size: 0.75rem;
+}
+.action-btn:disabled, .action-btn.loading {
+  cursor: default;
+}
+.action-btn.active {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  color: var(--navy);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] .action-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+[data-theme="dark"] .action-btn.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #7dd3fc;
 }

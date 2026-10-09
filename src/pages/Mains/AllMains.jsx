@@ -1,3 +1,4 @@
+import { Scale } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -38,7 +39,7 @@ export default function AllMains() {
           </div>
 
           {loading ? <Loader /> : mains.length===0 ? (
-            <div className="empty-state"><div className="empty-state-icon">⚖️</div><h3>No mains available</h3></div>
+            <div className="empty-state"><div className="empty-state-icon">{<Scale size={18} color="#d4af37" />}</div><h3>No mains available</h3></div>
           ) : (
             <>
               <div className="course-grid">
@@ -51,7 +52,7 @@ export default function AllMains() {
                       <div className="course-card-img">
                         {item.presentation_image
                           ? <img src={`${BASE_URL}/${item.presentation_image}`} alt={item.title} />
-                          : <div className="course-card-img-placeholder">⚖️</div>}
+                          : <div className="course-card-img-placeholder">{<Scale size={18} color="#d4af37" />}</div>}
                         {item.isEnrolled && <span className="course-card-enrolled-badge"><span className="badge badge-success">✓ Enrolled</span></span>}
                       </div>
                       <div className="course-card-body">

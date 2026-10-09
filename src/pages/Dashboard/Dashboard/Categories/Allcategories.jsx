@@ -1,3 +1,4 @@
+import { FolderOpen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
@@ -47,7 +48,7 @@ export default function AllCategories() {
 
           {loading ? <Loader /> : allItems.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📂</div>
+              <div className="empty-state-icon">{<FolderOpen size={18} color="#f59e0b" />}</div>
               <h3>No categories available</h3>
             </div>
           ) : (
@@ -61,7 +62,7 @@ export default function AllCategories() {
                   >
                     {c.presentation_file
                       ? <img src={c.isStatic ? c.presentation_file : `${BASE_URL}/${c.presentation_file}`} alt={c.category_name} />
-                      : <div className="course-card-img-placeholder">📂</div>}
+                      : <div className="course-card-img-placeholder">{<FolderOpen size={18} color="#f59e0b" />}</div>}
                   </div>
                   <div className="course-card-body">
                     <h3 className="course-card-title">{c.category_name}</h3>

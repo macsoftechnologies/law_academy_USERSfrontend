@@ -1,10 +1,11 @@
+import { Scale, FileText, ClipboardList } from 'lucide-react';
 import { useState } from 'react';
 
 const BEST_SELLERS = [
-  { key:'bs1', emoji: '⚖️', title: 'Criminal Law Mastery', price: '₹1,999', strike: '₹4,999', off: '60% off' },
-  { key:'bs2', emoji: '📜', title: 'Civil Law Complete Guide', price: '₹2,499', strike: '₹5,999', off: '58% off' },
+  { key:'bs1', emoji: <Scale size={18} color="#d4af37" />, title: 'Criminal Law Mastery', price: '₹1,999', strike: '₹4,999', off: '60% off' },
+  { key:'bs2', emoji: <FileText size={18} color="#3b82f6" />, title: 'Civil Law Complete Guide', price: '₹2,499', strike: '₹5,999', off: '58% off' },
   { key:'bs3', emoji: '🏛️', title: 'Indian Constitution Deep Dive', price: '₹1,499', strike: '₹3,499', off: '57% off' },
-  { key:'bs4', emoji: '📋', title: 'Evidence Act Masterclass', price: '₹1,299', strike: '₹2,999', off: '57% off' },
+  { key:'bs4', emoji: <ClipboardList size={18} color="#4b5563" />, title: 'Evidence Act Masterclass', price: '₹1,299', strike: '₹2,999', off: '57% off' },
 ];
 
 export default function BestSellerSection() {

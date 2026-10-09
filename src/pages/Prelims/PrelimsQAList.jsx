@@ -1,3 +1,4 @@
+import { HelpCircle, Trophy, FileEdit, ClipboardList, Lock, BarChart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -164,10 +165,10 @@ export default function PrelimsQAList() {
   };
 
   const getIcon = () => {
-    if (resolvedType === 'QZ')  return '❓';
-    if (resolvedType === 'GT')  return '🏆';
-    if (resolvedType === 'SMT') return '📝';
-    return '📋';
+    if (resolvedType === 'QZ')  return <HelpCircle size={18} color="#4b5563" />;
+    if (resolvedType === 'GT')  return <Trophy size={18} color="#eab308" />;
+    if (resolvedType === 'SMT') return <FileEdit size={18} color="#8b5cf6" />;
+    return <ClipboardList size={18} color="#4b5563" />;
   };
 
   return (
@@ -185,7 +186,7 @@ export default function PrelimsQAList() {
 
           {loading ? <Loader /> : qaList.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📋</div>
+              <div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div>
               <h3>No items available</h3>
             </div>
           ) : (
@@ -217,14 +218,14 @@ export default function PrelimsQAList() {
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: '1.1rem', flexShrink: 0,
                         }}>
-                          {isLocked ? '🔒' : getIcon()}
+                          {isLocked ? <Lock size={18} color="#dc2626" /> : getIcon()}
                         </div>
 
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '.9rem' }}>{title}</div>
                           <div style={{ display: 'flex', gap: '.75rem', marginTop: '.2rem', flexWrap: 'wrap' }}>
                             {question_count && (
-                              <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>📝 {question_count} Questions</span>
+                              <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>{<FileEdit size={18} color="#8b5cf6" />} {question_count} Questions</span>
                             )}
                             {duration && (
                               <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>⏱ {duration} mins</span>
@@ -266,7 +267,7 @@ export default function PrelimsQAList() {
                               }}
                               style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem', borderColor: 'var(--gold)', color: 'var(--gold)', width: '100%' }}
                             >
-                              📊 Marks
+                              {<BarChart size={18} color="#3b82f6" />} Marks
                             </button> */}
                           </div>
                         )}
@@ -288,7 +289,7 @@ export default function PrelimsQAList() {
                           </div>
                         ) : isLocked ? (
                           <span style={{ color: 'var(--gray-400)', fontSize: '1rem', flexShrink: 0 }}>
-                            🔒
+                            {<Lock size={18} color="#dc2626" />}
                           </span>
                         ) : (
                           <span style={{ color: 'var(--gold)', fontSize: '1rem', flexShrink: 0 }}>

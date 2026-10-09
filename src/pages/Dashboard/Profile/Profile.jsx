@@ -1,3 +1,4 @@
+import { User, GraduationCap, IdCard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
 import PersonalInfo from './tabs/PersonalInfo';
@@ -10,9 +11,9 @@ import '../../../styles/components.css';
 import '../../../styles/layout.css';
 
 const TABS = [
-  { id:'personal',    label:'Personal Info',   icon:'👤' },
-  { id:'educational', label:'Education',        icon:'🎓' },
-  { id:'idproofs',    label:'ID Proofs',        icon:'🪪' },
+  { id:'personal',    label:'Personal Info',   icon:<User size={18} color="#4b5563" /> },
+  { id:'educational', label:'Education',        icon:<GraduationCap size={18} color="#1e40af" /> },
+  { id:'idproofs',    label:'ID Proofs',        icon:<IdCard size={18} color="#64748b" /> },
 ];
 
 const initials = (name='') => name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';

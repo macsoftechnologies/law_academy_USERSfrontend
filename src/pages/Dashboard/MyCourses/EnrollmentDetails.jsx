@@ -1,3 +1,4 @@
+import { GraduationCap, CheckCircle, Flag, Calendar, Hourglass, Circle, Mailbox, CreditCard, Pin, ClipboardList } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
@@ -116,7 +117,7 @@ export default function EnrollmentDetails() {
       <DashboardHeader />
       <div className="dash-main" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
         <div style={{ textAlign: "center", color: "#94a3b8" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📭</div>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>{<Mailbox size={18} color="#64748b" />}</div>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.2rem" }}>No enrollment details found.</p>
           <button onClick={() => navigate(-1)} style={styles.backBtn}>← Go Back</button>
         </div>
@@ -129,10 +130,10 @@ export default function EnrollmentDetails() {
   const courseRoute = getCourseRoute(meta?.enrollType, courseId);
 
   const infoCards = [
-    { icon: "🎓", label: "Enrollment Type", value: meta?.enrollType || "-" },
-    { icon: isActive ? "✅" : "🏁", label: "Status", value: meta?.status || "-", accent: isActive ? "#10b981" : "#f59e0b" },
-    { icon: "📅", label: "Enrolled On", value: formatDate(meta?.enrollDate) },
-    { icon: "⏳", label: "Valid Until", value: formatDate(meta?.expiryDate) },
+    { icon: <GraduationCap size={18} color="#1e40af" />, label: "Enrollment Type", value: meta?.enrollType || "-" },
+    { icon: isActive ? <CheckCircle size={18} color="#10b981" /> : <Flag size={18} color="#10b981" />, label: "Status", value: meta?.status || "-", accent: isActive ? "#10b981" : "#f59e0b" },
+    { icon: <Calendar size={18} color="#6366f1" />, label: "Enrolled On", value: formatDate(meta?.enrollDate) },
+    { icon: <Hourglass size={18} color="#f59e0b" />, label: "Valid Until", value: formatDate(meta?.expiryDate) },
   ];
 
   return (
@@ -493,7 +494,7 @@ export default function EnrollmentDetails() {
               </button>
 
               <div className="hero-badge">
-                {isActive ? "🟢 Active Enrollment" : "🏁 Completed"}
+                {isActive ? (<>{<Circle size={18} color="#10b981" fill="#10b981" />} Active Enrollment</>) : (<>{<Flag size={18} color="#10b981" />} Completed</>)}
               </div>
 
               <h1 className="hero-title">
@@ -567,7 +568,7 @@ export default function EnrollmentDetails() {
             {plan && (
               <div className={`section-card fade-up ${mounted ? "visible" : ""}`} style={{ transitionDelay: ".18s" }}>
                 <div className="section-label">Plan Details</div>
-                <h3 className="section-title">💳 Your Subscription Plan</h3>
+                <h3 className="section-title">{<CreditCard size={18} color="#6366f1" />} Your Subscription Plan</h3>
 
                 <div className="plan-row">
                   <span className="plan-key">Price</span>
@@ -607,7 +608,7 @@ export default function EnrollmentDetails() {
             {!!details?.course_points?.length && (
               <div className={`section-card fade-up ${mounted ? "visible" : ""}`} style={{ transitionDelay: ".24s" }}>
                 <div className="section-label">What's Included</div>
-                <h3 className="section-title">📌 Course Contents</h3>
+                <h3 className="section-title">{<Pin size={18} color="#ef4444" />} Course Contents</h3>
                 <ul className="points-list">
                   {details.course_points.map((p, i) => (
                     <li className="points-item" key={i}>
@@ -623,7 +624,7 @@ export default function EnrollmentDetails() {
             {details?.terms_conditions && (
               <div className={`section-card fade-up ${mounted ? "visible" : ""}`} style={{ transitionDelay: ".3s" }}>
                 <div className="section-label">Terms & Conditions</div>
-                <h3 className="section-title">📋 Please Read Carefully</h3>
+                <h3 className="section-title">{<ClipboardList size={18} color="#4b5563" />} Please Read Carefully</h3>
                 <div>
                   {details.terms_conditions
                     .split("\n")

@@ -1,3 +1,4 @@
+import { FileEdit } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -52,13 +53,13 @@ export default function PrelimsDetail() {
         <div className="dash-content">
           <button className="back-btn" onClick={()=>navigate(-1)}>← Back</button>
           {loading ? <Loader /> : !item ? (
-            <div className="empty-state"><div className="empty-state-icon">📝</div><h3>Prelims not found</h3></div>
+            <div className="empty-state"><div className="empty-state-icon">{<FileEdit size={18} color="#8b5cf6" />}</div><h3>Prelims not found</h3></div>
           ) : (
             <>
               {/* Hero */}
               <div className="detail-hero" style={{ marginBottom:'1.5rem' }}>
                 <div className="detail-hero-img">
-                  {item.presentation_image ? <img src={`${BASE_URL}/${item.presentation_image}`} alt={item.title} /> : <div className="detail-hero-img-placeholder">📝</div>}
+                  {item.presentation_image ? <img src={`${BASE_URL}/${item.presentation_image}`} alt={item.title} /> : <div className="detail-hero-img-placeholder">{<FileEdit size={18} color="#8b5cf6" />}</div>}
                 </div>
                 <div className="detail-hero-body">
                   <div className="detail-hero-tag"><span className="badge badge-navy">Prelims</span></div>

@@ -1,3 +1,4 @@
+import { CheckCircle, XCircle, BarChart, Medal, Target, Trophy, TrendingUp, Inbox, ClipboardList, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -146,7 +147,7 @@ export default function TestAttemptHistory() {
                   onClick={exportAttempts}
                   title="Export to CSV"
                 >
-                  📥 Export CSV
+                  {<Inbox size={18} color="#3b82f6" />} Export CSV
                 </button>
               )}
             </div>
@@ -159,7 +160,7 @@ export default function TestAttemptHistory() {
 
           {loading ? <Loader /> : attempts.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📋</div>
+              <div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div>
               <h3>No attempts yet</h3>
               <p style={{ color: 'var(--gray-500)', fontSize: '.875rem' }}>
                 You haven't attempted this test yet.
@@ -221,16 +222,16 @@ export default function TestAttemptHistory() {
                 const dispPercentile = detail ? (detail.percentile ?? attPercentile) : attPercentile;
 
                 const detailCards = [
-                  { label: 'Correct',   value: dispCorrect,                       icon: '✅', color: '#16a34a' },
-                  { label: 'Wrong',     value: dispWrong,                          icon: '❌', color: '#dc2626' },
+                  { label: 'Correct',   value: dispCorrect,                       icon: <CheckCircle size={18} color="#10b981" />, color: '#16a34a' },
+                  { label: 'Wrong',     value: dispWrong,                          icon: <XCircle size={18} color="#ef4444" />, color: '#dc2626' },
                   { label: 'Skipped',   value: dispSkipped >= 0 ? dispSkipped : '—', icon: '⏭', color: 'var(--gray-500)' },
-                  { label: 'Score',     value: `${dispPct}%`,                      icon: '📊', color: dispRankC },
-                  { label: 'Marks',     value: `${dispCorrect}/${attTotal || '—'}`, icon: '🏅' },
-                  { label: 'Accuracy',  value: `${dispAccuracy}%`,                 icon: '🎯', color: 'var(--navy)' },
+                  { label: 'Score',     value: `${dispPct}%`,                      icon: <BarChart size={18} color="#3b82f6" />, color: dispRankC },
+                  { label: 'Marks',     value: `${dispCorrect}/${attTotal || '—'}`, icon: <Medal size={18} color="#f59e0b" /> },
+                  { label: 'Accuracy',  value: `${dispAccuracy}%`,                 icon: <Target size={18} color="#ef4444" />, color: 'var(--navy)' },
                   { label: 'Time (min)',value: dispTimeSpent ? dispTimeSpent.toFixed(1) : '—', icon: '⏱️', color: 'var(--navy)' },
                 ];
-                if (dispRank != null) detailCards.push({ label: 'Rank', value: `${dispRank}${dispParticipants ? `/${dispParticipants}` : ''}`, icon: '🏆', color: 'var(--gold)' });
-                if (dispPercentile != null) detailCards.push({ label: 'Percentile', value: dispPercentile, icon: '📈', color: 'var(--navy)' });
+                if (dispRank != null) detailCards.push({ label: 'Rank', value: `${dispRank}${dispParticipants ? `/${dispParticipants}` : ''}`, icon: <Trophy size={18} color="#eab308" />, color: 'var(--gold)' });
+                if (dispPercentile != null) detailCards.push({ label: 'Percentile', value: dispPercentile, icon: <TrendingUp size={18} color="#10b981" />, color: 'var(--navy)' });
 
                 return (
                   <div
@@ -340,7 +341,7 @@ export default function TestAttemptHistory() {
               {resolvedTest && (
                 <div style={{ textAlign: 'center', marginTop: '.5rem' }}>
                   <button className="btn btn-primary" onClick={handleRetake}>
-                    🔄 Retake Test
+                    {<RefreshCw size={18} color="#3b82f6" />} Retake Test
                   </button>
                 </div>
               )}

@@ -1,3 +1,4 @@
+import { ClipboardList, BarChart, Inbox, FileEdit, Trophy, FileText, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -101,7 +102,7 @@ export default function MainsTestSeriesList() {
           </div>
 
           {loading ? <Loader /> : tests.length === 0 ? (
-            <div className="empty-state"><div className="empty-state-icon">📋</div><h3>No test series available</h3></div>
+            <div className="empty-state"><div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div><h3>No test series available</h3></div>
           ) : (
             <div style={{ display:'grid', gridTemplateColumns:'260px 1fr', gap:'1.5rem', alignItems:'start' }}>
 
@@ -113,7 +114,7 @@ export default function MainsTestSeriesList() {
                     <button key={t.mains_test_id}
                       onClick={() => { setActiveTab('subjects'); loadSubjects(t.mains_test_id); }}
                       style={{ display:'flex', alignItems:'center', gap:'.65rem', width:'100%', padding:'.65rem .85rem', borderRadius:'var(--radius-md)', border:'none', cursor:'pointer', fontFamily:'var(--font-body)', fontSize:'.845rem', fontWeight:600, background: activeTest===t.mains_test_id ? 'var(--navy)' : 'transparent', color: activeTest===t.mains_test_id ? 'var(--cream)' : 'var(--gray-600)', transition:'all .18s', textAlign:'left', marginBottom:'.15rem' }}>
-                      <span>📋</span>
+                      <span>{<ClipboardList size={18} color="#4b5563" />}</span>
                       <span style={{ flex:1 }}>{t.title}</span>
                     </button>
                   ))}
@@ -126,11 +127,11 @@ export default function MainsTestSeriesList() {
                   <>
                     <div className="tabs" style={{ marginBottom:'1.25rem' }}>
                       <button className={`tab-btn ${activeTab==='subjects'?'active':''}`} onClick={() => setActiveTab('subjects')}>
-                        📋 Subjects {!subLoad && <span className="tab-badge">{subjects.length}</span>}
+                        {<ClipboardList size={18} color="#4b5563" />} Subjects {!subLoad && <span className="tab-badge">{subjects.length}</span>}
                       </button>
                       <button className={`tab-btn ${activeTab==='attempts'?'active':''}`}
                         onClick={() => { setActiveTab('attempts'); loadAttempts(activeTest); }}>
-                        📊 My Attempts {!!attempts?.attempts?.length && <span className="tab-badge">{attempts.attempts.length}</span>}
+                        {<BarChart size={18} color="#3b82f6" />} My Attempts {!!attempts?.attempts?.length && <span className="tab-badge">{attempts.attempts.length}</span>}
                       </button>
                       {activeTab === 'attempts' && allAttempts.length > 0 && (
                         <button
@@ -139,14 +140,14 @@ export default function MainsTestSeriesList() {
                           onClick={exportAttempts}
                           title="Export to Excel"
                         >
-                          📥 Export Excel
+                          {<Inbox size={18} color="#3b82f6" />} Export Excel
                         </button>
                       )}
                     </div>
 
                     {activeTab === 'subjects' && (
                       subLoad ? <Loader /> : subjects.length === 0 ? (
-                        <div className="empty-state"><div className="empty-state-icon">📋</div><h3>No subjects available</h3></div>
+                        <div className="empty-state"><div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div><h3>No subjects available</h3></div>
                       ) : (
                         <div style={{ display:'flex', flexDirection:'column', gap:'.6rem' }}>
                           {subjects.map(sub => {
@@ -157,11 +158,11 @@ export default function MainsTestSeriesList() {
                                 <div style={{ flex:1 }}>
                                   <h3 style={{ fontWeight:700, color:'var(--navy)', marginBottom:'.4rem' }}>{sub.title}</h3>
                                   <div style={{ display:'flex', gap:'.4rem', flexWrap:'wrap' }}>
-                                    {sub.no_of_qos && <span className="badge badge-gray">📝 {sub.no_of_qos} Qs</span>}
+                                    {sub.no_of_qos && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {sub.no_of_qos} Qs</span>}
                                     {sub.duration   && <span className="badge badge-gray">⏱ {sub.duration}</span>}
-                                    {sub.marks      && <span className="badge badge-gray">🏆 {sub.marks} Marks</span>}
+                                    {sub.marks      && <span className="badge badge-gray">{<Trophy size={18} color="#eab308" />} {sub.marks} Marks</span>}
                                     {subjectAttempts > 0 && (
-                                      <span className="badge badge-gray">📊 {subjectAttempts} Attempt{subjectAttempts > 1 ? 's' : ''}</span>
+                                      <span className="badge badge-gray">{<BarChart size={18} color="#3b82f6" />} {subjectAttempts} Attempt{subjectAttempts > 1 ? 's' : ''}</span>
                                     )}
                                   </div>
                                 </div>
@@ -169,14 +170,14 @@ export default function MainsTestSeriesList() {
                                   {isEnrolled ? (
                                     <>
                                       {/* {sub.question_paper_file && (
-                                        <a href={sub.question_paper_file} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">📄 Paper</a>
+                                        <a href={sub.question_paper_file} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">{<FileText size={18} color="#64748b" />} Paper</a>
                                       )} */}
                                       <button className="btn btn-primary btn-sm" onClick={() => { setTermsModal(sub); setAccepted(false); }}>
                                         Start Test
                                       </button>
                                     </>
                                   ) : (
-                                    <span className="badge badge-gray">🔒 Enroll to access</span>
+                                    <span className="badge badge-gray">{<Lock size={18} color="#dc2626" />} Enroll to access</span>
                                   )}
                                 </div>
                               </div>
@@ -189,7 +190,7 @@ export default function MainsTestSeriesList() {
 
                     {activeTab === 'attempts' && (
                       attLoad ? <Loader /> : allAttempts.length === 0 ? (
-                        <div className="empty-state"><div className="empty-state-icon">📊</div><h3>No attempts yet</h3></div>
+                        <div className="empty-state"><div className="empty-state-icon">{<BarChart size={18} color="#3b82f6" />}</div><h3>No attempts yet</h3></div>
                       ) : (
                         <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
                           {attempts?.attempts?.map(group => (
@@ -206,7 +207,7 @@ export default function MainsTestSeriesList() {
                                         <div style={{ flex:1 }}>
                                           <h3 style={{ fontWeight:700, color:'var(--navy)', marginBottom:'.3rem' }}>{sub.title}</h3>
                                           <div style={{ display:'flex', gap:'.4rem' }}>
-                                            {sub.no_of_qos && <span className="badge badge-gray">📝 {sub.no_of_qos} Qs</span>}
+                                            {sub.no_of_qos && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {sub.no_of_qos} Qs</span>}
                                           </div>
                                         </div>
                                         <div style={{ display:'flex', alignItems:'center', gap:'.75rem', flexWrap:'wrap' }}>

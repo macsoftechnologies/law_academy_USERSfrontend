@@ -1,3 +1,4 @@
+import { BookOpen } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSubjects } from '../../api/dashboard/dashboardApi';
@@ -40,7 +41,7 @@ export default function SubjectSection({ subjects: propSubjects, title = "Subjec
             <div className="course-card-img" onClick={() => navigate(`/subject/${s.subjectId}`)}>
               {s.subject_image
                 ? <img src={`${BASE_URL}/${s.subject_image}`} alt={s.title} onError={e => (e.currentTarget.src='https://via.placeholder.com/220x140?text=No+Image')} />
-                : <div className="course-card-img-placeholder">📚</div>}
+                : <div className="course-card-img-placeholder">{<BookOpen size={18} color="#3b82f6" />}</div>}
             </div>
             <div className="course-card-body">
               <h3 className="course-card-title">{s.title}</h3>

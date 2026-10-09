@@ -1,3 +1,4 @@
+import { ClipboardList, FileEdit, BookOpen, Scale } from "lucide-react";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -44,13 +45,13 @@ export default function MainsDetail() {
         <div className="dash-content">
           <button className="back-btn" onClick={()=>navigate(-1)}>← Back</button>
           {detLoad ? <Loader /> : !item ? (
-            <div className="empty-state"><div className="empty-state-icon">⚖️</div><h3>Mains not found</h3></div>
+            <div className="empty-state"><div className="empty-state-icon">{<Scale size={18} color="#d4af37" />}</div><h3>Mains not found</h3></div>
           ) : (
             <>
               {/* Hero */}
               <div className="detail-hero" style={{ marginBottom:'1.5rem' }}>
                 <div className="detail-hero-img">
-                  {item.presentation_image ? <img src={`${BASE_URL}/${item.presentation_image}`} alt={item.title} /> : <div className="detail-hero-img-placeholder">⚖️</div>}
+                  {item.presentation_image ? <img src={`${BASE_URL}/${item.presentation_image}`} alt={item.title} /> : <div className="detail-hero-img-placeholder">{<Scale size={18} color="#d4af37" />}</div>}
                 </div>
                 <div className="detail-hero-body">
                   <div className="detail-hero-tag"><span className="badge badge-navy">Mains</span></div>
@@ -152,19 +153,19 @@ export default function MainsDetail() {
               <div className="card">
                 <div className="card-header">Tests {!tstLoad&&<span className="page-section-count" style={{ marginLeft:'.4rem' }}>{tests.length}</span>}</div>
                 {tstLoad ? <div style={{ padding:'1.5rem' }}><Loader /></div>
-                : tests.length===0 ? <div className="card-body"><div className="empty-state" style={{ padding:'2rem 0' }}><div className="empty-state-icon">📋</div><h3>No tests available</h3></div></div>
+                : tests.length===0 ? <div className="card-body"><div className="empty-state" style={{ padding:'2rem 0' }}><div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div><h3>No tests available</h3></div></div>
                 : (
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:'1rem', padding:'1.25rem' }}>
                     {tests.map(test=>(
                       <div key={test.mains_test_id} className="course-card" style={{ cursor:'pointer' }} onClick={()=>navigate(`/mains/${mainsId}/test/${test.mains_test_id}`,{state:{test,isEnrolled}})}>
                         <div className="course-card-img">
-                          {test.presentation_image ? <img src={`${BASE_URL}/${test.presentation_image}`} alt={test.title} /> : <div className="course-card-img-placeholder">📋</div>}
+                          {test.presentation_image ? <img src={`${BASE_URL}/${test.presentation_image}`} alt={test.title} /> : <div className="course-card-img-placeholder">{<ClipboardList size={18} color="#4b5563" />}</div>}
                         </div>
                         <div className="course-card-body">
                           <h3 className="course-card-title">{test.title}</h3>
                           <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap', marginBottom:'.5rem' }}>
-                            {test.no_of_qs && <span className="badge badge-gray">📝 {test.no_of_qs} Qs</span>}
-                            {test.no_of_subjects && <span className="badge badge-gray">📚 {test.no_of_subjects} Subjects</span>}
+                            {test.no_of_qs && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {test.no_of_qs} Qs</span>}
+                            {test.no_of_subjects && <span className="badge badge-gray">{<BookOpen size={18} color="#3b82f6" />} {test.no_of_subjects} Subjects</span>}
                           </div>
                           <button className="btn btn-outline btn-sm btn-full">{isEnrolled?'View Test →':'Buy to Access'}</button>
                         </div>

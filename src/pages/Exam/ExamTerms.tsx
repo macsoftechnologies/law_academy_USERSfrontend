@@ -1,3 +1,4 @@
+import { FileEdit, Hash, ClipboardList } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -67,7 +68,7 @@ export default function ExamTerms() {
             <div style={{ display: 'flex', gap: '.65rem', flexWrap: 'wrap' }}>
               {test.no_of_qos && (
                 <span style={{ fontSize: '.82rem', color: 'var(--gray-500)', background: 'var(--gray-100)', padding: '.2rem .65rem', borderRadius: 'var(--radius-full)' }}>
-                  📝 {test.no_of_qos} Questions
+                  {<FileEdit size={18} color="#8b5cf6" />} {test.no_of_qos} Questions
                 </span>
               )}
               {test.duration && (
@@ -77,7 +78,7 @@ export default function ExamTerms() {
               )}
               {test.test_number && (
                 <span style={{ fontSize: '.82rem', color: 'var(--gray-500)', background: 'var(--gray-100)', padding: '.2rem .65rem', borderRadius: 'var(--radius-full)' }}>
-                  🔢 Test #{test.test_number}
+                  {<Hash size={18} color="#64748b" />} Test #{test.test_number}
                 </span>
               )}
             </div>
@@ -89,7 +90,7 @@ export default function ExamTerms() {
               <div className="card" style={{ marginBottom: '1.25rem' }}>
                 <div className="card-body">
                   <h2 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '1rem' }}>
-                    📋 Terms &amp; Conditions
+                    {<ClipboardList size={18} color="#4b5563" />} Terms &amp; Conditions
                   </h2>
                   {termsData?.terms_conditions?.length ? (
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.85rem' }}>

@@ -1,3 +1,4 @@
+import { Lock, Unlock, User, Landmark, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
@@ -7,6 +8,7 @@ import { checkFreeGuestLectureAccess } from "../../../utils/guestLectureAccess";
 import "../../../styles/design-system.css";
 import "../../../styles/components.css";
 import "../../../styles/layout.css";
+import WishlistIcon from '../../../components/common/WishlistIcon';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -216,7 +218,7 @@ export default function GuestLectureDetail() {
                       padding: "0 20px"
                     }}
                   >
-                    🔒 Enroll to Watch Full Lecture
+                    {<Lock size={18} color="#dc2626" />} Enroll to Watch Full Lecture
 
                     {hasFullCourse ? (
                       <button
@@ -246,7 +248,7 @@ export default function GuestLectureDetail() {
                         alignItems: "center", 
                         gap: "10px" 
                       }}>
-                        <span style={{ fontSize: "1.2rem", color: "#fca5a5" }}>🔒</span>
+                        <span style={{ fontSize: "1.2rem", color: "#fca5a5" }}>{<Lock size={18} color="#dc2626" />}</span>
                         <span>Purchase a <strong>Full Course</strong> to unlock.</span>
                       </div>
                     )}
@@ -276,8 +278,8 @@ export default function GuestLectureDetail() {
                     }`}
                   >
                     {isLocked
-                      ? "🔒 Locked"
-                      : "🔓 Unlocked"}
+                      ? (<>{<Lock size={18} color="#dc2626" />} Locked</>)
+                      : (<>{<Unlock size={18} color="#10b981" />} Unlocked</>)}
                   </span>
                 </div>
 
@@ -295,7 +297,7 @@ export default function GuestLectureDetail() {
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                   >
-                    🤍
+                    {<WishlistIcon size={18} color="var(--navy)" />}
                   </button>
                 </div>
 
@@ -308,7 +310,7 @@ export default function GuestLectureDetail() {
                       marginTop: "8px",
                     }}
                   >
-                    👨‍🏫 Speaker: {detail.author}
+                    {<User size={18} color="#4b5563" />}‍{<Landmark size={18} color="#3b82f6" />} Speaker: {detail.author}
                   </p>
                 )}
 
@@ -387,7 +389,7 @@ export default function GuestLectureDetail() {
                         )
                       }
                     >
-                      🔒 Buy Full Lecture
+                      {<Lock size={18} color="#dc2626" />} Buy Full Lecture
                     </button>
                   ) : (
                     <div style={{
@@ -404,7 +406,7 @@ export default function GuestLectureDetail() {
                       gap: "10px",
                       lineHeight: 1.5
                     }}>
-                      <span style={{ fontSize: "1.2rem", marginTop: "-2px" }}>🔒</span>
+                      <span style={{ fontSize: "1.2rem", marginTop: "-2px" }}>{<Lock size={18} color="#dc2626" />}</span>
                       <span>Purchase a <strong>Full Course</strong> to unlock this lecture content.</span>
                     </div>
                   )
@@ -413,7 +415,7 @@ export default function GuestLectureDetail() {
                     className="view-btn"
                     style={{ width: "100%" }}
                   >
-                    ✅ Already Enrolled
+                    {<CheckCircle size={18} color="#10b981" />} Already Enrolled
                   </button>
                 )}
               </div>

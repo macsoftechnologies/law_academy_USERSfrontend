@@ -1,3 +1,4 @@
+import { FileText, AlertTriangle, FileEdit, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -68,7 +69,7 @@ export default function PrelimsSubjectSelect() {
 
           {loading ? <Loader /> : subjects.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📝</div>
+              <div className="empty-state-icon">{<FileEdit size={18} color="#8b5cf6" />}</div>
               <h3>No subjects available</h3>
             </div>
           ) : (
@@ -81,14 +82,14 @@ export default function PrelimsSubjectSelect() {
                     className={`btn btn-sm ${activeCategory === cat ? 'btn-primary' : 'btn-outline'}`}
                     onClick={() => setActiveCategory(cat)}
                   >
-                    {cat === 'Civil Laws' ? '📜 ' : cat === 'Criminal Laws' ? '🚨 ' : ''}{cat}
+                    {cat === 'Civil Laws' ? <FileText size={18} color="#3b82f6" />  : cat === 'Criminal Laws' ? <AlertTriangle size={18} color="#ef4444" />  : ''}{cat}
                   </button>
                 ))}
               </div>
 
               {filteredSubjects.length === 0 ? (
                 <div className="empty-state" style={{ marginTop: '2rem' }}>
-                  <div className="empty-state-icon">🔍</div>
+                  <div className="empty-state-icon">{<Search size={18} color="#4b5563" />}</div>
                   <h3>No subjects found for this category</h3>
                 </div>
               ) : (
@@ -112,7 +113,7 @@ export default function PrelimsSubjectSelect() {
                       <div className="card-body" style={{ textAlign: 'center', padding: '1.75rem 1.25rem' }}>
                         {imgSrc
                           ? <img src={imgSrc} alt={name} style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', objectFit: 'cover', marginBottom: '.75rem' }} />
-                          : <div style={{ fontSize: '2.2rem', marginBottom: '.75rem' }}>📝</div>}
+                          : <div style={{ fontSize: '2.2rem', marginBottom: '.75rem' }}>{<FileEdit size={18} color="#8b5cf6" />}</div>}
                         <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '.95rem', marginBottom: '.3rem' }}>{name}</div>
                         {count != null && (
                           <div style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>{count} Test{count !== 1 ? 's' : ''}</div>

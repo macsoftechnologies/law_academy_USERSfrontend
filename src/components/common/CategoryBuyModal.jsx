@@ -1,3 +1,4 @@
+import { Package } from 'lucide-react';
 import React, { useState } from 'react';
 
 export default function CategoryBuyModal({ categoryName, termsConditions, onProceed, onClose }) {
@@ -16,7 +17,7 @@ export default function CategoryBuyModal({ categoryName, termsConditions, onProc
         boxShadow: '0 12px 32px rgba(0,0,0,0.2)', padding: '30px', textAlign: 'center',
         animation: 'slideUp .3s ease'
       }}>
-        <div style={{ fontSize: '3.5rem', marginBottom: '15px' }}>📦</div>
+        <div style={{ fontSize: '3.5rem', marginBottom: '15px' }}>{<Package size={18} color="#8b5cf6" />}</div>
         <h2 style={{ color: 'var(--navy)', marginBottom: '12px', fontSize: '1.4rem' }}>
           Unlock Full Category
         </h2>

@@ -1,3 +1,4 @@
+import { MessageSquare, FileText, Clapperboard, FileEdit, FlaskConical, PenTool } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -43,14 +44,14 @@ export default function MainsPrepDetail() {
           <button className="back-btn" onClick={() => navigate('/dashboard/marks')}>← Back to Marks Dashboard</button>
 
           <div className="page-section-head">
-            <h1 className="page-section-title">✍️ Mains Prep</h1>
+            <h1 className="page-section-title">{<PenTool size={18} color="#4b5563" />} Mains Prep</h1>
           </div>
 
           {loading ? <Loader /> : !stats ? (
             <div className="empty-state"><h3>No data available</h3></div>
           ) : !hasData ? (
             <div className="empty-state">
-              <div className="empty-state-icon">✍️</div>
+              <div className="empty-state-icon">{<PenTool size={18} color="#4b5563" />}</div>
               <h3>No mains activity yet</h3>
               <p>Open mains Q&amp;A material or submit a mains test to start tracking your progress here.</p>
             </div>
@@ -60,11 +61,11 @@ export default function MainsPrepDetail() {
               {/* Mains Q&A */}
               {(mainsQA.pdf || mainsQA.video) && (
                 <div className="card mp-card">
-                  <div className="card-header">💬 Mains Q &amp; A</div>
+                  <div className="card-header">{<MessageSquare size={18} color="#3b82f6" />} Mains Q &amp; A</div>
                   <div className="card-body">
                     {mainsQA.pdf && (
                       <>
-                        <div className="mp-subtitle">📄 PDFs</div>
+                        <div className="mp-subtitle">{<FileText size={18} color="#64748b" />} PDFs</div>
                         <ProgressRow
                           label=""
                           completed={mainsQA.pdf.completed || 0}
@@ -76,7 +77,7 @@ export default function MainsPrepDetail() {
                     )}
                     {mainsQA.video && (
                       <>
-                        <div className="mp-subtitle">🎬 Videos</div>
+                        <div className="mp-subtitle">{<Clapperboard size={18} color="#6366f1" />} Videos</div>
                         <ProgressRow
                           label=""
                           completed={mainsQA.video.completed || 0}
@@ -93,11 +94,11 @@ export default function MainsPrepDetail() {
               {/* Essay & Translation */}
               {(essayTrans.pdf || essayTrans.video) && (
                 <div className="card mp-card">
-                  <div className="card-header">📝 Essay &amp; Translation</div>
+                  <div className="card-header">{<FileEdit size={18} color="#8b5cf6" />} Essay &amp; Translation</div>
                   <div className="card-body">
                     {essayTrans.pdf && (
                       <>
-                        <div className="mp-subtitle">📄 PDFs</div>
+                        <div className="mp-subtitle">{<FileText size={18} color="#64748b" />} PDFs</div>
                         <ProgressRow
                           label=""
                           completed={essayTrans.pdf.completed || 0}
@@ -109,7 +110,7 @@ export default function MainsPrepDetail() {
                     )}
                     {essayTrans.video && (
                       <>
-                        <div className="mp-subtitle">🎬 Videos</div>
+                        <div className="mp-subtitle">{<Clapperboard size={18} color="#6366f1" />} Videos</div>
                         <ProgressRow
                           label=""
                           completed={essayTrans.video.completed || 0}
@@ -126,7 +127,7 @@ export default function MainsPrepDetail() {
               {/* Mains Test Series */}
               {(testSeries.civil || testSeries.criminal || testSeries.essayTranslation || testSeries.total != null) && (
                 <div className="card mp-card">
-                  <div className="card-header">🧪 Mains Test Series</div>
+                  <div className="card-header">{<FlaskConical size={18} color="#8b5cf6" />} Mains Test Series</div>
                   <div className="card-body">
                     <div className="mp-subtitle">Mains Test Series</div>
                     <ProgressRow

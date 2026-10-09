@@ -1,3 +1,4 @@
+import { CheckCircle } from 'lucide-react';
 import { useState, useEffect } from "react";
 import { updateDetailsRequest } from "../../api/Profile/profileApi";
 import Loader from "../../components/common/Loader";
@@ -86,7 +87,7 @@ export default function AdminConsult({ onBack, details }) {
   if (submitted) {
     return (
       <div style={{ padding: "1rem", background: "var(--success-bg)", borderRadius: "var(--radius-md)" }}>
-        <div style={{ fontWeight: 600, textAlign: "center" }}>✅ Request Submitted</div>
+        <div style={{ fontWeight: 600, textAlign: "center" }}>{<CheckCircle size={18} color="#10b981" />} Request Submitted</div>
         <div style={{ fontSize: ".85rem", color: "var(--gray-700)", marginTop: ".5rem", textAlign: "center" }}>
           Admin will review your updates and get back to you shortly.
         </div>

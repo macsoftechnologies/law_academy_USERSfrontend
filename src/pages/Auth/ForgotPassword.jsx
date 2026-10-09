@@ -1,3 +1,4 @@
+import { Key } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthLeft } from './LoginPage';
@@ -48,7 +49,7 @@ export default function ForgotPassword() {
       />
       <div className="auth-right">
         <div className="auth-card">
-          <div className="auth-illus">🔑</div>
+          <div className="auth-illus">{<Key size={18} color="#f59e0b" />}</div>
           <div className="auth-body">
             <button className="auth-back" onClick={()=>navigate('/login')}>← Back to Login</button>
             <h2>Forgot Password?</h2>

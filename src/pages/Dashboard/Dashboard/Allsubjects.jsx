@@ -1,3 +1,4 @@
+import { BookOpen, Scale } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -46,7 +47,7 @@ export default function AllSubjects() {
 
           {loading ? <Loader /> : subjects.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📚</div>
+              <div className="empty-state-icon">{<BookOpen size={18} color="#3b82f6" />}</div>
               <h3>No subjects available</h3>
             </div>
           ) : (
@@ -62,13 +63,13 @@ export default function AllSubjects() {
                         {/* API field: subject_image */}
                         {s.subject_image
                           ? <img src={`${BASE_URL}/${s.subject_image}`} alt={s.title} />
-                          : <div className="course-card-img-placeholder">📚</div>}
+                          : <div className="course-card-img-placeholder">{<BookOpen size={18} color="#3b82f6" />}</div>}
                       </div>
                       <div className="course-card-body">
                         <h3 className="course-card-title">{s.title}</h3>
                         {/* {law && (
                           <div style={{ marginBottom: '.4rem' }}>
-                            <span className="badge badge-navy" style={{ fontSize: '.72rem' }}>⚖️ {law.title}</span>
+                            <span className="badge badge-navy" style={{ fontSize: '.72rem' }}>{<Scale size={18} color="#d4af37" />} {law.title}</span>
                           </div>
                         )} */}
                         <div className="course-card-actions">

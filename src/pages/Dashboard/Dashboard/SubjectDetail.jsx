@@ -1,3 +1,4 @@
+import { BookOpen, Calendar, GraduationCap, Scale } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -62,7 +63,7 @@ export default function SubjectDetail() {
 
           {loading ? <Loader /> : !detail ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📚</div>
+              <div className="empty-state-icon">{<BookOpen size={18} color="#3b82f6" />}</div>
               <h3>Subject not found</h3>
             </div>
           ) : (
@@ -72,7 +73,7 @@ export default function SubjectDetail() {
                 <div className="detail-hero-img">
                   {detail.subject_image
                     ? <img src={`${BASE_URL}/${detail.subject_image}`} alt={detail.title} />
-                    : <div className="detail-hero-img-placeholder">📚</div>}
+                    : <div className="detail-hero-img-placeholder">{<BookOpen size={18} color="#3b82f6" />}</div>}
                 </div>
                 <div className="detail-hero-body">
                   <div className="detail-hero-tag"><span className="badge badge-navy">Subject</span></div>
@@ -165,7 +166,7 @@ export default function SubjectDetail() {
               {detail.isEnrolled && detail.remaining_duration != null && (
                 <div className="card" style={{ marginBottom: '1rem' }}>
                   <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '.85rem' }}>
-                    <span style={{ fontSize: '1.5rem' }}>📅</span>
+                    <span style={{ fontSize: '1.5rem' }}>{<Calendar size={18} color="#6366f1" />}</span>
                     <div>
                       <div style={{ fontWeight: 700, color: 'var(--navy)' }}>{detail.remaining_duration} days remaining</div>
                       <div style={{ fontSize: '.78rem', color: 'var(--gray-400)' }}>
@@ -183,7 +184,7 @@ export default function SubjectDetail() {
               {/* ── Part of Course ── */}
               {sc && (
                 <div className="card" style={{ marginBottom: '1rem' }}>
-                  <div className="card-header">🎓 Part of Course</div>
+                  <div className="card-header">{<GraduationCap size={18} color="#1e40af" />} Part of Course</div>
                   <div className="card-body" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {sc.presentation_image && (
                       <img src={`${BASE_URL}/${sc.presentation_image}`} alt={sc.title}
@@ -207,7 +208,7 @@ export default function SubjectDetail() {
               {/* ── Law context ── */}
               {law && (
                 <div className="card" style={{ marginBottom: '1rem' }}>
-                  <div className="card-header">⚖️ Law</div>
+                  <div className="card-header">{<Scale size={18} color="#d4af37" />} Law</div>
                   <div className="card-body" style={{ display: 'flex', alignItems: 'center', gap: '.85rem' }}>
                     {law.law_image && (
                       <img src={`${BASE_URL}/${law.law_image}`} alt={law.title}

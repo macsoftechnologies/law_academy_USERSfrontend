@@ -1,3 +1,4 @@
+import { Flag, RefreshCw, ClipboardList } from 'lucide-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -491,7 +492,7 @@ export default function MockTest() {
                       .finally(() => setQLoading(false));
                   }}
                 >
-                  🔄 Retry
+                  {<RefreshCw size={18} color="#3b82f6" />} Retry
                 </button>
               </div>
             ) : q ? (
@@ -515,7 +516,7 @@ export default function MockTest() {
                       className={`exam-flag-btn ${flagged.has(current) ? 'active' : ''}`}
                       onClick={() => toggleFlag(current)}
                     >
-                      {flagged.has(current) ? '🚩 Flagged' : '⚑ Flag'}
+                      {flagged.has(current) ? (<>{<Flag size={18} color="#ef4444" />} Flagged</>) : '⚑ Flag'}
                     </button>
                   </div>
                 </div>
@@ -570,7 +571,7 @@ export default function MockTest() {
       {showConfirm && (
         <div className="exam-modal-overlay">
           <div className="exam-modal">
-            <div className="exam-modal-icon">📋</div>
+            <div className="exam-modal-icon">{<ClipboardList size={18} color="#4b5563" />}</div>
             <h3>Submit Test?</h3>
             <p>You're about to submit your test. This action cannot be undone.</p>
             <div className="exam-modal-stats">

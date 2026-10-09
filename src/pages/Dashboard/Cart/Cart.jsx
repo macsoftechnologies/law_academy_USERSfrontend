@@ -1,3 +1,4 @@
+import { BookOpen, ShoppingCart } from "lucide-react";
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -86,7 +87,7 @@ export default function Cart() {
 
           <div className="page-section-head">
             <h1 className="page-section-title">
-              🛒 My Cart
+              {<ShoppingCart size={18} color="#f59e0b" />} My Cart
               <span className="page-section-count">{cart.length}</span>
             </h1>
           </div>
@@ -96,7 +97,7 @@ export default function Cart() {
           ) : cart.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon">🛒</div>
+                <div className="empty-state-icon">{<ShoppingCart size={18} color="#f59e0b" />}</div>
                 <h3>Your cart is empty</h3>
                 <p>Add courses to your cart to checkout.</p>
                 <button className="btn btn-primary btn-sm" style={{ marginTop: '.5rem' }} onClick={() => navigate('/dashboard')}>Browse Courses</button>
@@ -117,7 +118,7 @@ export default function Cart() {
         <div style={{ width: 56, height: 56, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg,var(--navy),var(--navy-mid))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0, overflow: 'hidden' }}>
           {item.courseDetails?.presentation_image ? (
             <img src={`${BASE_URL}/${item.courseDetails.presentation_image}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : '📚'}
+          ) : <BookOpen size={18} color="#3b82f6" />}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: '.9rem', color: 'var(--navy)', marginBottom: '.15rem' }}>{item.courseDetails?.title || 'Course'}</div>

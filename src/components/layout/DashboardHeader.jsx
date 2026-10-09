@@ -1,3 +1,4 @@
+import { User, GraduationCap, BarChart, CreditCard, ShoppingCart, HelpCircle, Moon, Gift, ClipboardList, Lock, Sun, Bell, LogOut } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/layout.css';
@@ -5,6 +6,7 @@ import logo from "../../assets/images/rla.png"
 import { getNotificationsList } from '../../api/notifications';
 import { useCartWishlist } from '../../context/CartWishlistContext';
 import { useNotification } from '../../context/NotificationContext';
+import WishlistIcon from '../common/WishlistIcon';
 
 const NAV = [
   { id:'overview', label:'Dashboard', path:'/dashboard' },
@@ -14,19 +16,19 @@ const NAV = [
 ];
 
 const MENU = [
-  { icon:'👤', label:'Profile',            path:'/dashboard/profile',   action: null },
-  { icon:'🎓', label:'My Courses',         path:'/dashboard/my-courses',action: null },
-  { icon:'📊', label:'Marks Dashboard',    path:'/dashboard/marks',     action: null },
+  { icon:<User size={18} color="#4b5563" />, label:'Profile',            path:'/dashboard/profile',   action: null },
+  { icon:<GraduationCap size={18} color="#1e40af" />, label:'My Courses',         path:'/dashboard/my-courses',action: null },
+  { icon:<BarChart size={18} color="#3b82f6" />, label:'Marks Dashboard',    path:'/dashboard/marks',     action: null },
   // { icon:'⬇️', label:'My Downloads',       path:'/dashboard/downloads', action: null },
-  { icon:'💳', label:'Billing & Payments', path:'/dashboard/payments',  action: null },
-  { icon:'❤️', label:'Wishlist',           path:'/dashboard/wishlist',  action: null },
-  { icon:'🛒', label:'My Cart',            path:'/dashboard/cart',      action: null },
-  { icon:'❓', label:'FAQs',               path:'/dashboard/faqs',      action: null },
-  { icon:'🌙', label:'Dark Mode',          path: null,                  action:'darkmode' },
-  { icon:'❓', label:'Help Center',        path:'/dashboard/help',      action: null },
-  { icon:'🎁', label:'Refer & Earn',       path:'/dashboard/referrals', action: null },
-  { icon:'📋', label:'Terms & Conditions', path:'/dashboard/terms',     action: null },
-  { icon:'🔒', label:'Privacy Policy',     path:'/dashboard/privacy',   action: null },
+  { icon:<CreditCard size={18} color="#6366f1" />, label:'Billing & Payments', path:'/dashboard/payments',  action: null },
+  { icon:<WishlistIcon size={18} color="var(--navy)" fill="var(--navy)" />, label:'Wishlist',           path:'/dashboard/wishlist',  action: null },
+  { icon:<ShoppingCart size={18} color="#f59e0b" />, label:'My Cart',            path:'/dashboard/cart',      action: null },
+  { icon:<HelpCircle size={18} color="#4b5563" />, label:'FAQs',               path:'/dashboard/faqs',      action: null },
+  { icon:<Moon size={18} color="#4b5563" />, label:'Dark Mode',          path: null,                  action:'darkmode' },
+  { icon:<HelpCircle size={18} color="#4b5563" />, label:'Help Center',        path:'/dashboard/help',      action: null },
+  { icon:<Gift size={18} color="#ec4899" />, label:'Refer & Earn',       path:'/dashboard/referrals', action: null },
+  { icon:<ClipboardList size={18} color="#4b5563" />, label:'Terms & Conditions', path:'/dashboard/terms',     action: null },
+  { icon:<Lock size={18} color="#dc2626" />, label:'Privacy Policy',     path:'/dashboard/privacy',   action: null },
 ];
 
 const initials = (name='') => name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
@@ -108,7 +110,7 @@ export default function DashboardHeader() {
 
         <div className="dh-right">
           <button className="dh-notif-btn" onClick={() => navigate('/dashboard/notifications')}>
-            🔔
+            {<Bell size={18} color="#f59e0b" />}
             {unreadCount > 0 ? (
               <span className="dh-notif-badge" style={{
                 position: 'absolute', top: '0', right: '-5px', background: 'red', color: 'white',
@@ -155,7 +157,7 @@ export default function DashboardHeader() {
                       if (m.action === 'darkmode') { toggleDarkMode(); }
                       else { navigate(m.path); setDropOpen(false); }
                     }}>
-                    <span>{m.action === 'darkmode' ? (darkMode ? '☀️' : '🌙') : m.icon}</span>
+                    <span>{m.action === 'darkmode' ? (darkMode ? <Sun size={18} color="#eab308" /> : <Moon size={18} color="#4b5563" />) : m.icon}</span>
                     {m.action === 'darkmode' ? (darkMode ? 'Light Mode' : 'Dark Mode') : m.label}
                     {m.label === 'Wishlist' && wishlist.length > 0 && (
                       <span style={{ marginLeft: 'auto', background: 'var(--maroon)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}>{wishlist.length}</span>
@@ -173,7 +175,7 @@ export default function DashboardHeader() {
                 <div className="dh-dropdown-divider" />
                 <div className="dh-dropdown-item logout"
                   onClick={() => { setDropOpen(false); setShowLogout(true); }}>
-                  <span>🚪</span> Logout
+                  <span>{<LogOut size={18} color="#ef4444" />}</span> Logout
                 </div>
               </div>
             </div>
@@ -197,7 +199,7 @@ export default function DashboardHeader() {
                   if (m.action === 'darkmode') { toggleDarkMode(); }
                   else { navigate(m.path); setMobileOpen(false); }
                 }}>
-                <span>{m.action === 'darkmode' ? (darkMode ? '☀️' : '🌙') : m.icon}</span>
+                <span>{m.action === 'darkmode' ? (darkMode ? <Sun size={18} color="#eab308" /> : <Moon size={18} color="#4b5563" />) : m.icon}</span>
                 {m.action === 'darkmode' ? (darkMode ? 'Light Mode' : 'Dark Mode') : m.label}
                 {m.label === 'Wishlist' && wishlist.length > 0 && (
                   <span style={{ marginLeft: 'auto', background: 'var(--maroon)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.5rem', fontSize: '0.75rem' }}>{wishlist.length}</span>
@@ -210,7 +212,7 @@ export default function DashboardHeader() {
             <div className="dh-dropdown-divider" />
             <div className="dh-mobile-item logout"
               onClick={() => { setMobileOpen(false); setShowLogout(true); }}>
-              <span>🚪</span> Logout
+              <span>{<LogOut size={18} color="#ef4444" />}</span> Logout
             </div>
           </div>
         </div>

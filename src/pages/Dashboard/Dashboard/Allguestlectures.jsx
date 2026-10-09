@@ -1,3 +1,4 @@
+import { Lock, Unlock, Mic } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
@@ -106,7 +107,7 @@ export default function AllGuestLectures() {
             <Loader />
           ) : lectures.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">🎤</div>
+              <div className="empty-state-icon">{<Mic size={18} color="#ec4899" />}</div>
               <h3>No guest lectures available</h3>
             </div>
           ) : (
@@ -128,7 +129,7 @@ export default function AllGuestLectures() {
                         />
                       ) : (
                         <div className="course-card-img-placeholder">
-                          🎤
+                          {<Mic size={18} color="#ec4899" />}
                         </div>
                       )}
                     </div>
@@ -149,8 +150,8 @@ export default function AllGuestLectures() {
                           }`}
                         >
                           {isLocked
-                            ? "🔒 Locked"
-                            : "🔓 Unlocked"}
+                            ? (<>{<Lock size={18} color="#dc2626" />} Locked</>)
+                            : (<>{<Unlock size={18} color="#10b981" />} Unlocked</>)}
                         </span>
                       </div>
 
@@ -218,7 +219,7 @@ export default function AllGuestLectures() {
                           gap: "8px",
                           lineHeight: 1.4
                         }}>
-                          <span style={{ fontSize: "1.1rem" }}>🔒</span>
+                          <span style={{ fontSize: "1.1rem" }}>{<Lock size={18} color="#dc2626" />}</span>
                           <span>Purchase a <strong>Full Course</strong> to unlock this lecture.</span>
                         </div>
                       )}

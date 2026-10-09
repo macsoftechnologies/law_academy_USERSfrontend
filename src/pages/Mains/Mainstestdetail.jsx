@@ -1,3 +1,4 @@
+import { Lock, ClipboardList, FileEdit, BookOpen, FileText, Trophy } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -63,15 +64,15 @@ export default function MainsTestDetail() {
               {test && (
                 <div className="detail-hero" style={{ marginBottom:'1.5rem' }}>
                   <div className="detail-hero-img">
-                    {test.presentation_image ? <img src={`${BASE_URL}/${test.presentation_image}`} alt={test.title} /> : <div className="detail-hero-img-placeholder">📋</div>}
+                    {test.presentation_image ? <img src={`${BASE_URL}/${test.presentation_image}`} alt={test.title} /> : <div className="detail-hero-img-placeholder">{<ClipboardList size={18} color="#4b5563" />}</div>}
                   </div>
                   <div className="detail-hero-body">
                     <div className="detail-hero-tag"><span className="badge badge-navy">Mains Test</span></div>
                     <h1 className="detail-hero-title">{test.title}</h1>
                     {test.sub_title && <p className="detail-hero-sub">{test.sub_title}</p>}
                     <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap' }}>
-                      {test.no_of_qs      && <span className="badge badge-gray">📝 {test.no_of_qs} Questions</span>}
-                      {test.no_of_subjects && <span className="badge badge-gray">📚 {test.no_of_subjects} Subjects</span>}
+                      {test.no_of_qs      && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {test.no_of_qs} Questions</span>}
+                      {test.no_of_subjects && <span className="badge badge-gray">{<BookOpen size={18} color="#3b82f6" />} {test.no_of_subjects} Subjects</span>}
                       {test.duration      && <span className="badge badge-gray">⏱ {test.duration}</span>}
                     </div>
                   </div>
@@ -80,29 +81,29 @@ export default function MainsTestDetail() {
 
               {/* Tabs */}
               <div className="tabs" style={{ marginBottom:'1.25rem' }}>
-                <button className={`tab-btn ${activeTab==='subjects'?'active':''}`} onClick={()=>setActiveTab('subjects')}>📚 Subjects</button>
-                <button className={`tab-btn ${activeTab==='attempts'?'active':''}`} onClick={()=>setActiveTab('attempts')}>📋 My Attempts</button>
+                <button className={`tab-btn ${activeTab==='subjects'?'active':''}`} onClick={()=>setActiveTab('subjects')}>{<BookOpen size={18} color="#3b82f6" />} Subjects</button>
+                <button className={`tab-btn ${activeTab==='attempts'?'active':''}`} onClick={()=>setActiveTab('attempts')}>{<ClipboardList size={18} color="#4b5563" />} My Attempts</button>
               </div>
 
               {activeTab==='subjects' && (
                 subLoad ? <Loader /> : subjects.length===0 ? (
-                  <div className="empty-state"><div className="empty-state-icon">📚</div><h3>No subjects available</h3></div>
+                  <div className="empty-state"><div className="empty-state-icon">{<BookOpen size={18} color="#3b82f6" />}</div><h3>No subjects available</h3></div>
                 ) : (
                   <div style={{ display:'flex', flexDirection:'column', gap:'.75rem' }}>
                     {subjects.map((sub,i) => (
                       <div key={sub.subject_test_id||i} className="card">
                         <div className="card-body" style={{ display:'flex', alignItems:'center', gap:'1rem', flexWrap:'wrap' }}>
-                          <div style={{ width:44, height:44, borderRadius:'var(--radius-md)', background:'var(--gold-pale)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.3rem', flexShrink:0 }}>📄</div>
+                          <div style={{ width:44, height:44, borderRadius:'var(--radius-md)', background:'var(--gold-pale)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1.3rem', flexShrink:0 }}>{<FileText size={18} color="#64748b" />}</div>
                           <div style={{ flex:1 }}>
                             <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.9rem' }}>{sub.title}</div>
                             <div style={{ display:'flex', gap:'.4rem', marginTop:'.3rem', flexWrap:'wrap' }}>
-                              {sub.no_of_qs  && <span className="badge badge-gray">📝 {sub.no_of_qs} Qs</span>}
+                              {sub.no_of_qs  && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {sub.no_of_qs} Qs</span>}
                               {sub.duration  && <span className="badge badge-gray">⏱ {sub.duration}</span>}
-                              {sub.max_marks && <span className="badge badge-gray">🏆 {sub.max_marks} Marks</span>}
+                              {sub.max_marks && <span className="badge badge-gray">{<Trophy size={18} color="#eab308" />} {sub.max_marks} Marks</span>}
                             </div>
                           </div>
                           <button className="btn btn-primary btn-sm" onClick={()=>handleStartAttempt(sub)}>
-                            {isEnrolled ? 'Start Attempt →' : '🔒 Enroll to Attempt'}
+                            {isEnrolled ? 'Start Attempt →' : (<>{<Lock size={18} color="#dc2626" />} Enroll to Attempt</>)}
                           </button>
                         </div>
                       </div>
@@ -113,7 +114,7 @@ export default function MainsTestDetail() {
 
               {activeTab==='attempts' && (
                 attLoad ? <Loader /> : allAttempts.length===0 ? (
-                  <div className="empty-state"><div className="empty-state-icon">📋</div><h3>No attempts yet</h3><p>Start a subject test to see your attempts here.</p></div>
+                  <div className="empty-state"><div className="empty-state-icon">{<ClipboardList size={18} color="#4b5563" />}</div><h3>No attempts yet</h3><p>Start a subject test to see your attempts here.</p></div>
                 ) : (
                   <div style={{ display:'flex', flexDirection:'column', gap:'.6rem' }}>
                     {allAttempts.map((a,i) => {

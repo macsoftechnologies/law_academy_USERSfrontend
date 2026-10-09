@@ -1,3 +1,4 @@
+import { FileEdit } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -37,7 +38,7 @@ export default function AllPrelims() {
           </div>
 
           {loading ? <Loader /> : prelims.length===0 ? (
-            <div className="empty-state"><div className="empty-state-icon">📝</div><h3>No prelims available</h3></div>
+            <div className="empty-state"><div className="empty-state-icon">{<FileEdit size={18} color="#8b5cf6" />}</div><h3>No prelims available</h3></div>
           ) : (
             <>
               <div className="course-grid">
@@ -50,7 +51,7 @@ export default function AllPrelims() {
                       <div className="course-card-img">
                         {item.presentation_image
                           ? <img src={`${BASE_URL}/${item.presentation_image}`} alt={item.title} />
-                          : <div className="course-card-img-placeholder">📝</div>}
+                          : <div className="course-card-img-placeholder">{<FileEdit size={18} color="#8b5cf6" />}</div>}
                         {item.isEnrolled && <span className="course-card-enrolled-badge"><span className="badge badge-success">✓ Enrolled</span></span>}
                       </div>
                       <div className="course-card-body">

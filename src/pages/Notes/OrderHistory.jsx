@@ -1,3 +1,4 @@
+import { Package, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -46,14 +47,14 @@ export default function OrderHistory() {
 
           <div className="page-section-head">
             <h1 className="page-section-title">
-              📦 My Printed Note Orders
+              {<Package size={18} color="#8b5cf6" />} My Printed Note Orders
               {!loading && <span className="page-section-count">{orders.length}</span>}
             </h1>
           </div>
 
           {loading ? <Loader /> : orders.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📦</div>
+              <div className="empty-state-icon">{<Package size={18} color="#8b5cf6" />}</div>
               <h3>No orders yet</h3>
               <p>You haven't ordered any printed notes yet.</p>
               <button className="btn btn-gold" style={{ marginTop: '1rem' }} onClick={() => navigate('/notes/printed')}>
@@ -104,7 +105,7 @@ export default function OrderHistory() {
                             {note.sub_title && (
                               <p style={{ fontSize: '.75rem', color: 'var(--gray-500)', margin: '0 0 .6rem', lineHeight: 1.4 }}>{note.sub_title}</p>
                             )}
-                            <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>📅 {date}</div>
+                            <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{<Calendar size={18} color="#6366f1" />} {date}</div>
                           </div>
                         </div>
 
@@ -122,7 +123,7 @@ export default function OrderHistory() {
                           {addr && (
                             <div style={{ gridColumn: '1 / -1', paddingTop: '.5rem', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: '.1rem' }}>
                               <span style={{ fontSize: '.65rem', color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.05em', fontWeight: 700, marginBottom: '.2rem' }}>
-                                📦 Shipping Address
+                                {<Package size={18} color="#8b5cf6" />} Shipping Address
                               </span>
                               <span style={{ fontSize: '.82rem', color: 'var(--navy)', fontWeight: 700 }}>{addr.full_name}</span>
                               <span style={{ fontSize: '.78rem', color: 'var(--gray-600)' }}>{addr.address}</span>

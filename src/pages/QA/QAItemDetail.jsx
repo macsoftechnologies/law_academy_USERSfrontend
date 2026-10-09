@@ -1,3 +1,4 @@
+import { FileText, Video, Lock, BookOpen } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
@@ -9,6 +10,7 @@ import { getQADetails } from '../../api/qaApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
+import WishlistIcon from '../../components/common/WishlistIcon';
 
 /** Convert video URLs into embed URLs */
 const toVideoEmbed = (url) => {
@@ -155,7 +157,7 @@ export default function QAItemDetail() {
             </div>
           ) : !qa ? (
             <div className="empty-state">
-              <div className="empty-state-icon">📄</div>
+              <div className="empty-state-icon">{<FileText size={18} color="#64748b" />}</div>
               <h3>No item found</h3>
             </div>
           ) : (
@@ -181,9 +183,9 @@ export default function QAItemDetail() {
 
                 {qa?.video_url && (
                   <div className="card">
-                    <div className="card-header">🎥 Video Lecture</div>
+                    <div className="card-header">{<Video size={18} color="#6366f1" />} Video Lecture</div>
                     {isLocked() ? (
-                      <div style={{ padding: '1rem' }}>🔒 Enroll to watch the video</div>
+                      <div style={{ padding: '1rem' }}>{<Lock size={18} color="#dc2626" />} Enroll to watch the video</div>
                     ) : (
                       <div style={{ aspectRatio: '16/9', background: '#000' }}>
                         <iframe
@@ -212,7 +214,7 @@ export default function QAItemDetail() {
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                   >
-                    🤍
+                    {<WishlistIcon size={18} color="var(--navy)" />}
                   </button>
                   <span className="badge badge-navy" style={{ marginTop: '10px' }}>{qa.module_type}</span>
                 </div>
@@ -226,7 +228,7 @@ export default function QAItemDetail() {
                       return (
                         <div key={section.key} className="card">
                           <div>{section.label}</div>
-                          <div>🔒 Enroll to view this section</div>
+                          <div>{<Lock size={18} color="#dc2626" />} Enroll to view this section</div>
                         </div>
                       );
                     }
@@ -244,7 +246,7 @@ export default function QAItemDetail() {
                 {qa?.pdf_url && (
                   <div className="card">
                     <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>📄 PDF Material</span>
+                      <span>{<FileText size={18} color="#64748b" />} PDF Material</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         {!isLocked() && (
                           <button
@@ -257,7 +259,7 @@ export default function QAItemDetail() {
                             onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                           >
-                            🤍
+                            {<WishlistIcon size={18} color="var(--navy)" />}
                           </button>
                         )}
                         {!isLocked() && (
@@ -281,7 +283,7 @@ export default function QAItemDetail() {
               {/* RIGHT */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div className="card">
-                  <div className="card-header">📘 Details</div>
+                  <div className="card-header">{<BookOpen size={18} color="#3b82f6" />} Details</div>
                   <div className="card-body">
                     <div>Questions: {qa.no_of_qs}</div>
                     <div>Duration: {qa.duration}</div>

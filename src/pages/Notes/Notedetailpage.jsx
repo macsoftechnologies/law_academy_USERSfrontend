@@ -1,3 +1,4 @@
+import { FileText, AlertTriangle, Files, Lock } from "lucide-react";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -9,6 +10,7 @@ import { updateMarksProgress } from '../../api/marksDashboard';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
+import WishlistIcon from '../../components/common/WishlistIcon';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -96,7 +98,7 @@ export default function NoteDetailPage() {
           <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
 
           {loading ? <Loader /> : !note ? (
-            <div className="empty-state"><div className="empty-state-icon">📄</div><h3>Note not found</h3></div>
+            <div className="empty-state"><div className="empty-state-icon">{<FileText size={18} color="#64748b" />}</div><h3>Note not found</h3></div>
           ) : (
             <>
               {/* Hero */}
@@ -104,7 +106,7 @@ export default function NoteDetailPage() {
                 <div className="detail-hero-img">
                   {note.presentation_image
                     ? <img src={`${BASE_URL}/${note.presentation_image}`} alt={note.title} />
-                    : <div className="detail-hero-img-placeholder">📄</div>}
+                    : <div className="detail-hero-img-placeholder">{<FileText size={18} color="#64748b" />}</div>}
                 </div>
                 <div className="detail-hero-body">
                   <div className="detail-hero-tag">
@@ -206,7 +208,7 @@ export default function NoteDetailPage() {
                         className={`btn btn-sm ${activeLawTab === cat ? 'btn-primary' : 'btn-outline'}`}
                         onClick={() => setActiveLawTab(cat)}
                       >
-                        {cat === 'Civil Laws' ? '📜 ' : cat === 'Criminal Laws' ? '🚨 ' : cat === 'All' ? '📑 ' : ''}{cat}
+                        {cat === 'Civil Laws' ? <FileText size={18} color="#3b82f6" />  : cat === 'Criminal Laws' ? <AlertTriangle size={18} color="#ef4444" />  : cat === 'All' ? <Files size={18} color="#64748b" />  : ''}{cat}
                       </button>
                     ))}
                   </div>
@@ -221,7 +223,7 @@ export default function NoteDetailPage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '.85rem 1.25rem' }}>
                           {/* Icon */}
                           <div style={{ width: 36, height: 36, borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0, background: (!isEnrolled && sn.isLocked) ? 'var(--gray-200)' : 'var(--gold-pale)' }}>
-                            {(!isEnrolled && sn.isLocked) ? '🔒' : '📑'}
+                            {(!isEnrolled && sn.isLocked) ? <Lock size={18} color="#dc2626" /> : <Files size={18} color="#64748b" />}
                           </div>
                           {/* Title */}
                           <div style={{ flex: 1 }}>
@@ -239,7 +241,7 @@ export default function NoteDetailPage() {
                             onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                             onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                           >
-                            🤍
+                            {<WishlistIcon size={18} color="var(--navy)" />}
                           </button>
                           {/* View in-page — no external link */}
                           {(isEnrolled || !sn.isLocked) && sn.pdf_url && (

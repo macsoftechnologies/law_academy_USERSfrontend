@@ -1,3 +1,4 @@
+import { FileEdit, PenTool, Trophy, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -8,9 +9,9 @@ import '../../styles/components.css';
 import '../../styles/layout.css';
 
 const STATIC_CARDS = [
-  { label:'Mains Question & Answers', module_type:'MQA', icon:'📝' },
-  { label:'Mains Essay & Translation', module_type:'MET', icon:'✍️' },
-  { label:'Mains Test Series',         module_type:'MTS', icon:'🏆' },
+  { label:'Mains Question & Answers', module_type:'MQA', icon:<FileEdit size={18} color="#8b5cf6" /> },
+  { label:'Mains Essay & Translation', module_type:'MET', icon:<PenTool size={18} color="#4b5563" /> },
+  { label:'Mains Test Series',         module_type:'MTS', icon:<Trophy size={18} color="#eab308" /> },
 ];
 
 export default function MainsCategories() {
@@ -53,7 +54,7 @@ export default function MainsCategories() {
                   <div className="card-body" style={{ textAlign:'center', padding:'2rem 1.25rem' }}>
                     <div style={{ fontSize:'2.8rem', marginBottom:'.85rem' }}>{card.icon}</div>
                     <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.95rem', marginBottom:'.35rem' }}>{card.label}</div>
-                    {!isEnrolled && <div style={{ fontSize:'.72rem', color:'var(--gray-400)' }}>🔒 Enroll to access</div>}
+                    {!isEnrolled && <div style={{ fontSize:'.72rem', color:'var(--gray-400)' }}>{<Lock size={18} color="#dc2626" />} Enroll to access</div>}
                   </div>
                 </div>
               ))}

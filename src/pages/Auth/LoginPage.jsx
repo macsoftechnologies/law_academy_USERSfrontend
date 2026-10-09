@@ -1,3 +1,4 @@
+import { Unlock, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../api/auth/login';
@@ -136,7 +137,7 @@ export default function LoginPage() {
                     className="eye-btn"
                     onClick={() => setShow((p) => !p)}
                   >
-                    {showPw ? '🔓' : '🔒'}
+                    {showPw ? <Unlock size={18} color="#10b981" /> : <Lock size={18} color="#dc2626" />}
                   </button>
                 </div>
                 {errors.password && <span className="field-error">{errors.password}</span>}

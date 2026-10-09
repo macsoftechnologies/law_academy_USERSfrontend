@@ -1,3 +1,4 @@
+import { Scale } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../../components/layout/DashboardHeader';
@@ -46,7 +47,7 @@ export default function SubcategoryDetail() {
               {/* ── Law Cards ── */}
               {laws.length === 0 ? (
                 <div className="empty-state">
-                  <div className="empty-state-icon">⚖️</div>
+                  <div className="empty-state-icon">{<Scale size={18} color="#d4af37" />}</div>
                   <h3>No laws available yet</h3>
                 </div>
               ) : (
@@ -60,7 +61,7 @@ export default function SubcategoryDetail() {
                       >
                         {l.law_image
                           ? <img src={`${BASE_URL}/${l.law_image}`} alt={l.title} />
-                          : <div className="course-card-img-placeholder">⚖️</div>}
+                          : <div className="course-card-img-placeholder">{<Scale size={18} color="#d4af37" />}</div>}
                       </div>
                       <div className="course-card-body">
                         <h3 className="course-card-title">{l.title}</h3>

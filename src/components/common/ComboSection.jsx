@@ -1,10 +1,11 @@
+import { Trophy, BookOpen, Scale, GraduationCap, FileText, PenTool } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCombos } from '../../api/combo/comboApi';
 import CartWishlistActions from '../../components/common/CartWishlistActions';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const COMBO_EMOJIS = ['🏆', '📚', '⚖️', '🎓', '📜', '🔏'];
+const COMBO_EMOJIS = [<Trophy size={18} color="#eab308" />, <BookOpen size={18} color="#3b82f6" />, <Scale size={18} color="#d4af37" />, <GraduationCap size={18} color="#1e40af" />, <FileText size={18} color="#3b82f6" />, <PenTool size={18} color="#4b5563" />];
 
 export default function ComboSection() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function ComboSection() {
       <div className="page-section-head">
         <h2 className="page-section-title">Combo Courses</h2>
         <button
-          className="btn btn-outline btn-sm"
+          className="btn btn-ghost btn-sm"
           onClick={() => navigate('/combos')}
           style={{ marginLeft: 'auto' }}
         >

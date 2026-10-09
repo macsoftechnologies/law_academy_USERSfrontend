@@ -1,3 +1,4 @@
+import { FileText, BookOpen, FileEdit, FolderOpen } from "lucide-react";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -8,12 +9,12 @@ import '../../../styles/layout.css';
 const TABS = ['All', 'Notes', 'Resources'];
 
 const MOCK_DOWNLOADS = [
-  { id: 1, name: 'Constitutional Law – Module 1 Notes', type: 'Notes',     size: '2.4 MB', date: '18 Mar 2025', ext: 'PDF', icon: '📄' },
-  { id: 2, name: 'IPC Quick Reference Sheet',           type: 'Notes',     size: '890 KB', date: '10 Mar 2025', ext: 'PDF', icon: '📄' },
+  { id: 1, name: 'Constitutional Law – Module 1 Notes', type: 'Notes',     size: '2.4 MB', date: '18 Mar 2025', ext: 'PDF', icon: <FileText size={18} color="#64748b" /> },
+  { id: 2, name: 'IPC Quick Reference Sheet',           type: 'Notes',     size: '890 KB', date: '10 Mar 2025', ext: 'PDF', icon: <FileText size={18} color="#64748b" /> },
   { id: 3, name: 'CPC Civil Procedure Flowcharts',      type: 'Resources', size: '1.1 MB', date: '5 Mar 2025',  ext: 'PDF', icon: '🗂' },
-  { id: 4, name: 'Evidence Act Summary – All Sections', type: 'Notes',     size: '3.2 MB', date: '28 Feb 2025', ext: 'PDF', icon: '📄' },
-  { id: 5, name: 'Legal Maxims Handbook',               type: 'Resources', size: '760 KB', date: '14 Feb 2025', ext: 'PDF', icon: '📚' },
-  { id: 6, name: 'Prelims Practice Questions Set A',    type: 'Resources', size: '1.8 MB', date: '2 Feb 2025',  ext: 'PDF', icon: '📝' },
+  { id: 4, name: 'Evidence Act Summary – All Sections', type: 'Notes',     size: '3.2 MB', date: '28 Feb 2025', ext: 'PDF', icon: <FileText size={18} color="#64748b" /> },
+  { id: 5, name: 'Legal Maxims Handbook',               type: 'Resources', size: '760 KB', date: '14 Feb 2025', ext: 'PDF', icon: <BookOpen size={18} color="#3b82f6" /> },
+  { id: 6, name: 'Prelims Practice Questions Set A',    type: 'Resources', size: '1.8 MB', date: '2 Feb 2025',  ext: 'PDF', icon: <FileEdit size={18} color="#8b5cf6" /> },
 ];
 
 export default function MyDownloads() {
@@ -58,7 +59,7 @@ export default function MyDownloads() {
           {filtered.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon">📂</div>
+                <div className="empty-state-icon">{<FolderOpen size={18} color="#f59e0b" />}</div>
                 <h3>No downloads found</h3>
                 <p>Files you download from courses will appear here.</p>
               </div>

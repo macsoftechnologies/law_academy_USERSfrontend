@@ -1,3 +1,4 @@
+import { CheckCircle, ClipboardList, Users, Banknote, Gift, PartyPopper } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -117,7 +118,7 @@ export default function Referrals() {
           <div style={{ background: 'linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%)', borderRadius: 'var(--radius-xl)', padding: '2.5rem 2rem', marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: -30, right: -30, width: 150, height: 150, borderRadius: '50%', background: 'rgba(200,146,42,.15)' }} />
             <div style={{ position: 'absolute', bottom: -20, left: -20, width: 100, height: 100, borderRadius: '50%', background: 'rgba(200,146,42,.1)' }} />
-            <div style={{ fontSize: '3rem', marginBottom: '.5rem', position: 'relative' }}>🎁</div>
+            <div style={{ fontSize: '3rem', marginBottom: '.5rem', position: 'relative' }}>{<Gift size={18} color="#ec4899" />}</div>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.3rem,3vw,2rem)', color: 'var(--cream)', marginBottom: '.4rem', position: 'relative' }}>Refer & Earn</h1>
             <p style={{ fontSize: '.9rem', color: 'rgba(255,247,224,.7)', maxWidth: 420, marginBottom: '1.5rem', position: 'relative' }}>
               Invite your friends to Rao's Law Academy
@@ -131,7 +132,7 @@ export default function Referrals() {
                   <div style={{ fontSize: '.7rem', color: 'rgba(255,247,224,.5)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Your Referral Code</div>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--gold-light)', letterSpacing: '.1em' }}>{refCode}</div>
                 </div>
-                <button className="btn btn-gold btn-sm" onClick={() => copy(refCode)}>{copied ? '✅ Copied!' : '📋 Copy'}</button>
+                <button className="btn btn-gold btn-sm" onClick={() => copy(refCode)}>{copied ? (<>{<CheckCircle size={18} color="#10b981" />} Copied!</>) : (<>{<ClipboardList size={18} color="#4b5563" />} Copy</>)}</button>
               </div>
             ) : (
               <div style={{ background: 'rgba(255,255,255,.1)', borderRadius: 'var(--radius-lg)', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', backdropFilter: 'blur(8px)', width: '100%', maxWidth: 420, position: 'relative' }}>
@@ -154,9 +155,9 @@ export default function Referrals() {
               {/* Stats */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem' }}>
                 {[
-                  { icon: '👥', label: 'Total Referred', value: stats?.myReferralsCount || 0 },
-                  { icon: '✅', label: 'Converted',      value: stats?.successfulReferralsCount || 0 },
-                  { icon: '💰', label: 'Total Earned',   value: `₹${stats?.totalEarned || 0}` },
+                  { icon: <Users size={18} color="#4b5563" />, label: 'Total Referred', value: stats?.myReferralsCount || 0 },
+                  { icon: <CheckCircle size={18} color="#10b981" />, label: 'Converted',      value: stats?.successfulReferralsCount || 0 },
+                  { icon: <Banknote size={18} color="#10b981" />, label: 'Total Earned',   value: `₹${stats?.totalEarned || 0}` },
                 ].map(s => (
                   <div key={s.label} className="card">
                     <div className="card-body" style={{ textAlign: 'center', padding: '1.25rem' }}>
@@ -196,7 +197,7 @@ export default function Referrals() {
                 <div className="card-header">Referral History</div>
                 {(!stats?.referrals || stats.referrals.length === 0) ? (
                   <div className="empty-state">
-                    <div className="empty-state-icon">👥</div>
+                    <div className="empty-state-icon">{<Users size={18} color="#4b5563" />}</div>
                     <h3>No referrals yet</h3>
                     <p>Share your code and start earning!</p>
                   </div>
@@ -251,7 +252,7 @@ export default function Referrals() {
                             style={{ padding: '.25rem .5rem', fontSize: '.7rem', minWidth: 52, transition: 'background .2s', background: couponCopiedIndex === i ? 'var(--success-bg)' : undefined, color: couponCopiedIndex === i ? 'var(--success)' : undefined }}
                             onClick={() => copyCoupon(c.coupon_code, i)}
                           >
-                            {couponCopiedIndex === i ? '✅ Copied' : 'Copy'}
+                            {couponCopiedIndex === i ? (<>{<CheckCircle size={18} color="#10b981" />} Copied</>) : 'Copy'}
                           </button>
                         </div>
                       ))}
@@ -278,7 +279,7 @@ export default function Referrals() {
                         fontWeight: 700,
                       }}
                     >
-                      {linkCopied ? '✅ Link Copied!' : '📋 Copy Referral Link'}
+                      {linkCopied ? (<>{<CheckCircle size={18} color="#10b981" />} Link Copied!</>) : (<>{<ClipboardList size={18} color="#4b5563" />} Copy Referral Link</>)}
                     </button>
                   </>
                 ) : (
@@ -345,7 +346,7 @@ export default function Referrals() {
       {generatedCoupon && (
         <div className="logout-modal-overlay">
           <div className="logout-modal" style={{ width: '400px', maxWidth: '90%', textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>{<PartyPopper size={18} color="#10b981" />}</div>
             <h3>Coupon Generated!</h3>
             <p style={{ fontSize: '.85rem', color: 'var(--gray-500)', marginBottom: '1.25rem' }}>
               Your earnings have been successfully converted into a discount coupon.
@@ -359,7 +360,7 @@ export default function Referrals() {
               copy(generatedCoupon);
               setGeneratedCoupon('');
             }}>
-              📋 Copy & Close
+              {<ClipboardList size={18} color="#4b5563" />} Copy & Close
             </button>
           </div>
         </div>

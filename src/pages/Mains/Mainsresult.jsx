@@ -1,3 +1,4 @@
+import { BarChart, Calendar, CheckCircle, FileText, FileEdit, Shield, Target } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -64,7 +65,7 @@ export default function MainsResult() {
       <div className="dash-main">
         <div className="dash-content">
           <button className="back-btn" onClick={()=>navigate(-1)}>← Back</button>
-          <div className="empty-state"><div className="empty-state-icon">📊</div><h3>Result not found</h3></div>
+          <div className="empty-state"><div className="empty-state-icon">{<BarChart size={18} color="#3b82f6" />}</div><h3>Result not found</h3></div>
         </div>
       </div>
     </div>
@@ -89,13 +90,13 @@ export default function MainsResult() {
                 <span className="badge badge-navy" style={{ marginBottom:'.5rem' }}>Attempt {attemptNo || fullDetails?.attempt_no}</span>
                 <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.2rem,2vw,1.6rem)', color:'var(--navy)', marginBottom:'.5rem' }}>{subject?.title}</h1>
                 <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
-                  {result?.date_of_submission && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>📅 Submitted: {result.date_of_submission}</span>}
-                  {result?.date_of_evaluation && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>✅ Evaluated: {result.date_of_evaluation}</span>}
+                  {result?.date_of_submission && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>{<Calendar size={18} color="#6366f1" />} Submitted: {result.date_of_submission}</span>}
+                  {result?.date_of_evaluation && <span style={{ fontSize:'.82rem', color:'var(--gray-500)' }}>{<CheckCircle size={18} color="#10b981" />} Evaluated: {result.date_of_evaluation}</span>}
                 </div>
                 {answerScriptUrl && (
                   <div style={{ marginTop: '1rem' }}>
                     <a href={answerScriptUrl} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-                      📄 View Submitted Answer Script
+                      {<FileText size={18} color="#64748b" />} View Submitted Answer Script
                     </a>
                   </div>
                 )}
@@ -122,7 +123,7 @@ export default function MainsResult() {
           {/* Feedback */}
           {result.feedback && (
             <div className="card" style={{ marginBottom:'1.25rem' }}>
-              <div className="card-header">📝 Feedback</div>
+              <div className="card-header">{<FileEdit size={18} color="#8b5cf6" />} Feedback</div>
               <div className="card-body" style={{ color:'var(--gray-600)', lineHeight:1.8, fontSize:'.9rem' }}>{result.feedback}</div>
             </div>
           )}
@@ -132,7 +133,7 @@ export default function MainsResult() {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:'1rem' }}>
               {result.strengths?.length>0 && (
                 <div className="card">
-                  <div className="card-header" style={{ color:'var(--success)' }}>💪 Strengths</div>
+                  <div className="card-header" style={{ color:'var(--success)' }}>{<Shield size={18} color="#10b981" />} Strengths</div>
                   <div className="card-body">
                     <ul style={{ paddingLeft:'1rem', display:'flex', flexDirection:'column', gap:'.5rem' }}>
                       {result.strengths.map((s,i) => (
@@ -146,7 +147,7 @@ export default function MainsResult() {
               )}
               {result.to_improve?.length>0 && (
                 <div className="card">
-                  <div className="card-header" style={{ color:'var(--warning)' }}>🎯 Areas to Improve</div>
+                  <div className="card-header" style={{ color:'var(--warning)' }}>{<Target size={18} color="#ef4444" />} Areas to Improve</div>
                   <div className="card-body">
                     <ul style={{ paddingLeft:'1rem', display:'flex', flexDirection:'column', gap:'.5rem' }}>
                       {result.to_improve.map((s,i) => (
