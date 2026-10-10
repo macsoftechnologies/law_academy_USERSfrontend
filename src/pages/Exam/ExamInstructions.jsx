@@ -1,4 +1,4 @@
-import { FileEdit, CheckCircle, RefreshCw, Smartphone, Lock, Lightbulb, Hash, FolderOpen, Pin, Rocket } from 'lucide-react';
+import { FileEdit, CheckCircle, RefreshCw, Smartphone, Lock, Lightbulb, Hash, FolderOpen, Pin, Rocket, TriangleAlert, Clock } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import '../../styles/design-system.css';
@@ -10,8 +10,8 @@ export default function ExamInstructions() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const test      = state?.test || null;
-  const item      = state?.item || null;
+  const test = state?.test || null;
+  const item = state?.item || null;
   const isEnrolled = state?.isEnrolled || false;
   const isLocked = state?.isLocked || false;
   const categoryLabel = state?.categoryLabel || 'Test';
@@ -25,7 +25,7 @@ export default function ExamInstructions() {
   const instructions = termsData?.instructions || [];
   const typeLabel = { QZ: 'Quiz', SMT: 'Subject Mock Test', GT: 'Grand Test', PQA: 'Previous Year Questions' };
 
-  const INSTRUCTION_ICONS = ['⏱', <FileEdit size={18} color="#8b5cf6" />, <CheckCircle size={18} color="#10b981" />, '⚠️', <RefreshCw size={18} color="#3b82f6" />, <Smartphone size={18} color="#4b5563" />, <Lock size={18} color="#dc2626" />, <Lightbulb size={18} color="#eab308" />];
+  const INSTRUCTION_ICONS = [<Clock size={18} />, <FileEdit size={18} color="#8b5cf6" />, <CheckCircle size={18} color="#10b981" />, <TriangleAlert size={18} color="#eab308" />, <RefreshCw size={18} color="#3b82f6" />, <Smartphone size={18} color="#4b5563" />, <Lock size={18} color="#dc2626" />, <Lightbulb size={18} color="#eab308" />];
 
   const handleStartExam = () => {
     if (isLocked && !isEnrolled) {
@@ -56,7 +56,7 @@ export default function ExamInstructions() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
             {[
               { icon: <FileEdit size={18} color="#8b5cf6" />, label: 'Total Questions', value: test.no_of_qos || '—' },
-              { icon: '⏱', label: 'Duration', value: test.duration ? `${test.duration} mins` : '—' },
+              { icon: <Clock size={18} />, label: 'Duration', value: test.duration ? `${test.duration} mins` : '—' },
               { icon: <Hash size={18} color="#64748b" />, label: 'Test Number', value: `#${test.test_number}` },
               { icon: <FolderOpen size={18} color="#f59e0b" />, label: 'Type', value: typeLabel[module_type] || module_type },
             ].map((s, i) => (
@@ -111,7 +111,7 @@ export default function ExamInstructions() {
 
           {/* Warning */}
           <div className="toast warning" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '.6rem' }}>
-            ⚠️ Once you click "Start Exam", the timer will begin and cannot be paused.
+            <TriangleAlert size={18} color="#dc2626" /> Once you click "Start Exam", the timer will begin and cannot be paused.
           </div>
 
           {/* Actions */}

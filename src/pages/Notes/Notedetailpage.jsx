@@ -1,4 +1,4 @@
-import { FileText, AlertTriangle, Files, Lock } from "lucide-react";
+import { FileText, AlertTriangle, Files, Lock, Gavel } from "lucide-react";
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -208,7 +208,7 @@ export default function NoteDetailPage() {
                         className={`btn btn-sm ${activeLawTab === cat ? 'btn-primary' : 'btn-outline'}`}
                         onClick={() => setActiveLawTab(cat)}
                       >
-                        {cat === 'Civil Laws' ? <FileText size={18} color="#3b82f6" />  : cat === 'Criminal Laws' ? <AlertTriangle size={18} color="#ef4444" />  : cat === 'All' ? <Files size={18} color="#64748b" />  : ''}{cat}
+                        {cat === 'Civil Laws' ? <Gavel size={18} color="#c8922a" />  : cat === 'Criminal Laws' ? <Gavel size={18} color="#c8922a" />  : cat === 'All' ? <Files size={18} color="#64748b" />  : ''} <span style={{ marginLeft: '4px' }}>{cat}</span>
                       </button>
                     ))}
                   </div>

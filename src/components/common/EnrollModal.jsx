@@ -1,4 +1,4 @@
-import { PartyPopper } from 'lucide-react';
+import { PartyPopper, TriangleAlert } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { enrollCourse, verifyCoupon, calculatePrice } from '../../api/enroll/enrollApi_addition';
@@ -163,7 +163,7 @@ export default function EnrollModal({ plan, courseTitle, enroll_type, termsCondi
               {/* Single Subject Warning */}
               {(enroll_type === 'subject-wise' || plan?.enroll_type === 'subject-wise') && (
                 <div style={{ padding: '0.8rem', background: '#fffbeb', color: '#b45309', border: '1px solid #fcd34d', borderRadius: 'var(--radius-md)', marginBottom: '1.1rem', fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
-                  <span style={{ fontSize: '1.1rem' }}>⚠️</span>
+                  <span style={{ fontSize: '1.1rem' }}><TriangleAlert size={18} color="#eab308" /></span>
                   <div>
                     <strong style={{ display: 'block', marginBottom: '0.2rem' }}>Please Note</strong>
                     You are purchasing <strong>only this single subject</strong>, not the full course.

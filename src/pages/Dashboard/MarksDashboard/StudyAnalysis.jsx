@@ -1,4 +1,4 @@
-import { Video, FileEdit, BookOpen } from "lucide-react";
+import { Video, FileEdit, BookOpen, Gavel } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -42,7 +42,7 @@ export default function StudyAnalysis() {
         <div className="card-body">
           {data.civil != null && (
             <>
-              <div className="sa-law-label">Civil laws</div>
+              <div className="sa-law-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Gavel size={14} color="#c8922a" /> Civil laws</div>
               <ProgressRow
                 label=""
                 completed={data.civil.completed || 0}
@@ -54,7 +54,7 @@ export default function StudyAnalysis() {
           )}
           {data.criminal != null && (
             <>
-              <div className="sa-law-label">Criminal laws</div>
+              <div className="sa-law-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Gavel size={14} color="#c8922a" /> Criminal laws</div>
               <ProgressRow
                 label=""
                 completed={data.criminal.completed || 0}

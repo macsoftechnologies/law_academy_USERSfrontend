@@ -1,4 +1,4 @@
-import { MessageSquare, FileText, Clapperboard, FileEdit, FlaskConical, PenTool } from 'lucide-react';
+import { MessageSquare, FileText, Clapperboard, FileEdit, FlaskConical, PenTool, Gavel } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -139,7 +139,7 @@ export default function MainsPrepDetail() {
                     />
                     {testSeries.criminal && (
                       <>
-                        <div className="mp-subtitle">Criminal Laws</div>
+                        <div className="mp-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Gavel size={14} color="#c8922a" /> Criminal Laws</div>
                         <ProgressRow
                           label=""
                           completed={testSeries.criminal.completed || 0}
@@ -151,7 +151,7 @@ export default function MainsPrepDetail() {
                     )}
                     {testSeries.civil && (
                       <>
-                        <div className="mp-subtitle">Civil Laws</div>
+                        <div className="mp-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Gavel size={14} color="#c8922a" /> Civil Laws</div>
                         <ProgressRow
                           label=""
                           completed={testSeries.civil.completed || 0}

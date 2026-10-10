@@ -1,4 +1,4 @@
-import { BookOpen, FileText } from "lucide-react";
+import { BookOpen, FileText, Printer } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -15,6 +15,7 @@ const PAGE_SIZE = 10;
 
 export default function AllNotes() {
   const navigate = useNavigate();
+  const [isPrintedNotesHovered, setIsPrintedNotesHovered] = useState(false);
   const [allNotes, setAllNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,25 +37,35 @@ export default function AllNotes() {
       <div className="dash-main">
         <div className="dash-content">
           <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
-          
-          <div className="page-section-head" style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
+
+          <div className="page-section-head" style={{
+            display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '2rem' 
+            marginBottom: '2rem'
           }}>
             <h1 className="page-section-title" style={{ margin: 0 }}>
-              {<BookOpen size={18} color="#3b82f6" />} Digital Notes
+              {<BookOpen size={18} color="#122038ff" />} Digital Notes
               {!loading && <span className="page-section-count">{allNotes.length}</span>}
             </h1>
 
-            <button 
-              className="btn btn-gold" 
+            <button
+              className="btn btn-outline btn-sm"
               onClick={() => navigate('/notes/printed')}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              onMouseEnter={() => setIsPrintedNotesHovered(true)}
+              onMouseLeave={() => setIsPrintedNotesHovered(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                fontWeight: 600,
+                backgroundColor: isPrintedNotesHovered ? '#c8922a' : 'transparent',
+                color: isPrintedNotesHovered ? '#fff' : '#c8922a',
+                borderColor: '#c8922a'
+              }}
             >
-              <span>🖨️</span>
-              <span>Printed Notes</span>
+              <Printer size={18} color={isPrintedNotesHovered ? '#fff' : '#c8922a'} />
+              Printed Notes
             </button>
           </div>
 
@@ -70,9 +81,9 @@ export default function AllNotes() {
             </div>
           ) : (
             <>
-                <div className="course-grid">
-                  {allNotes.map(note => {
-                    const lowestPlan = note.availablePlans?.length
+              <div className="course-grid">
+                {allNotes.map(note => {
+                  const lowestPlan = note.availablePlans?.length
                     ? note.availablePlans.reduce((m, p) => p.original_price < m.original_price ? p : m, note.availablePlans[0])
                     : null;
 
@@ -82,7 +93,7 @@ export default function AllNotes() {
                         {note.presentation_image
                           ? <img src={`${BASE_URL}/${note.presentation_image}`} alt={note.title} />
                           : <div className="course-card-img-placeholder">{<FileText size={18} color="#64748b" />}</div>}
-                        
+
                         <div className="course-card-enrolled-badge">
                           {note.isEnrolled && <span className="badge badge-success">✓ Enrolled</span>}
                           {note.isPrintAvail && (
@@ -96,41 +107,41 @@ export default function AllNotes() {
                       <div className="course-card-body">
                         <h3 className="course-card-title">{note.title}</h3>
                         {note.sub_title && <p className="course-card-sub">{note.sub_title}</p>}
-                        
+
                         <div className="course-card-plan-area">
                           {note.isEnrolled
                             ? <div className="course-card-enrolled-info" style={{ fontSize: '.75rem' }}>
-                                ✓ Expires: {note.expiry_date ? new Date(note.expiry_date).toLocaleDateString('en-IN') : '—'}
-                              </div>
+                              ✓ Expires: {note.expiry_date ? new Date(note.expiry_date).toLocaleDateString('en-IN') : '—'}
+                            </div>
                             : lowestPlan && (
-                                <span className="plan-chip">
-                                  {lowestPlan.strike_price && <del>₹{lowestPlan.strike_price}</del>}
-                                  ₹{lowestPlan.original_price} <em>{lowestPlan.duration}</em>
-                                </span>
-                              )}
+                              <span className="plan-chip">
+                                {lowestPlan.strike_price && <del>₹{lowestPlan.strike_price}</del>}
+                                ₹{lowestPlan.original_price} <em>{lowestPlan.duration}</em>
+                              </span>
+                            )}
                         </div>
 
                         <div className="course-card-actions" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                           {!note.isEnrolled && note.availablePlans?.length > 0 && (
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start' }}>
-                              <CartWishlistActions 
-                                courseId={note.notes_id} 
-                                enrollType="notes" 
-                                planId={lowestPlan?.planId} 
-                                isEnrolled={note.isEnrolled} 
+                              <CartWishlistActions
+                                courseId={note.notes_id}
+                                enrollType="notes"
+                                planId={lowestPlan?.planId}
+                                isEnrolled={note.isEnrolled}
                               />
                             </div>
                           )}
                           <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
                             {!note.isEnrolled && note.availablePlans?.length > 0 && (
-                              <button 
+                              <button
                                 className="btn btn-gold btn-sm" style={{ flex: 1 }}
                                 onClick={() => navigate(`/notes/${note.notes_id}`, { state: { note, scrollToBuy: true } })}
                               >
                                 Buy Now
                               </button>
                             )}
-                            <button 
+                            <button
                               className="btn btn-outline btn-sm" style={{ flex: 1 }}
                               onClick={() => navigate(`/notes/${note.notes_id}`, { state: { note } })}
                             >
@@ -142,7 +153,7 @@ export default function AllNotes() {
                     </div>
                   );
                 })}
-                </div>
+              </div>
             </>
           )}
         </div>

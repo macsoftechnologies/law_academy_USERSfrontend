@@ -18,19 +18,19 @@ export default function ReferralScreen() {
   const userId = localStorage.getItem('userId') || user?.userId;
 
   const handleClaim = async () => {
-    if (!code.trim()) { setToast({ type:'error', msg:'Enter a referral code' }); return; }
-    if (!userId) { setToast({ type:'error', msg:'User session missing. Please login again.' }); return; }
+    if (!code.trim()) { setToast({ type: 'error', msg: 'Enter a referral code' }); return; }
+    if (!userId) { setToast({ type: 'error', msg: 'User session missing. Please login again.' }); return; }
     setLd(true);
     try {
       const res = await claimReferral({ userId, referred_by: code.trim() });
       if (res.statusCode === 200) {
-        setToast({ type:'success', msg:'Referral claimed successfully!' });
-        setTimeout(()=>navigate('/dashboard'),1500);
+        setToast({ type: 'success', msg: 'Referral claimed successfully!' });
+        setTimeout(() => navigate('/dashboard'), 1500);
       } else {
-        setToast({ type:'error', msg: res.message || 'Invalid referral code' });
+        setToast({ type: 'error', msg: res.message || 'Invalid referral code' });
       }
     } catch (err) {
-      setToast({ type:'error', msg: err.message || 'Something went wrong' });
+      setToast({ type: 'error', msg: err.message || 'Something went wrong' });
     } finally { setLd(false); }
   };
 
@@ -40,18 +40,18 @@ export default function ReferralScreen() {
         tag="Refer & Earn"
         title={<>Share & <em>Earn Together</em></>}
         sub="Invite your friends and earn exciting rewards when they join and enroll in courses."
-        stats={[['Earn','Rewards'],['Share','Codes'],['Win','Together']]}
+        stats={[['Earn', 'Rewards'], ['Share', 'Codes'], ['Win', 'Together']]}
       />
       <div className="auth-right">
         <div className="auth-card">
-          <div className="auth-illus">{<Gift size={18} color="#ec4899" />}</div>
+          <div className="auth-illus">{<Gift size={80} color="#F0AE46" />}</div>
           <div className="auth-body">
             <h2>Referral Program</h2>
             <p className="auth-sub">Claim a referral or share your code</p>
             {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
 
             {myCode && (
-              <div style={{ marginBottom:'1.5rem' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
                 {/* <p style={{ fontSize:'.78rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'.08em', color:'var(--gray-500)', marginBottom:'.5rem' }}>Your Referral Code</p>
                 <div className="referral-code-wrap">
                   <div className="referral-code">{myCode}</div>
@@ -62,13 +62,13 @@ export default function ReferralScreen() {
             <div className="field">
               <label>Enter a Referral Code</label>
               <input type="text" placeholder="e.g. MAKA2024" value={code}
-                onChange={e=>setCode(e.target.value.toUpperCase())}
-                style={{ textTransform:'uppercase', letterSpacing:'.1em', fontWeight:700 }} />
+                onChange={e => setCode(e.target.value.toUpperCase())}
+                style={{ textTransform: 'uppercase', letterSpacing: '.1em', fontWeight: 700 }} />
             </div>
-            <button className="btn btn-gold btn-full" style={{ marginTop:'.5rem' }} onClick={handleClaim} disabled={loading}>
+            <button className="btn btn-gold btn-full" style={{ marginTop: '.5rem' }} onClick={handleClaim} disabled={loading}>
               {loading ? 'Claiming…' : 'Claim Referral'}
             </button>
-            <button className="btn btn-ghost btn-full" style={{ marginTop:'.5rem' }} onClick={()=>navigate('/dashboard')}>
+            <button className="btn btn-ghost btn-full" style={{ marginTop: '.5rem' }} onClick={() => navigate('/dashboard')}>
               Skip for now
             </button>
           </div>

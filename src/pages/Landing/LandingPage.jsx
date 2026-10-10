@@ -1,4 +1,4 @@
-import { Target, Lightbulb, GraduationCap, FileText, Smartphone, RefreshCw, Heart } from 'lucide-react';
+import { Target, Lightbulb, GraduationCap, FileText, Smartphone, RefreshCw, Heart, Eye, EyeIcon, LucideEye, Notebook, BookCopy, FileBadge, InfinityIcon, TabletSmartphoneIcon, DiamondIcon, LightbulbIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/design-system.css';
@@ -6,37 +6,37 @@ import '../../styles/landing.css';
 import logo from "../../assets/images/rla.png"
 
 const slides = [
-  { cls:'lp-slide-1', tag:"Welcome to Rao's Law Academy", title:<>Empowering Learners to <em>Achieve More</em></>, desc:"Rao's Law Academy is India's trusted online learning platform built to help students, professionals, and lifelong learners grow with purpose and confidence." },
-  { cls:'lp-slide-2', tag:'Our Mission', title:<>Quality Education, <em>For Everyone</em></>, desc:"We believe great education should be accessible to all. From career starters to industry veterans — we've got the right course for you." },
-  { cls:'lp-slide-3', tag:'Why Choose Us', title:<>Learn Today. <em>Lead Tomorrow.</em></>, desc:"With expert instructors, structured learning paths, and a community that supports you — success is not just possible, it's inevitable." },
+  { cls: 'lp-slide-1', tag: "Welcome to Rao's Law Academy", title: <>Empowering Learners to <em>Achieve More</em></>, desc: "Rao's Law Academy is India's trusted online learning platform built to help students, professionals, and lifelong learners grow with purpose and confidence." },
+  { cls: 'lp-slide-2', tag: 'Our Mission', title: <>Quality Education, <em>For Everyone</em></>, desc: "We believe great education should be accessible to all. From career starters to industry veterans — we've got the right course for you." },
+  { cls: 'lp-slide-3', tag: 'Why Choose Us', title: <>Learn Today. <em>Lead Tomorrow.</em></>, desc: "With expert instructors, structured learning paths, and a community that supports you — success is not just possible, it's inevitable." },
 ];
 const stats = [
-  { num:'50,000+', label:'Active Learners' },
-  { num:'500+',    label:'Expert Courses'  },
-  { num:'200+',    label:'Instructors'     },
-  { num:'98%',     label:'Satisfaction'    },
+  { num: '50,000+', label: 'Active Learners' },
+  { num: '500+', label: 'Expert Courses' },
+  { num: '200+', label: 'Instructors' },
+  { num: '98%', label: 'Satisfaction' },
 ];
 const aboutPoints = [
-  { title:'Founded with a Vision', desc:'Started in 2020 with a simple goal — bridge the gap between quality education and learners across India.' },
-  { title:'Expert-Curated Content', desc:'Every course is carefully designed and reviewed by industry professionals to ensure relevance and depth.' },
-  { title:'Community First', desc:"We're more than a platform. We're a community of 50,000+ learners, mentors, and achievers." },
-  { title:'Results That Matter', desc:'Over 80% of our learners report career growth within 6 months of completing a course.' },
+  { title: 'Founded with a Vision', desc: 'Started in 2020 with a simple goal — bridge the gap between quality education and learners across India.' },
+  { title: 'Expert-Curated Content', desc: 'Every course is carefully designed and reviewed by industry professionals to ensure relevance and depth.' },
+  { title: 'Community First', desc: "We're more than a platform. We're a community of 50,000+ learners, mentors, and achievers." },
+  { title: 'Results That Matter', desc: 'Over 80% of our learners report career growth within 6 months of completing a course.' },
 ];
 const mission = [
-  { icon:<Target size={18} color="#ef4444" />, title:'Our Mission', desc:'To make high-quality, career-focused education accessible to every learner, regardless of background or location.' },
-  { icon:'👁️', title:'Our Vision', desc:'A world where every person has the skills and knowledge to build the career and life they deserve.' },
-  { icon:<Lightbulb size={18} color="#eab308" />, title:'Our Values', desc:"Integrity, inclusivity, innovation, and impact. These four pillars guide everything we do at Rao's Law Academy." },
+  { icon: <Target size={25} color="#F5F1E8" />, title: 'Our Mission', desc: 'To make high-quality, career-focused education accessible to every learner, regardless of background or location.' },
+  { icon: <LucideEye size={25} color="#F5F1E8" />, title: 'Our Vision', desc: 'A world where every person has the skills and knowledge to build the career and life they deserve.' },
+  { icon: <LightbulbIcon size={25} color="#F5F1E8" />, title: 'Our Values', desc: "Integrity, inclusivity, innovation, and impact. These four pillars guide everything we do at Rao's Law Academy." },
 ];
 const features = [
-  { icon:<GraduationCap size={18} color="#1e40af" />, title:'Expert Instructors', desc:'Learn directly from industry professionals with years of real-world experience.' },
-  { icon:<FileText size={18} color="#3b82f6" />, title:'Recognised Certificates', desc:'Earn certificates trusted by top employers and institutions across the country.' },
-  { icon:<Smartphone size={18} color="#4b5563" />, title:'Learn Anywhere', desc:'Access your courses on any device — mobile, tablet, or desktop — at any time.' },
-  { icon:<RefreshCw size={18} color="#3b82f6" />, title:'Lifetime Access', desc:'Pay once and access your course forever, including all future content updates.' },
+  { icon: <GraduationCap size={25} color="#3b82f6" />, title: 'Expert Instructors', desc: 'Learn directly from industry professionals with years of real-world experience.' },
+  { icon: <FileBadge size={25} color="#3b82f6" />, title: 'Recognised Certificates', desc: 'Earn certificates trusted by top employers and institutions across the country.' },
+  { icon: <TabletSmartphoneIcon size={25} color="#3b82f6" />, title: 'Learn Anywhere', desc: 'Access your courses on any device — mobile, tablet, or desktop — at any time.' },
+  { icon: <InfinityIcon size={25} color="#3b82f6" />, title: 'Lifetime Access', desc: 'Pay once and access your course forever, including all future content updates.' },
 ];
 const testimonials = [
-  { av:'lp-av-1', initials:'RK', text:"Rao's Law Academy completely changed my career path. The courses are practical, well-structured, and the instructors are incredibly knowledgeable.", name:'Rahul Kumar', role:'Software Engineer, Bangalore' },
-  { av:'lp-av-2', initials:'PS', text:'I enrolled in the digital marketing course with zero background and landed a job within 3 months. The platform is truly a game changer.', name:'Priya Sharma', role:'Digital Marketer, Mumbai' },
-  { av:'lp-av-3', initials:'AT', text:"The quality of content here is unmatched. I've tried many platforms but Rao's Law Academy stands out for its depth and community support.", name:'Arjun Tiwari', role:'Data Analyst, Hyderabad' },
+  { av: 'lp-av-1', initials: 'RK', text: "Rao's Law Academy completely changed my career path. The courses are practical, well-structured, and the instructors are incredibly knowledgeable.", name: 'Rahul Kumar', role: 'Software Engineer, Bangalore' },
+  { av: 'lp-av-2', initials: 'PS', text: 'I enrolled in the digital marketing course with zero background and landed a job within 3 months. The platform is truly a game changer.', name: 'Priya Sharma', role: 'Digital Marketer, Mumbai' },
+  { av: 'lp-av-3', initials: 'AT', text: "The quality of content here is unmatched. I've tried many platforms but Rao's Law Academy stands out for its depth and community support.", name: 'Arjun Tiwari', role: 'Data Analyst, Hyderabad' },
 ];
 
 export default function LandingPage() {
@@ -50,22 +50,22 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
-    const t = setInterval(() => setCur(p => (p+1) % slides.length), 4500);
+    const t = setInterval(() => setCur(p => (p + 1) % slides.length), 4500);
     return () => clearInterval(t);
   }, []);
 
   return (
-    <div style={{ background:'var(--page-bg)' }}>
+    <div style={{ background: 'var(--page-bg)' }}>
 
       {/* NAVBAR */}
       <nav className="lp-navbar">
         <div className="al-logo">
-        <img
-          src={logo}
-          alt="Rao's Law Academy logo"
-          className="al-logo-img"
-        />
-      </div>
+          <img
+            src={logo}
+            alt="Rao's Law Academy logo"
+            className="al-logo-img"
+          />
+        </div>
         <div className="lp-navbar-links">
           <a href="#about">About Us</a>
           <a href="#why">Why Us</a>
@@ -77,13 +77,13 @@ export default function LandingPage() {
 
       {/* CAROUSEL */}
       <section className="lp-carousel">
-        <div className="lp-carousel-track" style={{ transform:`translateX(-${cur*100}%)` }}>
-          {slides.map((s,i) => (
+        <div className="lp-carousel-track" style={{ transform: `translateX(-${cur * 100}%)` }}>
+          {slides.map((s, i) => (
             <div key={i} className={`lp-slide ${s.cls}`}>
               <div className="lp-slide-deco">
-                <div className="lp-slide-ring lp-slide-ring-1"/>
-                <div className="lp-slide-ring lp-slide-ring-2"/>
-                <div className="lp-slide-ring lp-slide-ring-3"/>
+                <div className="lp-slide-ring lp-slide-ring-1" />
+                <div className="lp-slide-ring lp-slide-ring-2" />
+                <div className="lp-slide-ring lp-slide-ring-3" />
               </div>
               <div className="lp-slide-content">
                 <span className="lp-slide-tag">{s.tag}</span>
@@ -97,10 +97,10 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <button className="lp-carousel-arrow prev" onClick={() => setCur(p=>(p-1+slides.length)%slides.length)}>&#8592;</button>
-        <button className="lp-carousel-arrow next" onClick={() => setCur(p=>(p+1)%slides.length)}>&#8594;</button>
+        <button className="lp-carousel-arrow prev" onClick={() => setCur(p => (p - 1 + slides.length) % slides.length)}>&#8592;</button>
+        <button className="lp-carousel-arrow next" onClick={() => setCur(p => (p + 1) % slides.length)}>&#8594;</button>
         <div className="lp-carousel-dots">
-          {slides.map((_,i) => <button key={i} className={`lp-dot ${i===cur?'active':''}`} onClick={()=>setCur(i)} />)}
+          {slides.map((_, i) => <button key={i} className={`lp-dot ${i === cur ? 'active' : ''}`} onClick={() => setCur(i)} />)}
         </div>
       </section>
 
@@ -125,7 +125,7 @@ export default function LandingPage() {
             </div>
             <div className="lp-float-card">
               <div className="lp-fc-number">80%</div>
-              <div className="lp-fc-label">Career Growth<br/>in 6 Months</div>
+              <div className="lp-fc-label">Career Growth<br />in 6 Months</div>
             </div>
           </div>
           <div className="lp-about-text">
@@ -134,9 +134,9 @@ export default function LandingPage() {
             <p>Rao's Law Academy was born out of a frustration with education that was either too expensive, too theoretical, or simply out of reach. We set out to change that.</p>
             <p>Today we serve over 50,000 learners across India with courses that are practical, instructor-led, and designed to deliver results — not just certificates.</p>
             <div className="lp-about-points">
-              {aboutPoints.map((pt,i) => (
+              {aboutPoints.map((pt, i) => (
                 <div className="lp-about-point" key={i}>
-                  <div className="lp-point-dot"/>
+                  <div className="lp-point-dot" />
                   <div><h4>{pt.title}</h4><p>{pt.desc}</p></div>
                 </div>
               ))}
@@ -147,14 +147,14 @@ export default function LandingPage() {
 
       {/* MISSION */}
       <div className="lp-mission-strip">
-        {mission.map((m,i) => (
+        {mission.map((m, i) => (
           <>
             <div className="lp-mission-item" key={i}>
               <div className="lp-m-icon">{m.icon}</div>
               <h3>{m.title}</h3>
               <p>{m.desc}</p>
             </div>
-            {i < mission.length-1 && <div className="lp-mission-divider" key={`d${i}`}/>}
+            {i < mission.length - 1 && <div className="lp-mission-divider" key={`d${i}`} />}
           </>
         ))}
       </div>
@@ -167,7 +167,7 @@ export default function LandingPage() {
           <p className="section-sub">We've built the learning experience around what actually works for students.</p>
         </div>
         <div className="lp-features-grid">
-          {features.map((f,i) => (
+          {features.map((f, i) => (
             <div className="lp-feature-card" key={i}>
               <div className="lp-feature-icon">{f.icon}</div>
               <h4>{f.title}</h4>
@@ -200,7 +200,7 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="lp-cta-banner">
-        <div className="lp-cta-ring lp-cta-ring-1"/><div className="lp-cta-ring lp-cta-ring-2"/>
+        <div className="lp-cta-ring lp-cta-ring-1" /><div className="lp-cta-ring lp-cta-ring-2" />
         <h2>Ready to Start <em>Your Journey?</em></h2>
         <p>Join 50,000+ learners already building their future with Rao's Law Academy. Login to explore all courses.</p>
         <button className="btn btn-gold btn-lg" onClick={goToApp}>Login & Explore</button>
@@ -210,12 +210,12 @@ export default function LandingPage() {
       <footer className="lp-footer" id="contact">
         {/* <div className="lp-footer-logo">Rao's <span>Law Academy</span></div> */}
         <div className="al-logo">
-        <img
-          src={logo}
-          alt="Rao's Law Academy logo"
-          className="ft-logo-img"
-        />
-      </div>
+          <img
+            src={logo}
+            alt="Rao's Law Academy logo"
+            className="ft-logo-img"
+          />
+        </div>
         <div className="lp-footer-bottom">
           <span>© 2026 <span className="hl">Rao's Law Academy</span>. All rights reserved.</span>
           <span>Made with {<Heart size={18} color="#ef4444" fill="#ef4444" />} <a href="https://www.macsof.com" target="_blank" rel="noreferrer">@macsof technologies</a></span>

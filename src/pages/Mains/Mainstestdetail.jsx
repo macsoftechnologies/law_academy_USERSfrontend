@@ -1,3 +1,4 @@
+import { Clock } from 'lucide-react';
 import { Lock, ClipboardList, FileEdit, BookOpen, FileText, Trophy } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
@@ -73,7 +74,7 @@ export default function MainsTestDetail() {
                     <div style={{ display:'flex', gap:'.5rem', flexWrap:'wrap' }}>
                       {test.no_of_qs      && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {test.no_of_qs} Questions</span>}
                       {test.no_of_subjects && <span className="badge badge-gray">{<BookOpen size={18} color="#3b82f6" />} {test.no_of_subjects} Subjects</span>}
-                      {test.duration      && <span className="badge badge-gray">⏱ {test.duration}</span>}
+                      {test.duration      && <span className="badge badge-gray"><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {test.duration}</span></span>}
                     </div>
                   </div>
                 </div>
@@ -98,7 +99,7 @@ export default function MainsTestDetail() {
                             <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.9rem' }}>{sub.title}</div>
                             <div style={{ display:'flex', gap:'.4rem', marginTop:'.3rem', flexWrap:'wrap' }}>
                               {sub.no_of_qs  && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {sub.no_of_qs} Qs</span>}
-                              {sub.duration  && <span className="badge badge-gray">⏱ {sub.duration}</span>}
+                              {sub.duration  && <span className="badge badge-gray"><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {sub.duration}</span></span>}
                               {sub.max_marks && <span className="badge badge-gray">{<Trophy size={18} color="#eab308" />} {sub.max_marks} Marks</span>}
                             </div>
                           </div>

@@ -1,4 +1,4 @@
-import { Flag, RefreshCw, ClipboardList } from 'lucide-react';
+import { Flag, RefreshCw, ClipboardList, TriangleAlert, Clock } from 'lucide-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -12,7 +12,7 @@ import './exam.css';
 export default function MockTest() {
   const navigate = useNavigate();
   const { prelimsId, testId } = useParams();
-  const { state }             = useLocation();
+  const { state } = useLocation();
 
   const initTestState = () => {
     if (state?.test) {
@@ -24,35 +24,35 @@ export default function MockTest() {
   };
   const [testState] = useState(initTestState);
 
-  const test          = testState?.test          || null;
-  const item          = testState?.item          || null;
-  const isEnrolled    = testState?.isEnrolled    || false;
+  const test = testState?.test || null;
+  const item = testState?.item || null;
+  const isEnrolled = testState?.isEnrolled || false;
   const categoryLabel = testState?.categoryLabel || 'Test';
-  const module_type   = testState?.module_type   || 'QZ';
+  const module_type = testState?.module_type || 'QZ';
 
-  const declaredTotal    = parseInt(test?.no_of_qos || '10', 10);
-  const durationMins     = parseInt(test?.duration  || '30', 10);
-  const TOTAL_SECS       = durationMins * 60;
+  const declaredTotal = parseInt(test?.no_of_qos || '10', 10);
+  const durationMins = parseInt(test?.duration || '30', 10);
+  const TOTAL_SECS = durationMins * 60;
   const prelimes_test_id = testId || test?.prelimes_test_id;
 
-  const [cache,       setCache]       = useState({});
-  const [realTotal,   setRealTotal]   = useState(null);        // null = probe not yet complete
-  const [current,     setCurrent]     = useState(1);
-  const [qLoading,    setQLoading]    = useState(true);
-  const [fetchError,  setFetchError]  = useState(null);
-  const [answers,     setAnswers]     = useState({});
-  const [flagged,     setFlagged]     = useState(new Set());
-  const [secs,        setSecs]        = useState(TOTAL_SECS);
+  const [cache, setCache] = useState({});
+  const [realTotal, setRealTotal] = useState(null);        // null = probe not yet complete
+  const [current, setCurrent] = useState(1);
+  const [qLoading, setQLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+  const [answers, setAnswers] = useState({});
+  const [flagged, setFlagged] = useState(new Set());
+  const [secs, setSecs] = useState(TOTAL_SECS);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-  const [attemptId,   setAttemptId]   = useState(null);
+  const [attemptId, setAttemptId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [backBlockedNotice, setBackBlockedNotice] = useState(false);
 
-  const timerRef    = useRef(null);
+  const timerRef = useRef(null);
   const fetchingRef = useRef(new Set());
-  const cacheRef    = useRef({});     // mirror of cache readable inside async callbacks
-  const answersRef  = useRef({});     // mirror of answers readable inside timer/async callbacks
+  const cacheRef = useRef({});     // mirror of cache readable inside async callbacks
+  const answersRef = useRef({});     // mirror of answers readable inside timer/async callbacks
   const submittedRef = useRef(false);
 
   const ATTEMPT_STORAGE_KEY = `prelims_attempt_${prelimes_test_id}`;
@@ -159,10 +159,10 @@ export default function MockTest() {
           const d = attemptRes.data || {};
           savedAttemptId =
             d.prelimes_attempt_id ||
-            d.attemptId           ||
-            d.attempt_id          ||
-            d.id                  ||
-            d._id                 ||
+            d.attemptId ||
+            d.attempt_id ||
+            d.id ||
+            d._id ||
             null;
           if (!savedAttemptId) {
             clearPendingAttemptId();
@@ -193,7 +193,7 @@ export default function MockTest() {
         });
 
         // Prefetch Q2 after probe
-        if (actual >= 2) fetchQuestion(2).catch(() => {});
+        if (actual >= 2) fetchQuestion(2).catch(() => { });
 
       } catch {
         setFetchError('Failed to load question 1. Please go back and try again.');
@@ -276,7 +276,7 @@ export default function MockTest() {
 
     const next = current + 1;
     if (realTotal !== null && next <= realTotal) {
-      fetchQuestion(next).catch(() => {});
+      fetchQuestion(next).catch(() => { });
     }
   }, [current]);
 
@@ -375,18 +375,18 @@ export default function MockTest() {
   };
 
   const getStatus = (qNum) => {
-    if (qNum === current)                                  return 'current';
+    if (qNum === current) return 'current';
     if (answers[qNum] !== undefined && flagged.has(qNum)) return 'answered-flagged';
-    if (answers[qNum] !== undefined)                       return 'answered';
-    if (flagged.has(qNum))                                 return 'flagged';
+    if (answers[qNum] !== undefined) return 'answered';
+    if (flagged.has(qNum)) return 'flagged';
     return 'unattempted';
   };
 
   // Show declared count until probe finishes (prevents blank grid)
   const displayTotal = realTotal ?? declaredTotal;
-  const answered     = Object.keys(answers).length;
-  const unattempted  = realTotal === null ? null : displayTotal - answered;
-  const q            = cache[current];
+  const answered = Object.keys(answers).length;
+  const unattempted = realTotal === null ? null : displayTotal - answered;
+  const q = cache[current];
 
   const TYPE_LABELS = { QZ: 'QUIZ', SMT: 'MOCK TEST', GT: 'GRAND TEST', PQA: 'PREV. YEAR' };
 
@@ -397,8 +397,8 @@ export default function MockTest() {
       <DashboardHeader />
       <div className="dash-main">
         {backBlockedNotice && (
-          <div className="toast warning" style={{ margin:'1rem 1rem 0' }}>
-            ⚠️ Back navigation is disabled during the exam.
+          <div className="toast warning" style={{ margin: "1rem 1rem 0", display: "flex", alignItems: "center", gap: ".6rem" }}>
+            <TriangleAlert size={18} color="#eab308" /> Back navigation is disabled during the exam.
           </div>
         )}
 
@@ -409,7 +409,7 @@ export default function MockTest() {
             <span className="exam-topbar-name">{test.title || categoryLabel}</span>
           </div>
           <div className={`exam-timer ${isExpiring ? 'expiring' : ''}`}>
-            <span className="exam-timer-icon">⏱</span>
+            <span className="exam-timer-icon"><Clock size={18} /></span>
             <span className="exam-timer-val">{formatTime(secs)}</span>
           </div>
           <button className="btn btn-primary exam-submit-btn" onClick={() => setShowConfirm(true)} disabled={isSubmitting}>
@@ -435,9 +435,9 @@ export default function MockTest() {
             </div>
 
             {realTotal === null ? (
-              <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', minHeight:320, gap:'1rem', padding:'1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: 320, gap: '1rem', padding: '1rem' }}>
                 <Loader />
-                <div style={{ color:'var(--gray-500)', fontSize:'.9rem', textAlign:'center' }}>
+                <div style={{ color: 'var(--gray-500)', fontSize: '.9rem', textAlign: 'center' }}>
                   Determining question count…
                 </div>
               </div>
@@ -477,7 +477,7 @@ export default function MockTest() {
               </div>
             ) : fetchError ? (
               <div className="empty-state">
-                <div className="empty-state-icon">⚠️</div>
+                <div className="empty-state-icon"><TriangleAlert size={50} color="#eab308" /></div>
                 <h3 style={{ color: 'var(--error)' }}>{fetchError}</h3>
                 <button
                   className="btn btn-secondary"
@@ -492,7 +492,7 @@ export default function MockTest() {
                       .finally(() => setQLoading(false));
                   }}
                 >
-                  {<RefreshCw size={18} color="#3b82f6" />} Retry
+                  {<RefreshCw size={18} color="#000000ff" />} Retry
                 </button>
               </div>
             ) : q ? (
@@ -590,7 +590,7 @@ export default function MockTest() {
             </div>
             {unattempted > 0 && (
               <div className="exam-modal-warn">
-                ⚠️ {unattempted} unattempted question{unattempted > 1 ? 's' : ''}. Are you sure?
+                <TriangleAlert size={18} color="#eab308" /> {unattempted} unattempted question{unattempted > 1 ? 's' : ''}. Are you sure?
               </div>
             )}
             <div className="exam-modal-actions">
@@ -607,7 +607,7 @@ export default function MockTest() {
       {showLeaveConfirm && (
         <div className="exam-modal-overlay">
           <div className="exam-modal">
-            <div className="exam-modal-icon">⚠️</div>
+            <div className="exam-modal-icon"><TriangleAlert size={18} color="#eab308" /></div>
             <h3>Leave Exam?</h3>
             <p>You're attempting to leave the exam. You can stay and continue, or submit now and view results.</p>
             <div className="exam-modal-stats">

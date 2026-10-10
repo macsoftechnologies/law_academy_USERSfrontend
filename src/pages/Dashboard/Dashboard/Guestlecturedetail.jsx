@@ -1,3 +1,4 @@
+import { Clock } from 'lucide-react';
 import { Lock, Unlock, User, Landmark, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -160,7 +161,7 @@ export default function GuestLectureDetail() {
                   }}
                 >
                   {embeddedUrl.includes("youtube") ||
-                  embeddedUrl.includes("vimeo") ? (
+                    embeddedUrl.includes("vimeo") ? (
                     <iframe
                       width="100%"
                       height="460"
@@ -218,7 +219,7 @@ export default function GuestLectureDetail() {
                       padding: "0 20px"
                     }}
                   >
-                    {<Lock size={18} color="#dc2626" />} Enroll to Watch Full Lecture
+
 
                     {hasFullCourse ? (
                       <button
@@ -235,18 +236,18 @@ export default function GuestLectureDetail() {
                         Buy Full Access
                       </button>
                     ) : (
-                      <div style={{ 
-                        marginTop: "20px", 
-                        padding: "12px 20px", 
-                        background: "rgba(0, 0, 0, 0.75)", 
-                        border: "1px solid rgba(255, 255, 255, 0.2)", 
-                        borderRadius: "12px", 
-                        color: "#fff", 
-                        fontSize: "0.95rem", 
-                        fontWeight: 500, 
-                        display: "flex", 
-                        alignItems: "center", 
-                        gap: "10px" 
+                      <div style={{
+                        marginTop: "20px",
+                        padding: "12px 20px",
+                        background: "rgba(0, 0, 0, 0.75)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        borderRadius: "12px",
+                        color: "#fff",
+                        fontSize: "0.95rem",
+                        fontWeight: 500,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px"
                       }}>
                         <span style={{ fontSize: "1.2rem", color: "#fca5a5" }}>{<Lock size={18} color="#dc2626" />}</span>
                         <span>Purchase a <strong>Full Course</strong> to unlock.</span>
@@ -271,11 +272,10 @@ export default function GuestLectureDetail() {
                   </span>
 
                   <span
-                    className={`badge ${
-                      isLocked
-                        ? "badge-danger"
-                        : "badge-success"
-                    }`}
+                    className={`badge ${isLocked
+                      ? "badge-danger"
+                      : "badge-success"
+                      }`}
                   >
                     {isLocked
                       ? (<>{<Lock size={18} color="#dc2626" />} Locked</>)
@@ -310,7 +310,7 @@ export default function GuestLectureDetail() {
                       marginTop: "8px",
                     }}
                   >
-                    {<User size={18} color="#4b5563" />}‍{<Landmark size={18} color="#3b82f6" />} Speaker: {detail.author}
+                    {<User size={20} color="#4b5563" />} Speaker: {detail.author}
                   </p>
                 )}
 
@@ -321,7 +321,7 @@ export default function GuestLectureDetail() {
                       fontWeight: 500,
                     }}
                   >
-                    ⏱ Duration: {detail.duration}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={16} /> Duration:</span> {detail.duration}
                   </p>
                 )}
 

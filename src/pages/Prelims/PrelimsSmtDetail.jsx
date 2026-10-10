@@ -1,4 +1,4 @@
-import { FileEdit, BarChart } from 'lucide-react';
+import { FileEdit, BarChart, Clock } from 'lucide-react';
 /**
  * PrelimsSmtDetail
  * ─────────────────
@@ -23,7 +23,6 @@ import {
   getSmtTests,
   getUserTestAttempts,
 } from '../../api/prelims/prelimsApi';
-import CategoryBuyModal from '../../components/common/CategoryBuyModal';
 import { formatDate } from '../../utils/formatDate';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -77,12 +76,12 @@ export default function PrelimsSmtDetail() {
 
   const passedSubject = state?.subject || null;
   const isEnrolled    = state?.isEnrolled ?? false;
+  const passedItem    = state?.passedItem || null;
 
   const [subjectMeta, setSubjectMeta] = useState(passedSubject);
   const [tests,       setTests]       = useState([]);
   const [attemptCounts, setAttemptCounts] = useState({});
   const [loading,     setLoading]     = useState(true);
-  const [showBuyModal,  setShowBuyModal]  = useState(false);
 
   const loadAttemptCounts = async (testList) => {
     const counts = {};
@@ -263,13 +262,13 @@ export default function PrelimsSmtDetail() {
 
                       <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', marginBottom: '.5rem' }}>
                         {questions && (
-                          <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>
-                            {<FileEdit size={18} color="#8b5cf6" />} {questions} Qs
-                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '.75rem', color: 'var(--gray-500)' }}>
+                          <FileEdit size={14} color="#8b5cf6" /> {questions} Qs
+                        </span>
                         )}
                         {duration && (
-                          <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>
-                            ⏱ {duration} min
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '.75rem', color: 'var(--gray-500)' }}>
+                            <Clock size={14} color="#94a3b8" /> {duration} min
                           </span>
                         )}
                       </div>
@@ -315,7 +314,8 @@ export default function PrelimsSmtDetail() {
                               className="btn btn-gold btn-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setShowBuyModal(true);
+                                const pId = passedItem?.prelimes_id || 'smt';
+                                navigate(`/prelims/${pId}`, { state: { item: passedItem, scrollToBuy: true } });
                               }}
                             >
                               Buy Now
@@ -350,19 +350,6 @@ export default function PrelimsSmtDetail() {
                 );
               })}
             </div>
-          )}
-
-          {showBuyModal && (
-            <CategoryBuyModal 
-              categoryName={subjectMeta?.title || 'Subject Mock Tests'} 
-              termsConditions={subjectMeta?.terms_conditions}
-              onClose={() => setShowBuyModal(false)}
-              onProceed={() => {
-                setShowBuyModal(false);
-                const pId = subjectMeta?.prelimes_id || 'smt';
-                navigate(`/prelims/${pId}`, { state: { item: subjectMeta, scrollToBuy: true } });
-              }}
-            />
           )}
         </div>
       </div>

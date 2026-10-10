@@ -1,4 +1,4 @@
-import { GraduationCap, CheckCircle, Flag, Calendar, Hourglass, Circle, Mailbox, CreditCard, Pin, ClipboardList } from 'lucide-react';
+import { GraduationCap, CheckCircle, Flag, Calendar, Hourglass, Circle, Mailbox, CreditCard, Pin, ClipboardList, TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import DashboardHeader from "../../../components/layout/DashboardHeader";
@@ -540,7 +540,7 @@ export default function EnrollmentDetails() {
             {/* Warning if no course details */}
             {!details && (
               <div className="warning-banner">
-                <span style={{ fontSize: "1.2rem" }}>⚠️</span>
+                <span style={{ fontSize: "1.2rem" }}><TriangleAlert size={18} color="#eab308" /></span>
                 Full course details are not available for this enrollment type yet. Please contact support.
               </div>
             )}

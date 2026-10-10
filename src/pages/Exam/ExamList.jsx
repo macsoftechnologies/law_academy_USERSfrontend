@@ -1,4 +1,4 @@
-import { Scale, FileText, PenTool, Lock, FileEdit, Users } from 'lucide-react';
+import { Scale, FileText, PenTool, Lock, FileEdit, Users, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import '../../styles/design-system.css';
@@ -79,7 +79,7 @@ export default function ExamList() {
                 <p className="exam-card-desc">{exam.description}</p>
                 <div className="exam-card-meta">
                   <span className="exam-meta-item">{<FileEdit size={18} color="#8b5cf6" />} {exam.questions} Questions</span>
-                  <span className="exam-meta-item">⏱ {exam.duration}</span>
+                  <span className="exam-meta-item"><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {exam.duration}</span></span>
                   <span className="exam-meta-item">{<Users size={18} color="#4b5563" />} {exam.attempts} attempts</span>
                 </div>
                 <button

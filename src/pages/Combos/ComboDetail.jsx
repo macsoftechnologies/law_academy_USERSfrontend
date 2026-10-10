@@ -21,7 +21,7 @@ const toYouTubeEmbed = url => {
     const u = new URL(url);
     const v = u.searchParams.get('v') || (u.hostname === 'youtu.be' ? u.pathname.slice(1) : null);
     if (v) return `https://www.youtube.com/embed/${v}?rel=0&modestbranding=1`;
-  } catch {}
+  } catch { }
   return url;
 };
 
@@ -57,27 +57,27 @@ const getComboPreviewStats = (laws, item) => {
 };
 
 export default function ComboDetail() {
-  const { comboId }   = useParams();
-  const navigate      = useNavigate();
-  const { state }     = useLocation();
-  const buyRef        = useRef(null);
+  const { comboId } = useParams();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const buyRef = useRef(null);
 
   const passedCombo = state?.combo || null;
   const scrollToBuy = state?.scrollToBuy || false;
 
-  const [content,      setContent]      = useState(null);
-  const [listItem,     setListItem]     = useState(null);
-  const [loading,      setLoading]      = useState(true);
+  const [content, setContent] = useState(null);
+  const [listItem, setListItem] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [isEnrolled,   setIsEnrolled]   = useState(passedCombo?.isEnrolled ?? false);
-  const [plans,        setPlans]        = useState(passedCombo?.availablePlans ?? []);
-  const [showModal,    setShowModal]    = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(passedCombo?.isEnrolled ?? false);
+  const [plans, setPlans] = useState(passedCombo?.availablePlans ?? []);
+  const [showModal, setShowModal] = useState(false);
 
   // Accordion state: openLaw = law index, openSubject = "li-si" string, activeVideo = lecture._id, activePdf = note._id
-  const [openLaw,     setOpenLaw]     = useState(0);      // open first law by default
+  const [openLaw, setOpenLaw] = useState(0);      // open first law by default
   const [openSubject, setOpenSubject] = useState('0-0'); // open first subject by default
   const [activeVideo, setActiveVideo] = useState(null);
-  const [activePdf,   setActivePdf]   = useState(null);
+  const [activePdf, setActivePdf] = useState(null);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -123,11 +123,11 @@ export default function ComboDetail() {
     }
   }, [scrollToBuy, loading]);
 
-  const item        = listItem || passedCombo;
-  const title       = content?.title || item?.title || 'Combo Course';
+  const item = listItem || passedCombo;
+  const title = content?.title || item?.title || 'Combo Course';
   const description = content?.description || item?.description || '';
-  const imgSrc      = item?.presentation_image ? `${BASE_URL}/${item.presentation_image}` : null;
-  const laws        = content?.laws ?? [];
+  const imgSrc = item?.presentation_image ? `${BASE_URL}/${item.presentation_image}` : null;
+  const laws = content?.laws ?? [];
   const courseLocked = !isEnrolled;
 
   const comboStats = getComboPreviewStats(laws, item);
@@ -145,7 +145,7 @@ export default function ComboDetail() {
     const userId = localStorage.getItem('userId');
     if (!userId || !note) return;
     const courseId = comboId;
-    updateMarksProgress(userId, courseId, note._id, 'notes', law?.title || law?.law_name || 'civil', true).catch(() => {});
+    updateMarksProgress(userId, courseId, note._id, 'notes', law?.title || law?.law_name || 'civil', true).catch(() => { });
   };
 
   return (
@@ -199,11 +199,11 @@ export default function ComboDetail() {
                         <button className="btn btn-gold" onClick={() => buyRef.current?.scrollIntoView({ behavior: 'smooth' })}>
                           Buy Now
                         </button>
-                        <CartWishlistActions 
-                          courseId={comboId} 
-                          enrollType="combination" 
-                          planId={plans[0]?.planId || plans[0]?.plan_id} 
-                          isEnrolled={isEnrolled} 
+                        <CartWishlistActions
+                          courseId={comboId}
+                          enrollType="combination"
+                          planId={plans[0]?.planId || plans[0]?.plan_id}
+                          isEnrolled={isEnrolled}
                           hideCart={true}
                           courseTitle={title}
                         />
@@ -215,7 +215,7 @@ export default function ComboDetail() {
 
               {courseLocked && (
                 <div className="toast warning" style={{ marginBottom: '1rem' }}>
-                  {<Lock size={18} color="#dc2626" />} Enroll to unlock the full combo content.
+                  Enroll to unlock the full combo content.
                 </div>
               )}
 
@@ -279,7 +279,7 @@ export default function ComboDetail() {
                     </h2>
 
                     {laws.map((law, li) => {
-                      const lawOpen     = openLaw === li;
+                      const lawOpen = openLaw === li;
                       const subjectList = law.subjects ?? [];
 
                       return (
@@ -316,10 +316,10 @@ export default function ComboDetail() {
                           {lawOpen && (
                             <div style={{ padding: '.5rem .75rem .75rem' }}>
                               {subjectList.map((subject, si) => {
-                                const subjKey  = `${li}-${si}`;
+                                const subjKey = `${li}-${si}`;
                                 const subjOpen = openSubject === subjKey;
                                 const lectures = subject.lectures ?? [];
-                                const notes    = subject.notes ?? [];
+                                const notes = subject.notes ?? [];
 
                                 return (
                                   <div key={subject.subjectId || si} style={{ marginBottom: '.45rem', border: '1px solid var(--gray-100)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
@@ -362,9 +362,9 @@ export default function ComboDetail() {
                                               Lectures
                                             </div>
                                             {lectures.map((lec, li2) => {
-                                              const lecId        = lec._id || `${subjKey}-lec-${li2}`;
-                                              const isPlaying    = activeVideo === lecId;
-                                              const embedUrl     = toYouTubeEmbed(lec.video_url);
+                                              const lecId = lec._id || `${subjKey}-lec-${li2}`;
+                                              const isPlaying = activeVideo === lecId;
+                                              const embedUrl = toYouTubeEmbed(lec.video_url);
                                               const lockedLecture = courseLocked || !embedUrl;
 
                                               return (
@@ -379,7 +379,7 @@ export default function ComboDetail() {
                                                     role="button"
                                                     tabIndex={0}
                                                     onKeyDown={(e) => {
-                                                      if(e.key === 'Enter' || e.key === ' ') {
+                                                      if (e.key === 'Enter' || e.key === ' ') {
                                                         e.preventDefault();
                                                         if (lockedLecture) return;
                                                         setActiveVideo(isPlaying ? null : lecId);
@@ -406,7 +406,7 @@ export default function ComboDetail() {
                                                         </div>
                                                       )}
                                                     </div>
-                                                    
+
                                                     {/* Video Wishlist Icon */}
                                                     {!lockedLecture && (
                                                       <button
@@ -454,10 +454,10 @@ export default function ComboDetail() {
                                               Notes
                                             </div>
                                             {notes.map((note, ni) => {
-                                              const locked   = courseLocked;
-                                              const noteId   = note._id || `${subjKey}-note-${ni}`;
+                                              const locked = courseLocked;
+                                              const noteId = note._id || `${subjKey}-note-${ni}`;
                                               const isPdfOpen = activePdf === noteId;
-                                              const pdfUrl   = !locked ? note.pdf_url : null;
+                                              const pdfUrl = !locked ? note.pdf_url : null;
 
                                               return (
                                                 <div key={noteId} style={{ marginBottom: '.4rem', border: '1px solid var(--gray-200)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: locked ? 'var(--gray-100)' : 'var(--white)', opacity: locked ? 0.7 : 1 }}>
@@ -552,7 +552,7 @@ export default function ComboDetail() {
                     </h2>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', marginBottom: '1rem' }}>
                       {plans.map(plan => {
-                        const pid  = plan.planId || plan.plan_id;
+                        const pid = plan.planId || plan.plan_id;
                         const isSel = (selectedPlan?.planId || selectedPlan?.plan_id) === pid;
                         return (
                           <div
@@ -577,11 +577,11 @@ export default function ComboDetail() {
                       <button className="btn btn-gold" disabled={!selectedPlan} onClick={() => selectedPlan && setShowModal(true)}>
                         {selectedPlan ? `Enroll for ₹${selectedPlan.original_price}` : 'Select a Plan'}
                       </button>
-                      <CartWishlistActions 
-                        courseId={comboId} 
-                        enrollType="full-course" 
-                        planId={selectedPlan?.planId || selectedPlan?.plan_id} 
-                        isEnrolled={isEnrolled} 
+                      <CartWishlistActions
+                        courseId={comboId}
+                        enrollType="full-course"
+                        planId={selectedPlan?.planId || selectedPlan?.plan_id}
+                        isEnrolled={isEnrolled}
                         hideWishlist={true}
                         courseTitle={title}
                       />

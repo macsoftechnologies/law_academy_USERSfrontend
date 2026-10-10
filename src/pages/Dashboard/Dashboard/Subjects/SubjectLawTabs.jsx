@@ -1,4 +1,4 @@
-import { BookOpen, Scale } from "lucide-react";
+import { BookOpen, Gavel } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -98,7 +98,7 @@ export default function SubjectLawTabs() {
                 }`}
                 onClick={() => setActiveLaw(law)}
               >
-                {<Scale size={18} color="#d4af37" />} {law}
+                {<Gavel size={18} color="#c8922a" />} {law}
               </button>
             ))}
           </div>

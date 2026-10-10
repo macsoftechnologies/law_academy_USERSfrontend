@@ -64,6 +64,7 @@ function AddressForm({ initial = EMPTY_ADDR, onSave, onCancel, saving }) {
 // ── Main Component ──────────────────────────────────────────────────────
 export default function PrintedNotes() {
   const navigate = useNavigate();
+  const [isOrdersHovered, setIsOrdersHovered] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -295,8 +296,23 @@ export default function PrintedNotes() {
               🖨 Printed Notes
               {!loading && <span className="page-section-count">{notes.length}</span>}
             </h1>
-            <button className="btn btn-outline btn-sm" onClick={() => navigate('/notes/orders')} style={{ fontWeight: 600 }}>
-              📦 My Orders
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => navigate('/notes/orders')}
+              onMouseEnter={() => setIsOrdersHovered(true)}
+              onMouseLeave={() => setIsOrdersHovered(false)}
+              style={{
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                backgroundColor: isOrdersHovered ? '#c8922a' : 'transparent',
+                color: isOrdersHovered ? '#fff' : '#c8922a',
+                borderColor: '#c8922a'
+              }}
+            >
+              <Package size={18} color={isOrdersHovered ? '#fff' : '#c8922a'} />
+              My Orders
             </button>
           </div>
 
@@ -378,7 +394,7 @@ export default function PrintedNotes() {
                           </div>
                         )}
                         <button className="btn btn-gold btn-sm" onClick={() => openOrderModal(note)}>
-                          📦 Order Now
+                          Order Now
                         </button>
                       </div>
                     </div>

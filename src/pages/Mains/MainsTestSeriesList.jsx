@@ -1,4 +1,4 @@
-import { ClipboardList, BarChart, Inbox, FileEdit, Trophy, FileText, Lock } from 'lucide-react';
+import { ClipboardList, BarChart, Inbox, FileEdit, Trophy, FileText, Lock, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -159,7 +159,7 @@ export default function MainsTestSeriesList() {
                                   <h3 style={{ fontWeight:700, color:'var(--navy)', marginBottom:'.4rem' }}>{sub.title}</h3>
                                   <div style={{ display:'flex', gap:'.4rem', flexWrap:'wrap' }}>
                                     {sub.no_of_qos && <span className="badge badge-gray">{<FileEdit size={18} color="#8b5cf6" />} {sub.no_of_qos} Qs</span>}
-                                    {sub.duration   && <span className="badge badge-gray">⏱ {sub.duration}</span>}
+                                    {sub.duration   && <span className="badge badge-gray"><span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {sub.duration}</span></span>}
                                     {sub.marks      && <span className="badge badge-gray">{<Trophy size={18} color="#eab308" />} {sub.marks} Marks</span>}
                                     {subjectAttempts > 0 && (
                                       <span className="badge badge-gray">{<BarChart size={18} color="#3b82f6" />} {subjectAttempts} Attempt{subjectAttempts > 1 ? 's' : ''}</span>

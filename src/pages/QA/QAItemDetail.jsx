@@ -1,4 +1,4 @@
-import { FileText, Video, Lock, BookOpen } from "lucide-react";
+import { FileText, Video, Lock, BookOpen, TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
@@ -149,7 +149,7 @@ export default function QAItemDetail() {
             </div>
           ) : error ? (
             <div className="empty-state">
-              <div className="empty-state-icon">⚠️</div>
+              <div className="empty-state-icon"><TriangleAlert size={18} color="#eab308" /></div>
               <h3>{error}</h3>
               <button className="btn btn-secondary" onClick={() => navigate(courseRoot)}>
                 Back to list

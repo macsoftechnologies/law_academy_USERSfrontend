@@ -8,17 +8,17 @@ import '../../styles/design-system.css';
 import '../../styles/components.css';
 import '../../styles/layout.css';
 
-const COURSE_POINTS = ['Previous Year Questions','Subject wise Mock Tests','Grand Tests','Quizzes'];
-const ICONS = [<ClipboardList size={18} color="#4b5563" />,<FileEdit size={18} color="#8b5cf6" />,<Trophy size={18} color="#eab308" />,<HelpCircle size={18} color="#4b5563" />];
-const MODULE_MAP = { 'previous year questions':'PQA', 'subject wise mock tests':'SMT', 'grand tests':'GT', 'quizzes':'QZ' };
+const COURSE_POINTS = ['Previous Year Questions', 'Subject wise Mock Tests', 'Grand Tests', 'Quizzes'];
+const ICONS = [<ClipboardList size={25} color="#4b5563" />, <FileEdit size={25} color="#8b5cf6" />, <Trophy size={25} color="#eab308" />, <HelpCircle size={25} color="#4b5563" />];
+const MODULE_MAP = { 'previous year questions': 'PQA', 'subject wise mock tests': 'SMT', 'grand tests': 'GT', 'quizzes': 'QZ' };
 
 export default function PrelimsCategories() {
   const { prelimsId } = useParams();
-  const navigate      = useNavigate();
-  const { state }     = useLocation();
-  const passedItem    = state?.item || null;
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const passedItem = state?.item || null;
   const [isEnrolled, setIsEnrolled] = useState(state?.isEnrolled ?? (passedItem?.isEnrolled ?? false));
-  const [detail,  setDetail]  = useState(null);
+  const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,23 +67,23 @@ export default function PrelimsCategories() {
       <DashboardHeader />
       <div className="dash-main">
         <div className="dash-content">
-          <button className="back-btn" onClick={()=>navigate(-1)}>← Back</button>
-          <div style={{ marginBottom:'1.25rem' }}>
-            <span className="badge badge-navy" style={{ marginBottom:'.5rem' }}>Prelims</span>
-            <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(1.3rem,2vw,1.7rem)', color:'var(--navy)' }}>{item?.title||'Prelims Course'}</h1>
-            {!isEnrolled && <div className="toast warning" style={{ marginTop:'.75rem', width:'fit-content' }}>⚠ Enroll to access all content</div>}
+          <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <span className="badge badge-navy" style={{ marginBottom: '.5rem' }}>Prelims</span>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.3rem,2vw,1.7rem)', color: 'var(--navy)' }}>{item?.title || 'Prelims Course'}</h1>
+            {!isEnrolled && <div className="toast warning" style={{ marginTop: '.75rem', width: 'fit-content' }}>⚠ Enroll to access all content</div>}
           </div>
 
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:'1rem' }}>
-            {COURSE_POINTS.map((label,i) => (
-              <div key={i} className="card" style={{ cursor:'pointer', border:'2px solid transparent', transition:'border-color .18s' }}
-                onClick={()=>handleExplore(label)}
-                onMouseOver={e=>e.currentTarget.style.borderColor='var(--gold)'}
-                onMouseOut={e=>e.currentTarget.style.borderColor='transparent'}>
-                <div className="card-body" style={{ textAlign:'center', padding:'1.75rem 1.25rem' }}>
-                  <div style={{ fontSize:'2.5rem', marginBottom:'.75rem' }}>{ICONS[i]}</div>
-                  <div style={{ fontWeight:700, color:'var(--navy)', fontSize:'.95rem', marginBottom:'.35rem' }}>{label}</div>
-                  {!isEnrolled && <div style={{ fontSize:'.72rem', color:'var(--gray-400)' }}>{<Lock size={18} color="#dc2626" />} Enroll to access</div>}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '1rem' }}>
+            {COURSE_POINTS.map((label, i) => (
+              <div key={i} className="card" style={{ cursor: 'pointer', border: '2px solid transparent', transition: 'border-color .18s' }}
+                onClick={() => handleExplore(label)}
+                onMouseOver={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                onMouseOut={e => e.currentTarget.style.borderColor = 'transparent'}>
+                <div className="card-body" style={{ textAlign: 'center', padding: '1.75rem 1.25rem' }}>
+                  <div style={{ fontSize: '2.5rem', marginBottom: '.75rem' }}>{ICONS[i]}</div>
+                  <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '.95rem', marginBottom: '.35rem' }}>{label}</div>
+                  {!isEnrolled && <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{<Lock size={14} color="#dc2626" />} Enroll to access</div>}
                 </div>
               </div>
             ))}

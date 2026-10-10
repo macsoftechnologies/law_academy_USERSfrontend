@@ -1,4 +1,4 @@
-import { FileEdit, Hash, ClipboardList } from 'lucide-react';
+import { FileEdit, Hash, ClipboardList, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -73,7 +73,7 @@ export default function ExamTerms() {
               )}
               {test.duration && (
                 <span style={{ fontSize: '.82rem', color: 'var(--gray-500)', background: 'var(--gray-100)', padding: '.2rem .65rem', borderRadius: 'var(--radius-full)' }}>
-                  ⏱ {test.duration} mins
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Clock size={16} /> {test.duration} mins</span>
                 </span>
               )}
               {test.test_number && (

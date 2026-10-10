@@ -1,4 +1,4 @@
-import { LockKeyhole } from 'lucide-react';
+import { MessageSquareText } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { verifyUser } from '../../api/auth/verify';
@@ -11,15 +11,15 @@ import '../../styles/auth.css';
 export default function OtpVerify() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const phone  = state?.phone  || sessionStorage.getItem('otpPhone');
+  const phone = state?.phone || sessionStorage.getItem('otpPhone');
   const userId = state?.userId || sessionStorage.getItem('otpUserId');
   const mode = state?.mode || sessionStorage.getItem('otpMode') || 'otp-login';
-  const [otp, setOtp] = useState(['','','','','']);
+  const [otp, setOtp] = useState(['', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoad] = useState(false);
   const [resent, setResent] = useState(false);
   const [resending, setResending] = useState(false);
-  const refs = [useRef(),useRef(),useRef(),useRef(),useRef()];
+  const refs = [useRef(), useRef(), useRef(), useRef(), useRef()];
 
   useEffect(() => {
     if (state?.userId) {
@@ -29,12 +29,12 @@ export default function OtpVerify() {
     }
   }, [state]);
 
-  const handleChange = (i,val) => {
+  const handleChange = (i, val) => {
     if (!/^\d?$/.test(val)) return;
     const next = [...otp]; next[i] = val; setOtp(next); setError('');
-    if (val && i < 4) refs[i+1].current.focus();
+    if (val && i < 4) refs[i + 1].current.focus();
   };
-  const handleKey = (i,e) => { if (e.key==='Backspace' && !otp[i] && i>0) refs[i-1].current.focus(); };
+  const handleKey = (i, e) => { if (e.key === 'Backspace' && !otp[i] && i > 0) refs[i - 1].current.focus(); };
 
   const handleVerify = async (e) => {
     e?.preventDefault();
@@ -51,9 +51,9 @@ export default function OtpVerify() {
           localStorage.setItem('token', res.token);
           localStorage.setItem('userId', res.data.userId);
           localStorage.setItem('user', JSON.stringify(res.data));
-          localStorage.setItem('isLoggedIn','true');
+          localStorage.setItem('isLoggedIn', 'true');
           sessionStorage.clear();
-          
+
           if (mode === 'register') {
             navigate('/referral');
           } else {
@@ -81,9 +81,9 @@ export default function OtpVerify() {
         const resendUserId = res?.data?.userId || userId;
         if (resendUserId) sessionStorage.setItem('otpUserId', resendUserId);
         sessionStorage.setItem('otpPhone', phone.trim());
-        setOtp(['','','','','']);
+        setOtp(['', '', '', '', '']);
         setResent(true);
-        setTimeout(()=>setResent(false),3000);
+        setTimeout(() => setResent(false), 3000);
         refs[0].current?.focus();
       } else {
         setError(res.message || 'Unable to resend OTP');
@@ -101,24 +101,24 @@ export default function OtpVerify() {
         tag="OTP Verification"
         title={<>One Step <em>Away</em></>}
         sub="We have sent a 5-digit OTP to your registered mobile number. Enter it below to verify."
-        stats={[['5-Digit','OTP Code'],['Secure','Verification'],['Instant','Access']]}
+        stats={[['5-Digit', 'OTP Code'], ['Secure', 'Verification'], ['Instant', 'Access']]}
       />
       <div className="auth-right">
         <div className="auth-card">
-          <div className="auth-illus">{<LockKeyhole size={18} color="#dc2626" />}</div>
+          <div className="auth-illus">{<MessageSquareText size={80} color="#012455" />}</div>
           <div className="auth-body">
-            <button className="auth-back" onClick={()=>navigate('/login')}>← Back</button>
+            <button className="auth-back" onClick={() => navigate('/login')}>← Back</button>
             <h2>Verify Your Mobile Number</h2>
             <p className="auth-sub">We sent a OTP to <strong>{phone}</strong> enter 5 digit code that mentioned in the sms</p>
             {resent && <div className="toast success">OTP resent successfully!</div>}
-            {error  && <div className="toast error">{error}</div>}
+            {error && <div className="toast error">{error}</div>}
             <form onSubmit={handleVerify} noValidate>
               <div className="otp-row">
-                {otp.map((v,i) => (
-                  <input key={i} ref={refs[i]} className={`otp-box ${v?'filled':''}`}
+                {otp.map((v, i) => (
+                  <input key={i} ref={refs[i]} className={`otp-box ${v ? 'filled' : ''}`}
                     type="text" inputMode="numeric" maxLength={1} value={v}
-                    onChange={e=>handleChange(i,e.target.value)}
-                    onKeyDown={e=>handleKey(i,e)} />
+                    onChange={e => handleChange(i, e.target.value)}
+                    onKeyDown={e => handleKey(i, e)} />
                 ))}
               </div>
               <p className="otp-resend">

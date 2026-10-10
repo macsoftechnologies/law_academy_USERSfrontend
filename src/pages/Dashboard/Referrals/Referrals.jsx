@@ -1,4 +1,4 @@
-import { CheckCircle, ClipboardList, Users, Banknote, Gift, PartyPopper } from 'lucide-react';
+import { CheckCircle, ClipboardList, Users, Banknote, Gift, PartyPopper, TriangleAlert } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -329,7 +329,7 @@ export default function Referrals() {
             />
             {convertError && (
               <div style={{ color: 'var(--error, #dc2626)', fontSize: '.8rem', fontWeight: 600, marginBottom: '1rem', background: 'rgba(220,38,38,.08)', borderRadius: 'var(--radius-sm)', padding: '.4rem .75rem' }}>
-                ⚠️ {convertError}
+                <TriangleAlert size={18} color="#eab308" /> {convertError}
               </div>
             )}
             <div className="logout-actions">

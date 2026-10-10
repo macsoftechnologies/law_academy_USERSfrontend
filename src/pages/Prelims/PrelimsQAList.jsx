@@ -1,10 +1,10 @@
-import { HelpCircle, Trophy, FileEdit, ClipboardList, Lock, BarChart } from 'lucide-react';
+import { HelpCircle, Trophy, FileEdit, ClipboardList, Lock, BarChart, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Loader from '../../components/common/Loader';
 import Pagination from '../../components/common/Pagination';
-import CategoryBuyModal from '../../components/common/CategoryBuyModal';
+
 import { getQAList, getPrelimsTests, getUserTestAttempts } from '../../api/prelims/prelimsApi';
 import '../../styles/design-system.css';
 import '../../styles/components.css';
@@ -77,7 +77,7 @@ export default function PrelimsQAList() {
   const [page,          setPage]          = useState(state?.page || 1);
   const [total,         setTotal]         = useState(0);
   const [attemptCounts, setAttemptCounts] = useState({}); // { testId: count }
-  const [showBuyModal,  setShowBuyModal]  = useState(false);
+
 
   const isExamType = EXAM_TYPES.includes(resolvedType);
 
@@ -225,10 +225,10 @@ export default function PrelimsQAList() {
                           <div style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '.9rem' }}>{title}</div>
                           <div style={{ display: 'flex', gap: '.75rem', marginTop: '.2rem', flexWrap: 'wrap' }}>
                             {question_count && (
-                              <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>{<FileEdit size={18} color="#8b5cf6" />} {question_count} Questions</span>
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '.75rem', color: 'var(--gray-500)' }}><FileEdit size={14} color="#8b5cf6" /> {question_count} Questions</span>
                             )}
                             {duration && (
-                              <span style={{ fontSize: '.75rem', color: 'var(--gray-500)' }}>⏱ {duration} mins</span>
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '.75rem', color: 'var(--gray-500)' }}><Clock size={14} color="#94a3b8" /> {duration} mins</span>
                             )}
                           </div>
                         </div>
@@ -278,7 +278,7 @@ export default function PrelimsQAList() {
                               className="btn btn-gold btn-sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setShowBuyModal(true);
+                                navigate(`/prelims/${prelimsId}`, { state: { item, scrollToBuy: true } });
                               }}
                             >
                               Buy Now
@@ -305,17 +305,6 @@ export default function PrelimsQAList() {
             </>
           )}
 
-          {showBuyModal && (
-            <CategoryBuyModal 
-              categoryName={categoryLabel || item?.title} 
-              termsConditions={item?.terms_conditions}
-              onClose={() => setShowBuyModal(false)}
-              onProceed={() => {
-                setShowBuyModal(false);
-                navigate(`/prelims/${prelimsId}`, { state: { item, scrollToBuy: true } });
-              }}
-            />
-          )}
         </div>
       </div>
     </div>

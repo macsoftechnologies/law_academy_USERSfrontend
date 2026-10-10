@@ -1,4 +1,4 @@
-import { FileText, AlertTriangle, FileEdit, Search } from 'lucide-react';
+import { FileText, AlertTriangle, FileEdit, Search, Gavel } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -82,7 +82,7 @@ export default function PrelimsSubjectSelect() {
                     className={`btn btn-sm ${activeCategory === cat ? 'btn-primary' : 'btn-outline'}`}
                     onClick={() => setActiveCategory(cat)}
                   >
-                    {cat === 'Civil Laws' ? <FileText size={18} color="#3b82f6" />  : cat === 'Criminal Laws' ? <AlertTriangle size={18} color="#ef4444" />  : ''}{cat}
+                    {cat === 'Civil Laws' ? <Gavel size={18} color="#c8922a" />  : cat === 'Criminal Laws' ? <Gavel size={18} color="#c8922a" />  : ''}{cat}
                   </button>
                 ))}
               </div>

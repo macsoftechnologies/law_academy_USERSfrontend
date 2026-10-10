@@ -1,4 +1,4 @@
-import { CheckCircle, PartyPopper, Clock, AlarmClock, FileText, Upload } from 'lucide-react';
+import { CheckCircle, PartyPopper, Clock, AlarmClock, FileText, Upload, TriangleAlert } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -124,7 +124,7 @@ export default function MainsTestAttempt() {
           </div>
 
           {isExpiring && secs>0 && (
-            <div className="toast warning" style={{ marginBottom:'1rem' }}>⚠️ Less than 15 minutes remaining. Submit your answers soon!</div>
+            <div className="toast warning" style={{ marginBottom:"1rem", display: "flex", alignItems: "center", gap: ".6rem" }}><TriangleAlert size={18} color="#eab308" /> Less than 15 minutes remaining. Submit your answers soon!</div>
           )}
           {secs===0 && (
             <div className="toast error" style={{ marginBottom:'1rem' }}>{<AlarmClock size={18} color="#ef4444" />} Time's up! Please submit your answers immediately.</div>

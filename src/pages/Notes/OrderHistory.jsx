@@ -11,11 +11,11 @@ import '../../styles/layout.css';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const STATUS_STYLES = {
-  delivered:  { color: '#16a34a', bg: '#dcfce7' },
-  pending:    { color: '#d97706', bg: '#fef9c3' },
+  delivered: { color: '#16a34a', bg: '#dcfce7' },
+  pending: { color: '#d97706', bg: '#fef9c3' },
   processing: { color: '#2563eb', bg: '#dbeafe' },
-  shipped:    { color: '#7c3aed', bg: '#ede9fe' },
-  cancelled:  { color: '#dc2626', bg: '#fee2e2' },
+  shipped: { color: '#7c3aed', bg: '#ede9fe' },
+  cancelled: { color: '#dc2626', bg: '#fee2e2' },
 };
 const st = (s) => STATUS_STYLES[s?.toLowerCase()] || { color: 'var(--gray-500)', bg: 'var(--gray-100)' };
 
@@ -28,7 +28,7 @@ const Row = ({ label, value }) => value ? (
 
 export default function OrderHistory() {
   const navigate = useNavigate();
-  const [orders, setOrders]   = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,14 +47,14 @@ export default function OrderHistory() {
 
           <div className="page-section-head">
             <h1 className="page-section-title">
-              {<Package size={18} color="#8b5cf6" />} My Printed Note Orders
+              My Printed Note Orders
               {!loading && <span className="page-section-count">{orders.length}</span>}
             </h1>
           </div>
 
           {loading ? <Loader /> : orders.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state-icon">{<Package size={18} color="#8b5cf6" />}</div>
+              <div className="empty-state-icon">{<Package size={25} color="#d97706ff" />}</div>
               <h3>No orders yet</h3>
               <p>You haven't ordered any printed notes yet.</p>
               <button className="btn btn-gold" style={{ marginTop: '1rem' }} onClick={() => navigate('/notes/printed')}>
@@ -64,10 +64,10 @@ export default function OrderHistory() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {orders.map(order => {
-                const note   = order.notes_id?.[0] || {};
-                const addr   = order.address_id?.[0] || null;
+                const note = order.notes_id?.[0] || {};
+                const addr = order.address_id?.[0] || null;
                 const imgSrc = note.presentation_image ? `${BASE_URL}/${note.presentation_image}` : null;
-                const date   = order.createdAt
+                const date = order.createdAt
                   ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
                   : '—';
                 const s = st(order.status);
@@ -94,7 +94,7 @@ export default function OrderHistory() {
                           <div style={{ width: 64, height: 80, flexShrink: 0, borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {imgSrc
                               ? <img src={imgSrc} alt={note.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                  onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
                               : null}
                             <span style={{ fontSize: '1.4rem', display: imgSrc ? 'none' : 'flex' }}>🖨</span>
                           </div>
@@ -105,7 +105,7 @@ export default function OrderHistory() {
                             {note.sub_title && (
                               <p style={{ fontSize: '.75rem', color: 'var(--gray-500)', margin: '0 0 .6rem', lineHeight: 1.4 }}>{note.sub_title}</p>
                             )}
-                            <div style={{ fontSize: '.72rem', color: 'var(--gray-400)' }}>{<Calendar size={18} color="#6366f1" />} {date}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '.72rem', color: 'var(--gray-400)' }}><Calendar size={16} color="#6366f1" /> {date}</div>
                           </div>
                         </div>
 
@@ -115,15 +115,15 @@ export default function OrderHistory() {
                           <Row label="Payment" value={order.payment_method?.toUpperCase()} />
                           <Row label="Coupon" value={order.coupon_code || null} />
                           <Row label="Date" value={date} />
-<Row label="Plan Price"    value={order.planId?.[0]?.original_price ? `₹${order.planId[0].original_price}` : null} />
-  {/* <Row label="Duration"      value={order.planId?.[0]?.duration || null} /> */}
-  <Row label="Handling Fee"  value={order.planId?.[0]?.handling_fee ? `₹${order.planId[0].handling_fee}` : null} />
-  <Row label="Discount"      value={order.planId?.[0]?.discount_percent ? `${order.planId[0].discount_percent}% Off` : null} />
+                          <Row label="Plan Price" value={order.planId?.[0]?.original_price ? `₹${order.planId[0].original_price}` : null} />
+                          {/* <Row label="Duration"      value={order.planId?.[0]?.duration || null} /> */}
+                          <Row label="Handling Fee" value={order.planId?.[0]?.handling_fee ? `₹${order.planId[0].handling_fee}` : null} />
+                          <Row label="Discount" value={order.planId?.[0]?.discount_percent ? `${order.planId[0].discount_percent}% Off` : null} />
                           {/* Address — spans full width */}
                           {addr && (
                             <div style={{ gridColumn: '1 / -1', paddingTop: '.5rem', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: '.1rem' }}>
-                              <span style={{ fontSize: '.65rem', color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.05em', fontWeight: 700, marginBottom: '.2rem' }}>
-                                {<Package size={18} color="#8b5cf6" />} Shipping Address
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '.65rem', color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '.05em', fontWeight: 700, marginBottom: '.2rem' }}>
+                                <Package size={16} color="#8b5cf6" /> Shipping Address
                               </span>
                               <span style={{ fontSize: '.82rem', color: 'var(--navy)', fontWeight: 700 }}>{addr.full_name}</span>
                               <span style={{ fontSize: '.78rem', color: 'var(--gray-600)' }}>{addr.address}</span>

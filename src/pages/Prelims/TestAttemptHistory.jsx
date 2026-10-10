@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, BarChart, Medal, Target, Trophy, TrendingUp, Inbox, ClipboardList, RefreshCw } from 'lucide-react';
+import { CheckCircle, XCircle, BarChart, Medal, Target, Trophy, TrendingUp, Inbox, ClipboardList, RefreshCw, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -228,7 +228,7 @@ export default function TestAttemptHistory() {
                   { label: 'Score',     value: `${dispPct}%`,                      icon: <BarChart size={18} color="#3b82f6" />, color: dispRankC },
                   { label: 'Marks',     value: `${dispCorrect}/${attTotal || '—'}`, icon: <Medal size={18} color="#f59e0b" /> },
                   { label: 'Accuracy',  value: `${dispAccuracy}%`,                 icon: <Target size={18} color="#ef4444" />, color: 'var(--navy)' },
-                  { label: 'Time (min)',value: dispTimeSpent ? dispTimeSpent.toFixed(1) : '—', icon: '⏱️', color: 'var(--navy)' },
+                  { label: 'Time (min)',value: dispTimeSpent ? dispTimeSpent.toFixed(1) : '—', icon: <Clock size={16} />, color: 'var(--navy)' },
                 ];
                 if (dispRank != null) detailCards.push({ label: 'Rank', value: `${dispRank}${dispParticipants ? `/${dispParticipants}` : ''}`, icon: <Trophy size={18} color="#eab308" />, color: 'var(--gold)' });
                 if (dispPercentile != null) detailCards.push({ label: 'Percentile', value: dispPercentile, icon: <TrendingUp size={18} color="#10b981" />, color: 'var(--navy)' });

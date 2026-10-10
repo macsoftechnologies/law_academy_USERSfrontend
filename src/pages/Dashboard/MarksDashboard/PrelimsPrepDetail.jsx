@@ -1,4 +1,4 @@
-import { BookOpen, Files, Flag, Puzzle } from "lucide-react";
+import { BookOpen, Files, Flag, Puzzle, Gavel } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardHeader from '../../../components/layout/DashboardHeader';
@@ -97,7 +97,7 @@ export default function PrelimsPrepDetail() {
                   <div className="card-body">
                     {subjectMocks.civil && (
                       <>
-                        <div className="pp-subtitle">Civil Laws</div>
+                        <div className="pp-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Gavel size={14} color="#c8922a" /> Civil Laws</div>
                         <ProgressRow
                           label=""
                           completed={subjectMocks.civil.completed || 0}
@@ -109,7 +109,7 @@ export default function PrelimsPrepDetail() {
                     )}
                     {subjectMocks.criminal && (
                       <>
-                        <div className="pp-subtitle">Criminal Laws</div>
+                        <div className="pp-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Gavel size={14} color="#c8922a" /> Criminal Laws</div>
                         <ProgressRow
                           label=""
                           completed={subjectMocks.criminal.completed || 0}
