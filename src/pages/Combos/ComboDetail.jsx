@@ -214,8 +214,8 @@ export default function ComboDetail() {
               </div>
 
               {courseLocked && (
-                <div className="toast warning" style={{ marginBottom: '1rem' }}>
-                  Enroll to unlock the full combo content.
+                <div className="toast warning" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Lock size={18} color="#dc2626" /> Enroll to unlock the full combo content.
                 </div>
               )}
 
